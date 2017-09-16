@@ -67,7 +67,7 @@ public class HandShake
     byte poolingResponseStatus = 0x00;
 
     Date time = new Date();
-    long preTime = time.getTime();
+    long preTime = System.currentTimeMillis();
 
     // 連線中等候 getService 已過的時間
     long getServicePassTick = 0;
@@ -82,7 +82,7 @@ public class HandShake
     long sendPacketTimeOutTick = 30 * 1000; // 30 秒
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 300; // 0.3 秒
+    long sendPoolingIntervalTick = 5000; //  0.3 秒
 
 
     public static HandShake Instance() {
@@ -113,8 +113,8 @@ public class HandShake
                         continue;
                     }
 
-                    // 檢查 Pooling 是否逾時 , 沒有逾時繼續
-                    if(isSendPooling && !CheckPoolingTimeOut())
+                    // 檢查 Pooling 是否逾時 , 沒有逾時繼續 , 逾時則會重發 Pooling Packet
+                    if(!isSendPacketing && !isResponsePacketing && !CheckPoolingTimeOut())
                     {
                         continue;
                     }
@@ -124,7 +124,7 @@ public class HandShake
                         continue;
 
                     // 是否發送 polling ?
-                    SendPoolingPacket();
+                    //SendPoolingPacket();
 
 
                 } catch (InterruptedException e) {
@@ -177,17 +177,30 @@ public class HandShake
                 return;
             }
 
-
             return;
         }
 
         // 以下為 Response Mode , 發送成功是在 OnWritePacket 判斷 回傳成功即表示成功.
         // 當收到系統通知成功寫入 , 將 flag 改為 沒有在發送封包中
-        isSendPacketing = false;
 
         // 寫入成功 , 則刪除最近一個 Packet
-        if (lsPacket.size() > 0)
-            lsPacket.remove(0);
+        if (isSendPacketing)
+        {
+            isSendPacketing = false;
+            if(lsPacket.size() > 0)
+                lsPacket.remove(0);
+        }
+        else if(isResponsePacketing)
+        {
+            isResponsePacketing = false;
+            if(lsPacket.size() > 0)
+                lsPacket.remove(0);
+        }
+        else if(isSendPooling)
+        {
+            isSendPooling = false;
+        }
+
     }
 
     // 收到封包
@@ -212,24 +225,59 @@ public class HandShake
         }
 
         byte rspIndex = data[0];
-        if (isSendPooling && rspIndex == 0x00) // pooling 的封包
+        if (isSendPooling ) // pooling 的封包
         {
             isSendPooling = false; // 下一個 interval 再發送 pooling
-            byte gbxStatus = data[1];
-            if (gbxStatus != poolingResponseStatus) {
-                poolingResponseStatus = gbxStatus;
-                //  當 GB 狀態變更時 , 通知 Unity
-                if (poolingResponseStatus % 2 == 1) {
-                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "Connected");
-                } else {
-                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "DisConnected");
+            if(rspIndex == 0x00)
+            {
+                byte gbxStatus = data[1];
+                if (gbxStatus != poolingResponseStatus)
+                {
+                    poolingResponseStatus = gbxStatus;
+
+                    //  當 GB 狀態變更時 , 通知 Unity
+                    if (poolingResponseStatus % 2 == 1)
+                    {
+                        Log.d(Tag,"is SendPooling response  , state changed as :  Connected");
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "Connected");
+                    }
+                    else
+                    {
+                        Log.d(Tag,"is SendPooling response  , state changed as :  DisConnected");
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "DisConnected");
+                    }
                 }
+                Log.d(Tag,"isSendPooling  -  response , .... Success");
+            }
+            else
+            {
+                Log.d(Tag,"isSendPooling  -  response , .... but  response index != 00");
             }
         }
-        else if (isSendPacketing && rspIndex == sendToBLE_PacketIndex) // 回應封包的 index 一樣,表示封包已經發送成功
+        else if (isSendPacketing)
         {
             isSendPacketing = false;
-        } else  // 遇到 Packet Index 不一樣
+            if(rspIndex == sendToBLE_PacketIndex) // 回應封包的 index 一樣,表示封包已經發送成功
+            {
+                Log.d(Tag,"isSendPacketing  -  response , .... Success");
+            }
+            else
+            {
+                Log.d(Tag,"isSendPacketing  -  response , .... but  response index error");
+            }
+
+        }
+        else if(isResponsePacketing)
+        {
+            isResponsePacketing = false;
+        }
+        else   // 收到 BLE 的主動封包
+        {
+            if(rspIndex!=0x00)
+                SendResponsePacket(rspIndex);
+        }
+        /*
+        else  // 遇到 Packet Index 不一樣
         {
             //
             if (isSendPacketing) // 收到 BLE Response Packet :  當 APP ---> BLE  時 , 收到 Recv ,  為  BLE 回應 App Packet Index
@@ -240,8 +288,9 @@ public class HandShake
             {
                 //  nothing ,  方向不一樣 , Packet Index 應該是不一樣的
             }
-        }
 
+        }
+        */
 
     }
 
@@ -272,8 +321,9 @@ public class HandShake
         byte[] data = p.getNoPacketIndexData();
 
         isSendPacketing = true;
+        preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
-
+        Log.d(Tag, "SendPacket ( ) , .... WriteData ");
         return true;
     }
 
@@ -287,7 +337,9 @@ public class HandShake
         data[0] = BLECmdPacketIndex;
 
         isResponsePacketing = true;
+        preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
+        Log.d(Tag, "SendResponsePacket ( ) , .... WriteData ");
 
         return true;
     }
@@ -297,15 +349,15 @@ public class HandShake
         if (BleFramework.mBluetoothLeService == null)
             return ;
 
-        if(isSendPooling)
-            return;
+//        if(isSendPooling)
+//            return;
 
         isSendPooling = true;
+        preTime = System.currentTimeMillis();
 
         BLEPoollingPacket p = new BLEPoollingPacket();
-
         BleFramework.mBluetoothLeService.WriteData(p.getData());
-
+        Log.d(Tag, "SendPoolingPacket ( ) , .... WriteData ");
 
     }
 
@@ -313,10 +365,11 @@ public class HandShake
     // 檢查連線後取得 service 是否逾時 ,  如果 逾時 -->  斷線,重連
     private synchronized boolean CheckGetServiceTimeOut() {
         // 是否逾時
-        getServicePassTick = time.getTime() - preTime;
+        getServicePassTick = System.currentTimeMillis() -  preTime;
 
         if (getServicePassTick > 30 * 1000) // 等候 30 秒
         {
+            Log.d(Tag, "CheckGetServiceTimeOut ( ) , .... timoe out  , next  to disconnect ");
             BleFramework.mBluetoothLeService.disconnect();
             return true; // 已經逾時
         }
@@ -325,7 +378,7 @@ public class HandShake
     }
 
     private synchronized boolean CheckSendPacketTimeOut() {
-        sendPacketPassTick = time.getTime() - preTime;
+        sendPacketPassTick = System.currentTimeMillis() - preTime;
 
         if (sendPacketPassTick > 1 * 1000) // 等候 1 秒 沒收到回應 , 那麼就發 最近一個封包
         {
@@ -339,13 +392,13 @@ public class HandShake
     }
 
     private synchronized boolean CheckPoolingTimeOut() {
-        sendPacketPassTick = time.getTime() - preTime;
+        sendPacketPassTick = System.currentTimeMillis() - preTime;
 
         if (sendPacketPassTick > sendPoolingIntervalTick) //  超過最近一次發送的封包 ,  若沒有 cmd 包要發送 , 則發出  Pooling  封包
         {
             // 重送
             Log.d(Tag, "CheckSendPacketTimeOut ( ) , .... timoe out  , next  to re send packet ");
-            SendPacket();
+            SendPoolingPacket();
             return false;
         }
         return true;
@@ -363,7 +416,7 @@ public class HandShake
 
         public byte[] getNoPacketIndexData() {
             byte[] bb = new byte[bs_data.length - 1];
-            System.arraycopy(bb, 0, bs_data, 1, bb.length);
+            System.arraycopy(bs_data, 1,bb, 0,bb.length);
             return bb;
         }
     }
@@ -377,11 +430,9 @@ public class HandShake
             if (cnt > 19)
                 cnt = 19;
             bs_data = new byte[cnt + 1];
-            System.arraycopy(bs_data, 1, data, 0, cnt);
+            System.arraycopy( data, 0, bs_data, 1,cnt);
             bs_data[0] = packetIndex;
         }
-
-        byte[] bs_data;
     }
 
     public class BLEPoollingPacket extends BLEPacket
