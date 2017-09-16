@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 25.2.5">
+
+    <issue
+        id="DefaultLocale"
+        severity="Warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        category="Correctness"
+        priority="6"
+        summary="Implied default locale in case conversion"
+        explanation="Calling `String#toLowerCase()` or `#toUpperCase()` *without specifying an explicit locale* is a common source of bugs. The reason for that is that those methods will use the current locale on the user&apos;s device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for `i` is *not* `I`.
+
+If you want the methods to just perform ASCII replacement, for example to convert an enum name, call `String#toUpperCase(Locale.US)` instead. If you really want to use the current locale, call `String#toUpperCase(Locale.getDefault())` instead."
+        url="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        urls="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        errorLine1="  throw new Exception(String.format(&quot;Error. Unknown permissionEnum %d&quot;,permissionEnum));"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            line="33"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        severity="Error"
+        message="Call requires API level 23 (current min is 18): `android.app.Fragment#requestPermissions`"
+        category="Correctness"
+        priority="6"
+        summary="Calling new methods on older versions"
+        explanation="This check scans through all the Android API calls in the application and warns about any calls that are not available on *all* versions targeted by this application (according to its minimum SDK attribute in the manifest).
+
+If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
+
+If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
+
+If you are deliberately setting `android:` attributes in style definitions, make sure you place this in a `values-vNN` folder in order to avoid running into runtime conflicts on certain devices where manufacturers have added custom attributes whose ids conflict with the new ones on later platforms.
+
+Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate that the element will only be inflated in an adequate context."
+        errorLine1="     requestPermissions(permissionsToRequest, PERMISSIONS_REQUEST_CODE);"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~"
+        quickfix="studio,adt">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            line="66"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        severity="Warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details."
+        category="Correctness"
+        priority="6"
+        summary="Target SDK attribute is not targeting latest version"
+        explanation="When your application runs on a version of Android that is more recent than your `targetSdkVersion` specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the `targetSdkVersion` is less than 14, your app may get an option button in the UI.
+
+To fix this issue, set the `targetSdkVersion` to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        url="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        urls="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        errorLine1="  targetSdkVersion 23"
+        errorLine2="  ~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\build.gradle"
+            line="15"
+            column="3"/>
+    </issue>
+
+    <issue
+        id="Registered"
+        severity="Warning"
+        message="The `&lt;service> generalplus.com.blespeechplugin.BluetoothLeService` is not registered in the manifest"
+        category="Correctness"
+        priority="6"
+        summary="Class is not registered in the manifest"
+        explanation="Activities, services and content providers should be registered in the `AndroidManifest.xml` file using `&lt;activity>`, `&lt;service>` and `&lt;provider>` tags.
+
+If your activity is simply a parent class intended to be subclassed by other &quot;real&quot; activities, make it an abstract class."
+        url="http://developer.android.com/guide/topics/manifest/manifest-intro.html"
+        urls="http://developer.android.com/guide/topics/manifest/manifest-intro.html"
+        errorLine1="public class BluetoothLeService extends Service {"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
+            line="48"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        severity="Warning"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        category="Correctness"
+        priority="6"
+        summary="Implied locale in date format"
+        explanation="Almost all callers should use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()` to get a ready-made instance of SimpleDateFormat suitable for the user&apos;s locale. The main reason you&apos;d create an instance this class directly is because you need to format/parse a specific machine-readable format, in which case you almost certainly want to explicitly ask for US to ensure that you get ASCII digits (rather than, say, Arabic digits).
+
+Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
+        url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
+        urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
+        errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyyMMdd_HHmmss&quot;);"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="298"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        severity="Warning"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        category="Correctness"
+        priority="6"
+        summary="Implied locale in date format"
+        explanation="Almost all callers should use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()` to get a ready-made instance of SimpleDateFormat suitable for the user&apos;s locale. The main reason you&apos;d create an instance this class directly is because you need to format/parse a specific machine-readable format, in which case you almost certainly want to explicitly ask for US to ensure that you get ASCII digits (rather than, say, Arabic digits).
+
+Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
+        url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
+        urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
+        errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;HH:mm:ss`SSS&quot;);"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
+            line="83"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="ValidFragment"
+        severity="Fatal"
+        message="Fragments should be static such that they can be re-instantiated by the system, and anonymous classes are not static"
+        category="Correctness"
+        priority="6"
+        summary="Fragment not instantiatable"
+        explanation="From the Fragment documentation:
+*Every* fragment must have an empty constructor, so it can be instantiated when restoring its activity&apos;s state. It is strongly recommended that subclasses do not have other constructors with parameters, since these constructors will not be called when the fragment is re-instantiated; instead, arguments can be supplied by the caller with `setArguments(Bundle)` and later retrieved by the Fragment with `getArguments()`."
+        url="http://developer.android.com/reference/android/app/Fragment.html#Fragment()"
+        urls="http://developer.android.com/reference/android/app/Fragment.html#Fragment()"
+        errorLine1="   final Fragment request = new Fragment() {"
+        errorLine2="                                ~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            line="58"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="LongLogTag"
+        severity="Error"
+        message="The logging tag can be at most 23 characters, was 25 ([NoodlePermissionGranter])"
+        category="Correctness"
+        priority="5"
+        summary="Too Long Log Tags"
+        explanation="Log tags are only allowed to be at most 23 tag characters long."
+        errorLine1="   Log.w(&quot;[NoodlePermissionGranter]&quot;, String.format(&quot;Unable to request permission: %s&quot;, error.getMessage()));"
+        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            line="104"
+            column="4"/>
+    </issue>
+
+    <issue
+        id="ManifestOrder"
+        severity="Warning"
+        message="`&lt;uses-feature>` tag appears after `&lt;application>` tag"
+        category="Correctness"
+        priority="5"
+        summary="Incorrect order of elements in manifest"
+        explanation="The &lt;application> tag should appear after the elements which declare which version you need, which features you need, which libraries you need, and so on. In the past there have been subtle bugs (such as themes not getting applied correctly) when the `&lt;application>` tag appears before some of these other elements, so it&apos;s best to order your manifest in the logical dependency order."
+        errorLine1=" &lt;uses-feature android:name=&quot;android.hardware.bluetooth_le&quot; android:required=&quot;true&quot;/>"
+        errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\src\main\AndroidManifest.xml"
+            line="13"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="Old buildToolsVersion 23.0.2; recommended version is 23.0.3 or later"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1=" buildToolsVersion &quot;23.0.2&quot;"
+        errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\build.gradle"
+            line="5"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="A newer version of com.android.support:appcompat-v7 than 23.3.0 is available: 25.3.1"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1=" compile &apos;com.android.support:appcompat-v7:23.3.0&apos;"
+        errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="E:\Work\Unity BLE Plugin SDK V1.0.1\Src\UnityBleSpeechDemo\AndroidPluginSrc\app\build.gradle"
+            line="31"
+            column="2"/>
+    </issue>
+
+</issues>
