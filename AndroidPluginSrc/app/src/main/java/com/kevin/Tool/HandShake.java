@@ -25,6 +25,12 @@ public class HandShake
 
     public BluetoothLeService BLEService ;//= BleFramework.mBluetoothLeService;
 
+    boolean isSimulateMode = false;
+    public void SetSimulate(boolean isSimulate)
+    {
+        isSimulateMode = isSimulate;
+    }
+
     boolean isConnected = false;
 
     public synchronized void SetConnected(boolean flag)
@@ -32,7 +38,20 @@ public class HandShake
         isConnected = flag;
     }
 
-    boolean isResponseMode = true;
+    boolean isResponseMode = false;
+    public synchronized void SetResponseMode(boolean ResponseMode)
+    {
+        isResponseMode = ResponseMode;
+        if(isResponseMode)
+             Log.d(Tag,"Set  .... is Response Mode");
+        else
+            Log.d(Tag,"Set  .... no Response Mode");
+    }
+
+    public boolean GetIsResponseMode()
+    {
+        return isResponseMode;
+    }
 
     boolean isRunning = false;
 
@@ -49,7 +68,7 @@ public class HandShake
     boolean isResponsePacketing = false;
 
     // debug tag name
-    String Tag = "HandShake";
+    public String Tag = "HandShake";
 
     // 存放 要發送的封包
     List<BLEPacket> lsPacket = new ArrayList<BLEPacket>();
@@ -74,16 +93,27 @@ public class HandShake
 
     // 連線後取得service是否成功的檢查, 當逾時此時間 , 則要斷線 , 重新連線
     long getServiceTimeOutTick = 30 * 1000; // 30 秒
+    public synchronized void SetGetServiceTimeOutTick(int ms)
+    {
+        getServiceTimeOutTick = ms;
+    }
 
     // 發送封包後 , 巳經過的時間
     long sendPacketPassTick = 0;
 
     // 傳送封包逾時檢查, 當逾時此時間 , 則重新發送封包
-    long sendPacketTimeOutTick = 30 * 1000; // 30 秒
+    long sendPacketTimeOutTick = 5000; // 0.3 秒
+    public synchronized void SetSendPacketTimeOutTick(int ms)
+    {
+        sendPacketTimeOutTick = ms;
+    }
 
     //   間隔時間發送一次 Pooling Packet
     long sendPoolingIntervalTick = 5000; //  0.3 秒
-
+    public synchronized void SetSendPoolingIntervalTick(int ms)
+    {
+        sendPoolingIntervalTick = ms;
+    }
 
     public static HandShake Instance() {
         return sInst;
@@ -92,6 +122,52 @@ public class HandShake
     private HandShake() {
 
     }
+
+
+
+    public synchronized void Simulator_Recv_BLE_Pooling(boolean bGBX_ON)
+    {
+        if(!isSendPooling)
+            return;
+
+        isSendPooling = false;
+        ResetTimeOut();
+        if(bGBX_ON)
+        {
+            Log.d(Tag,"is SendPooling response  , state changed as :  Connected");
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "Connected");
+        }
+        else
+        {
+            Log.d(Tag,"is SendPooling response  , state changed as :  DisConnected");
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "DisConnected");
+        }
+    }
+
+
+    public synchronized void Simulator_Recv_BLE_ResponseCmdIndex(boolean bPacketIndexCurrent)
+        {
+            if(!isSendPacketing)
+                return;
+
+            isSendPacketing = false;
+            ResetTimeOut();
+            lsPacket.remove(0);
+            if(bPacketIndexCurrent)
+                Log.d(Tag, "BLE_Response_Cmd_Index , Index error");
+            Log.d(Tag,"Send Packet .. BLE response Finished");
+    }
+
+    public synchronized  void Simulator_Recv_BLE_SendCmdPacket()
+    {
+        isResponsePacketing = true;
+        isSendPooling = false;
+        isSendPacketing = false;
+        ResetTimeOut();
+        Log.d(Tag, "Simulator_Recv_BLE_SendCmdPacket");
+        isResponsePacketing = false;
+    }
+
 
     Thread t = new Thread(new Runnable() {
         @Override
@@ -104,28 +180,57 @@ public class HandShake
                         continue;;
 
                     // 檢查是否連線取得 service -  time out
-                    if (isGetServiceing && !CheckGetServiceTimeOut()) // 時間未到回 false　--->  測試是否發生在連線後要service失敗,若失敗則要重新連線
+                    if (isGetServiceing) // 時間未到回 false　--->  測試是否發生在連線後要service失敗,若失敗則要重新連線
+                    {
+                        if(CheckGetServiceTimeOut())
+                        {
+                            isConnected = false;
+                            isGetServiceing = false;
+                            BleFramework.mBluetoothLeService.disconnect();
+                        }
                         continue;
+                    }
 
                     // 檢查是否 packet  time out -> 重發
-                    if (isSendPacketing && !CheckSendPacketTimeOut())  // 時間未到回 false
+                    if ( isSendPacketing )  // 時間未到回 false
+                    {
+                        if(CheckSendPacketTimeOut())
+                        {
+                            // 重送
+                            Log.d(Tag, "CheckSendPacketTimeOut ( ) , .... timoe out  , next  to re send packet ");
+                            SendPacket();
+                        }
+                        continue;
+                    }
+
+                    if ( isResponsePacketing ) //  不做逾時檢查及重送
                     {
                         continue;
                     }
 
                     // 檢查 Pooling 是否逾時 , 沒有逾時繼續 , 逾時則會重發 Pooling Packet
-                    if(!isSendPacketing && !isResponsePacketing && !CheckPoolingTimeOut())
+                    if(isSendPooling )
                     {
+                        if (CheckPoolingTimeOut())
+                        {
+                            // 重送
+                            Log.d(Tag, "CheckPoolingTimeOut ( ) .. part - 1 , .... timoe out  , next  to re send packet ");
+                            SendPoolingPacket();
+                        }
                         continue;
                     }
 
+                    // 在空間後  , 若有封包要發送 , 再發送
                     // 是否有 packet 待送
                     if (SendPacket()) //  沒有發送一般封包 , 則往下發 pooling
                         continue;
 
                     // 是否發送 polling ?
-                    //SendPoolingPacket();
-
+                    if(!isSendPooling && CheckPoolingTimeOut())
+                    {
+                        Log.d(Tag, "CheckPoolingTimeOut ( ) .. part - 2 , .... timoe out  , next  to  send packet ");
+                        SendPoolingPacket();
+                    }
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -161,7 +266,7 @@ public class HandShake
 
     public synchronized void OnWritePacket(boolean isSuccess) {
 
-        Log.d(Tag,"OnWritePacket( ) ... ");
+        Log.d(Tag,"OnWritePacket( ) ... done");
 
         if (!isResponseMode)  //  No Response Mode , 發送成功是在 OnRecv 判斷同一個 Packet Index 才表示 發送成功
         {
@@ -184,6 +289,9 @@ public class HandShake
         // 當收到系統通知成功寫入 , 將 flag 改為 沒有在發送封包中
 
         // 寫入成功 , 則刪除最近一個 Packet
+        if(!isGetServiceing)
+            ResetTimeOut();
+
         if (isSendPacketing)
         {
             isSendPacketing = false;
@@ -203,9 +311,19 @@ public class HandShake
 
     }
 
+    //  當有收到 BLE - response cmd , response pool , cmd 時皆要新時間
+    public void ResetTimeOut()
+    {
+        preTime = System.currentTimeMillis();
+    }
+
     // 收到封包
     public synchronized void OnRecvPacket(boolean isSuccess, byte[] data) {
-        Log.d("HandShake", "OnRecvPacket ( )");
+
+        Log.d(Tag, "OnRecvPacket ( ) .. ");
+        Log.d(Tag, "Recv Data = " + StringTools.bytesToHex(data));
+
+
         if (!isSuccess) {
             Log.d(Tag, "OnRecvPacket ( ) .... is Success = fail");
             return;
@@ -223,6 +341,9 @@ public class HandShake
             Log.d(Tag, "OnRecvPacket ( ) ....  data fail !");
             return;
         }
+
+        if(!isGetServiceing)
+            ResetTimeOut();
 
         byte rspIndex = data[0];
         if (isSendPooling ) // pooling 的封包
@@ -260,21 +381,28 @@ public class HandShake
             if(rspIndex == sendToBLE_PacketIndex) // 回應封包的 index 一樣,表示封包已經發送成功
             {
                 Log.d(Tag,"isSendPacketing  -  response , .... Success");
+                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnAPP_WritePacket_to_Ble_Success", "isSendPacketing");
             }
             else
             {
-                Log.d(Tag,"isSendPacketing  -  response , .... but  response index error");
+                Log.d(Tag, "isSendPacketing  -  response , .... but  response index error");
             }
 
         }
-        else if(isResponsePacketing)
+        else if(isResponsePacketing) // 收到 發送至 BLE 的 Response Packet , 發送完成
         {
             isResponsePacketing = false;
+            Log.d(Tag,"isResponsePacketing  -  response , .... Success");
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnAPP_WritePacket_to_Ble_Success", "isResponsePacketing");
         }
-        else   // 收到 BLE 的主動封包
+        else   // 收到 BLE 的主動封包 , 回應 Packet Index 的封包
         {
-            if(rspIndex!=0x00)
+            if(rspIndex!=0x00) {
                 SendResponsePacket(rspIndex);
+                Log.d(Tag,"Send Response Packet , .... Start");
+                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnAPP_WritePacket_to_Ble_Success", "StartSendResponsePacket");
+
+            }
         }
         /*
         else  // 遇到 Packet Index 不一樣
@@ -294,7 +422,7 @@ public class HandShake
 
     }
 
-    public synchronized void OnGetServiceStart(boolean isSuccess) {
+    public synchronized void OnGetServiceStart() {
         isGetServiceing = true;
     }
 
@@ -302,8 +430,15 @@ public class HandShake
         isGetServiceing = false;
     }
 
+    // 發送 Command 封包
     public synchronized boolean SendPacket() {
         if (BleFramework.mBluetoothLeService == null)
+            return false;
+
+        if(!isConnected)
+            return false;
+
+        if(isGetServiceing)
             return false;
 
         if(isSendPooling)
@@ -318,12 +453,14 @@ public class HandShake
         BLEPacket p = lsPacket.get(0);
 
         //  No Response 使用
-        byte[] data = p.getNoPacketIndexData();
+
+        byte[] data = isResponseMode ? p.getNoPacketIndexData() : p.getData();
 
         isSendPacketing = true;
         preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
         Log.d(Tag, "SendPacket ( ) , .... WriteData ");
+        Log.d(Tag,"WriteData =  " + StringTools.bytesToHex(data));
         return true;
     }
 
@@ -333,6 +470,9 @@ public class HandShake
         if (BleFramework.mBluetoothLeService == null)
             return false;
 
+        if(!isConnected)
+            return false;
+
         byte[] data = new byte[1];
         data[0] = BLECmdPacketIndex;
 
@@ -340,13 +480,16 @@ public class HandShake
         preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
         Log.d(Tag, "SendResponsePacket ( ) , .... WriteData ");
-
+        Log.d(Tag,"WriteData =  " + StringTools.bytesToHex(data));
         return true;
     }
 
     private synchronized void SendPoolingPacket() {
 
         if (BleFramework.mBluetoothLeService == null)
+            return ;
+
+        if(!isConnected)
             return ;
 
 //        if(isSendPooling)
@@ -356,9 +499,10 @@ public class HandShake
         preTime = System.currentTimeMillis();
 
         BLEPoollingPacket p = new BLEPoollingPacket();
-        BleFramework.mBluetoothLeService.WriteData(p.getData());
+        byte [] data = p.getData();
+        BleFramework.mBluetoothLeService.WriteData(data);
         Log.d(Tag, "SendPoolingPacket ( ) , .... WriteData ");
-
+        Log.d(Tag,"WriteData =  " + StringTools.bytesToHex(data));
     }
 
 
@@ -370,7 +514,7 @@ public class HandShake
         if (getServicePassTick > 30 * 1000) // 等候 30 秒
         {
             Log.d(Tag, "CheckGetServiceTimeOut ( ) , .... timoe out  , next  to disconnect ");
-            BleFramework.mBluetoothLeService.disconnect();
+
             return true; // 已經逾時
         }
 
@@ -380,15 +524,12 @@ public class HandShake
     private synchronized boolean CheckSendPacketTimeOut() {
         sendPacketPassTick = System.currentTimeMillis() - preTime;
 
-        if (sendPacketPassTick > 1 * 1000) // 等候 1 秒 沒收到回應 , 那麼就發 最近一個封包
+        if (sendPacketPassTick > sendPacketTimeOutTick)
         {
-            // 重送
-            Log.d(Tag, "CheckSendPacketTimeOut ( ) , .... timoe out  , next  to re send packet ");
-            SendPacket();
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private synchronized boolean CheckPoolingTimeOut() {
@@ -396,12 +537,9 @@ public class HandShake
 
         if (sendPacketPassTick > sendPoolingIntervalTick) //  超過最近一次發送的封包 ,  若沒有 cmd 包要發送 , 則發出  Pooling  封包
         {
-            // 重送
-            Log.d(Tag, "CheckSendPacketTimeOut ( ) , .... timoe out  , next  to re send packet ");
-            SendPoolingPacket();
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
 

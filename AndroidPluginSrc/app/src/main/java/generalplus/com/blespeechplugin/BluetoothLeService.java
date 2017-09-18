@@ -212,11 +212,13 @@ public class BluetoothLeService extends Service {
                 BluetoothGattService Service = gatt.getService(UUID_FFF0_CHARACTERISTIC);
                 if (Service == null) {
                     Log.e(TAG, "service not found!");
+                    HandShake.Instance().OnGetServiceFinished(false);
                     return;
                 }
                 BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
                 if (characteristic == null) {
                     Log.e(TAG, "char not found!");
+                    HandShake.Instance().OnGetServiceFinished(false);
                     return;
                 }
                 else {
@@ -225,15 +227,21 @@ public class BluetoothLeService extends Service {
                 	String intentAction = GET_ACK;
                 	if (BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE == iType) {
                 		m_bAck = false;
+                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... no Response Mode");
+                        HandShake.Instance().SetResponseMode(false);
                 		//m_strAckType = "No Ack";
 					}
                 	else if (BluetoothGattCharacteristic.PROPERTY_WRITE == iType) {
                 		m_bAck = true;
                 		//m_strAckType = "Ack";
+                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... Response Mode");
+                        HandShake.Instance().SetResponseMode(true);
 					}
                 	else {
                 		m_bAck = true;
                 		m_strAckType = "error ack:" + iType;
+                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... Response Mode ( error ack:)");
+                        HandShake.Instance().SetResponseMode(true);
                 	}
                 	//broadcastUpdate(intentAction);
                 }
@@ -254,6 +262,7 @@ public class BluetoothLeService extends Service {
 							broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
 							mConnectionState = STATE_CONNECTED;
 							HandShake.Instance().SetConnected(true);
+                            HandShake.Instance().OnGetServiceFinished(true);
 							return;
 						}
 					}
@@ -528,7 +537,8 @@ public class BluetoothLeService extends Service {
         	
         	
         	characteristic1.setValue(byData);
-              
+
+            m_bAck = HandShake.Instance().GetIsResponseMode();
             if (m_bAck) {
         		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); 
 			}
@@ -588,7 +598,10 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
         	// === 1. Write data to Characteristic ===        	
         	characteristic1.setValue(byData);
               
-            //characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE); 
+            //characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+
+            m_bAck = HandShake.Instance().GetIsResponseMode();
+
             if (m_bAck) {
         		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); 
 			}

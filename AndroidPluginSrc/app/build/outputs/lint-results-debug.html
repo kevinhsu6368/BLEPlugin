@@ -18,8 +18,8 @@ document.getElementById(id+'Link').style.display = 'none';
 <body>
 <h1>Lint Report</h1>
 <div class="titleSeparator"></div>
-Check performed at Sat Sep 16 15:09:16 GMT+08:00 2017.<br/>
-3 errors and 8 warnings found:<br/><br/>
+Check performed at Mon Sep 18 12:17:36 CST 2017.<br/>
+3 errors and 6 warnings found:<br/><br/>
 <table class="overview">
 <tr><td></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
 </td></tr>
@@ -30,10 +30,6 @@ Check performed at Sat Sep 16 15:09:16 GMT+08:00 2017.<br/>
 <tr>
 <td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-error.png" alt="Error" />
 <a href="#NewApi">NewApi: Calling new methods on older versions</a>
-</td></tr>
-<tr>
-<td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
-<a href="#OldTargetApi">OldTargetApi: Target SDK attribute is not targeting latest version</a>
 </td></tr>
 <tr>
 <td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
@@ -56,7 +52,7 @@ Check performed at Sat Sep 16 15:09:16 GMT+08:00 2017.<br/>
 <a href="#ManifestOrder">ManifestOrder: Incorrect order of elements in manifest</a>
 </td></tr>
 <tr>
-<td class="countColumn">2</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
+<td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
 <a href="#GradleDependency">GradleDependency: Obsolete Gradle Dependency</a>
 </td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#MissingIssues">Disabled Checks (15)</a>
@@ -124,34 +120,6 @@ Similarly, you can use tools:targetApi="11" in an XML file to indicate that the 
 </div>
 <br/><div class="moreinfo">More info: </div><br/>To suppress this error, use the issue id "NewApi" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
 </div>
-<a name="OldTargetApi"></a>
-<div class="issue">
-<div class="id"><a href="#" title="Return to top">OldTargetApi: Target SDK attribute is not targeting latest version</a><div class="issueSeparator"></div>
-</div>
-<div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:15</span>: <span class="message">Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.</span><br /><pre class="errorlines">
-<span class="lineno">  12</span> 	}
-<span class="lineno">  13</span> 	defaultConfig {
-<span class="lineno">  14</span> 		minSdkVersion 18
-<span class="lineno">  15</span> 		<span class="errorspan">targetSdkVersion 23</span>
-<span class="lineno">  16</span> 	}
-<span class="lineno">  17</span> 	buildTypes {
-</pre>
-</div>
-<div class="metadata">Note: This issue has an associated quickfix operation in Android Studio/IntelliJ&nbsp;<img alt="Fix" border="0" align="top" src="lint-results-debug_files/lint-run.png" />
-<br>
-Priority: 6 / 10<br/>
-Category: Correctness</div>
-Severity: <span class="warning">Warning</span><div class="summary">
-Explanation: Target SDK attribute is not targeting latest version.</div>
-<div class="explanation">
-When your application runs on a version of Android that is more recent than your <code>targetSdkVersion</code> specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the <code>targetSdkVersion</code> is less than 14, your app may get an option button in the UI.<br/>
-<br/>
-To fix this issue, set the <code>targetSdkVersion</code> to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: <a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a>
-</div>
-<br/><div class="moreinfo">More info: <a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a>
-</div><br/>To suppress this error, use the issue id "OldTargetApi" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
-</div>
 <a name="Registered"></a>
 <div class="issue">
 <div class="id"><a href="#" title="Return to top">Registered: Class is not registered in the manifest</a><div class="issueSeparator"></div>
@@ -161,7 +129,7 @@ To fix this issue, set the <code>targetSdkVersion</code> to the highest availabl
 <span class="lineno">  45</span>  * Service for managing connection and data communication with a GATT server hosted on a
 <span class="lineno">  46</span>  * given Bluetooth LE device.
 <span class="lineno">  47</span>  */
-<span class="lineno">  48</span> public class <span class="errorspan">BluetoothLeService extends Service {</span>
+<span class="lineno">  48</span> public class <span class="errorspan">BluetoothLeService extends Service {</span>
 <span class="lineno">  49</span>     private final static String TAG = BluetoothLeService.class.getSimpleName();
 <span class="lineno">  50</span> 
 </pre>
@@ -183,13 +151,13 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <div class="id"><a href="#" title="Return to top">SimpleDateFormat: Implied locale in date format</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:298</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno"> 295</span>         if(isInitLogFile==false)
-<span class="lineno"> 296</span>         {
-<span class="lineno"> 297</span>             isInitLogFile = true;
-<span class="lineno"> 298</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
-<span class="lineno"> 299</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno"> 300</span>             String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:302</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 299</span>         if(isInitLogFile==false)
+<span class="lineno"> 300</span>         {
+<span class="lineno"> 301</span>             isInitLogFile = true;
+<span class="lineno"> 302</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
+<span class="lineno"> 303</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 304</span>             String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
 </pre>
 <span class="location"><a href="../../src/main/java/com/kevin/Tool/LogFile.java">../../src/main/java/com/kevin/Tool/LogFile.java</a>:83</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
 <span class="lineno">  80</span>         String str = "";
@@ -288,14 +256,6 @@ The &lt;application> tag should appear after the elements which declare which ve
 <div class="id"><a href="#" title="Return to top">GradleDependency: Obsolete Gradle Dependency</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:5</span>: <span class="message">Old buildToolsVersion 23.0.2; recommended version is 23.0.3 or later</span><br /><pre class="errorlines">
-<span class="lineno">   2</span> 
-<span class="lineno">   3</span> android {
-<span class="lineno">   4</span> 	compileSdkVersion 23
-<span class="lineno">   5</span> 	<span class="errorspan">buildToolsVersion "23.0.2"</span>
-<span class="lineno">   6</span> 	sourceSets {
-<span class="lineno">   7</span> 		main {
-</pre>
 <span class="location"><a href="../../build.gradle">../../build.gradle</a>:31</span>: <span class="message">A newer version of com.android.support:appcompat-v7 than 23.3.0 is available: 25.3.1</span><br /><pre class="errorlines">
 <span class="lineno">  28</span> dependencies {
 <span class="lineno">  29</span> 	compile fileTree(include: ['*.jar'], dir: 'libs')

@@ -1,10 +1,14 @@
 [
     {
-        "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
-        "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
+        "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
     },
     {
         "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
         "source": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+    },
+    {
+        "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
+        "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
     }
 ]

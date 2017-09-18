@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
+import com.kevin.Tool.StringTools;
 import com.unity3d.player.UnityPlayer;
 
 import org.json.JSONArray;
@@ -221,8 +222,11 @@ public class BleFramework{
                     //_dataRx = intent.getByteArrayExtra("EXTRA_DATA");
                     if (null != intent.getStringExtra(BluetoothLeService.READ_DATA))
                     {
-                        LogFile.GetInstance().AddLogAndSave(true,"READ_DATA:\r\n" + intent.getStringExtra(BluetoothLeService.READ_DATA));
-                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", intent.getStringExtra(BluetoothLeService.READ_DATA));
+                        String data = intent.getStringExtra(BluetoothLeService.READ_DATA);
+                        Log.d(HandShake.Instance().Tag,"Recv ... String Data = " + data);
+                        HandShake.Instance().OnRecvPacket(true, data.trim().getBytes());
+                        LogFile.GetInstance().AddLogAndSave(true, "READ_DATA:\r\n" + data);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
                     }
                 }
                 else if (AUTO_CONNECT.equals(action))
@@ -380,6 +384,7 @@ public class BleFramework{
 
     public boolean _ConnectPeripheralAtIndex(int peripheralIndex) {
 
+        HandShake.Instance().OnGetServiceStart();
         LogFile.GetInstance().AddLogAndSave(true,"_ConnectPeripheralAtIndex: " + peripheralIndex);
 
         Log.d(TAG, ("_ConnectPeripheralAtIndex: " + peripheralIndex));
@@ -432,13 +437,93 @@ public class BleFramework{
     }
 
 
+    public void TestCommand(String cmd,String data)
+    {
+
+        switch (data)
+        {
+            case "00_00":
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSimulate(false)");
+                HandShake.Instance().SetSimulate(false);
+                break;
+            case "00_01":
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSimulate(true)");
+                HandShake.Instance().SetSimulate(true);
+                break;
+            case "01" : //  BLE - GBX - ON ... 模擬 BLE - Pooling Response : GBX ON
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().Simulator_Recv_BLE_Pooling(true)");
+                HandShake.Instance().Simulator_Recv_BLE_Pooling(true);
+                break;
+            case "02": // BLE - GBX - OFF ... 模擬 BLE - Pooling Response : GBX OFF
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().Simulator_Recv_BLE_Pooling(false)");
+                HandShake.Instance().Simulator_Recv_BLE_Pooling(false);
+                break;
+            case "03": // BLE - Response_Cmd_Index_OK
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().Simulator_Recv_BLE_Response_Cmd_Index(true)");
+                HandShake.Instance().Simulator_Recv_BLE_ResponseCmdIndex(true);
+                break;
+            case "04": // BLE - Response_Cmd_Index_Error
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().Simulator_Recv_BLE_Response_Cmd_Index(false)");
+                HandShake.Instance().Simulator_Recv_BLE_ResponseCmdIndex(false);
+                break;
+            case "05": // BLE - Send_Cmd_Packet
+                Log.d(HandShake.Instance().Tag,"BLE - Send_Cmd_Packet");
+                HandShake.Instance().Simulator_Recv_BLE_SendCmdPacket();
+                break;
+            case "10_100": // Set_APP_Poolling_100
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(100)");
+                HandShake.Instance().SetSendPoolingIntervalTick(100);
+                break;
+            case "10_200": // Set_APP_Poolling_200
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(200)");
+                HandShake.Instance().SetSendPoolingIntervalTick(200);
+                break;
+            case "10_300": // Set_APP_Poolling_300
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(300)");
+                HandShake.Instance().SetSendPoolingIntervalTick(300);
+                break;
+            case "10_500": // Set_APP_Poolling_500
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(500)");
+                HandShake.Instance().SetSendPoolingIntervalTick(500);
+                break;
+            case "10_1000": // Set_APP_Poolling_1000
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(1000)");
+                HandShake.Instance().SetSendPoolingIntervalTick(1000);
+                break;
+            case "10_2000": // Set_APP_Poolling_2000
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(2000)");
+                HandShake.Instance().SetSendPoolingIntervalTick(2000);
+                break;
+            case "10_5000": // Set_APP_Poolling_5000
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(5000)");
+                HandShake.Instance().SetSendPoolingIntervalTick(5000);
+                break;
+            case "10_10000": // Set_APP_Poolling_10000
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSendPoolingIntervalTick(10000)");
+                HandShake.Instance().SetSendPoolingIntervalTick(10000);
+                break;
+            case "11" : //  Set_APP_ResponseMode
+                Log.d(cmd,"HandShake.Instance().SetResponseMode(true)");
+                HandShake.Instance().SetResponseMode(true);
+                break;
+            case "12": // Set_APP_NoResponseMode
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetResponseMode(false)");
+                HandShake.Instance().SetResponseMode(false);
+                break;
+        }
+    }
 
 
     //  給 Unity 下 Log  到 Android 這邊顯示
     public void Log(String tag,String msg)
     {
-        if(tag == null || tag=="")
+
+        if(tag == null || tag.isEmpty())
             Log.d(TAG, msg);
+        else if (tag.equals("TestCommand"))
+        {
+            TestCommand(tag, msg);
+        }
         else
             Log.d(tag,msg);
     }
