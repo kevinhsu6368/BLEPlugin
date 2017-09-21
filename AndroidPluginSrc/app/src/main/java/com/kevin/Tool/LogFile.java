@@ -18,6 +18,12 @@ import java.util.List;
 
 public class LogFile
 {
+    // 延遲寫入時間
+    long delayWriteTime = 60 * 1000; //  預設為 60 秒 寫入一次
+
+    //  最近一次寫入的時間點
+    long preWriteTime = 0;
+
     String fileName;
     List<String> lsData = new ArrayList<String>();
 
@@ -75,8 +81,14 @@ public class LogFile
         lsData.add(msg);
     }
 
+    // 暫時關閉寫檔動作, 因為會有嚴重的 lag , 如果要寫未來需再開一條執緒去寫檔試看看
+    boolean bStopSave = true;
+
     public void AddLog(Boolean bLogTime,String msg)
     {
+        if(bStopSave)
+            return ;
+
         String str = "";
         if(bLogTime)
         {
@@ -93,25 +105,57 @@ public class LogFile
 
     public void AddLogAndSave(Boolean bLogTime,String msg)
     {
+        if(bStopSave)
+            return ;
+
         AddLog(bLogTime, msg);
-        Save();
+        Save(true);
     }
 
-    public void Save()
+    // 強制寫入(不受延遲寫入)
+    public void FlushSave()
     {
+        if(bStopSave)
+            return ;
+
+        Save(false);
+    }
+
+    public void Save(boolean bCheckDelay)
+    {
+        if(bStopSave)
+            return ;
+
+        // 檢查時間
+        if(bCheckDelay && !checkDelayWriteTimeOut())
+            return;
+
         String data = "";
         for (int i=0;i<lsData.size();i++)
         {
             data += lsData.get(i) + "\r\n";
         }
 
+        preWriteTime = System.currentTimeMillis();
         writeInfo(fileName,data);
+
+    }
+
+    // 檢查是否超過延遲寫入時間
+    private boolean checkDelayWriteTimeOut()
+    {
+        long now = System.currentTimeMillis();
+        long delta = now - preWriteTime;
+        return (delta > delayWriteTime);
     }
 
 
-
     /** 將資料寫入記憶卡內 */
-    public void writeInfo(String fileName, String data) {
+    private void writeInfo(String fileName, String data)
+    {
+        if(bStopSave)
+            return ;
+
         try {
 
             /*

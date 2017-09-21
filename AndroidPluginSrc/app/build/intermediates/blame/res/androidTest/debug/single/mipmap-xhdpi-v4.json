@@ -1,7 +1,7 @@
 [
     {
-        "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
-        "source": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\bundles\\debug\\res\\mipmap-xhdpi-v4\\ic_launcher.png"
+        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
+        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\bundles\\debug\\res\\mipmap-xhdpi-v4\\ic_launcher.png"
     },
     {
         "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
@@ -10,5 +10,13 @@
     {
         "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
         "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\bundles\\debug\\res\\mipmap-xhdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
+        "source": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\bundles\\debug\\res\\mipmap-xhdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\androidTest\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
+        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\bundles\\debug\\res\\mipmap-xhdpi-v4\\ic_launcher.png"
     }
 ]

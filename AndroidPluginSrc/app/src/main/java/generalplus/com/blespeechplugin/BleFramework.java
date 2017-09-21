@@ -224,9 +224,11 @@ public class BleFramework{
                     {
                         String data = intent.getStringExtra(BluetoothLeService.READ_DATA);
                         Log.d(HandShake.Instance().Tag,"Recv ... String Data = " + data);
-                        HandShake.Instance().OnRecvPacket(true, data.trim().getBytes());
-                        LogFile.GetInstance().AddLogAndSave(true, "READ_DATA:\r\n" + data);
-                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
+                        HandShake.Instance().OnRecvPacket(true, StringTools.HexToBytes(data));
+                        LogFile.GetInstance().AddLogAndSave(true, "READ_DATA = " + data);
+                        //UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
+                        if(HandShake.Instance().GetIsResponseMode()) // no response mode
+                            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
                     }
                 }
                 else if (AUTO_CONNECT.equals(action))
@@ -510,6 +512,34 @@ public class BleFramework{
                 Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetResponseMode(false)");
                 HandShake.Instance().SetResponseMode(false);
                 break;
+
+            case "20_10": // Set_APP_SendCmdInterval_50
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(10)");
+                HandShake.Instance().setSendCmdIntervalTick(10);
+                break;
+
+            case "20_50": // Set_APP_SendCmdInterval_50
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(50)");
+                HandShake.Instance().setSendCmdIntervalTick(50);
+                break;
+
+            case "20_100": // Set_APP_SendCmdInterval_100
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(100)");
+                HandShake.Instance().setSendCmdIntervalTick(100);
+                break;
+            case "20_200": // Set_APP_SendCmdInterval_200
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(200)");
+                HandShake.Instance().setSendCmdIntervalTick(200);
+                break;
+            case "20_300": // Set_APP_SendCmdInterval_300
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(300)");
+                HandShake.Instance().setSendCmdIntervalTick(300);
+                break;
+            case "20_500": // Set_APP_SendCmdInterval_500
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(500)");
+                HandShake.Instance().setSendCmdIntervalTick(500);
+                break;
+
         }
     }
 
