@@ -109,7 +109,7 @@ public class HandShake
     }
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 300; //  0.3 秒
+    long sendPoolingIntervalTick = 500; //  0.3 秒
     public synchronized void SetSendPoolingIntervalTick(int ms)
     {
         sendPoolingIntervalTick = ms;
@@ -130,6 +130,9 @@ public class HandShake
 
     }
 
+    //  欲找的藍芽靶設備
+    public String BLE_Device_Name = "C1";
+    public String BLE_Device_Address = "";
 
 
     public synchronized void Simulator_Recv_BLE_Pooling(boolean bGBX_ON)
@@ -175,7 +178,7 @@ public class HandShake
         isResponsePacketing = false;
     }
 
-    int reSendPacket_count_To_Disconnect = 10000 ; //  封包重送 n 次後, 將斷線
+    int reSendPacket_count_To_Disconnect = 10 ; //  封包重送 n 次後, 將斷線
     int reSendPacket_count = 0; // 己經重發封包 n 次
     private int GetSendPacket_count()
     {
@@ -223,6 +226,7 @@ public class HandShake
                         }
                         continue;
                     }
+
 
                     // 檢查是否 packet  time out -> 重發
                     if ( isSendPacketing )  // 時間未到回 false

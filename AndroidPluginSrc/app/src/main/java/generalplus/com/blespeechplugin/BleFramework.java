@@ -98,8 +98,8 @@ public class BleFramework{
                 return;
             }
 
-            if (!bConnectState) {
-
+            if (!GetConnectStat())//!bConnectState)
+            {
                 mBluetoothLeService.cleanAddress();
 
                 try {
@@ -137,6 +137,16 @@ public class BleFramework{
 		    }
 	    }
 	    return _instance;
+    }
+
+    public synchronized void SetConnectState(boolean bConnected)
+    {
+        bConnectState = bConnected;
+    }
+
+    public  synchronized boolean GetConnectStat()
+    {
+        return bConnectState;
     }
 
     public BleFramework(Activity activity)
@@ -181,8 +191,19 @@ public class BleFramework{
 	            BLEObj obj = new BLEObj();
 	            obj.m_BluetoothDevice = device;
 	            mBluetoothLeService.listBTDevice.add(obj);
+
+                // 如果找到 C1 就結束掃描
+                if(device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+                {
+                    Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    searchingDevice = false;
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                }
             }
         };
+
+
 
         this.mGattUpdateReceiver = new BroadcastReceiver()
         {
@@ -192,14 +213,16 @@ public class BleFramework{
 	            Log.d(TAG, "mGattUpdateReceiver onReceive Action = " + action);
                 if (ACTION_GATT_CONNECTED.equals(action))
                 {
-	                bConnectState = true;
+                    SetConnectState(true);
+	                //bConnectState = true;
                     RECONNECT_INTERVAL_TIME = 10000;
                     LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_CONNECTED");
                     Log.d(TAG, ("Connection estabilished with: " + BleFramework.this._mDeviceAddress));
                 }
                 else if (ACTION_GATT_DISCONNECTED.equals(action))
                 {
-	                bConnectState = false;
+                    SetConnectState(false);
+	                //bConnectState = false;
                     LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_DISCONNECTED");
                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidDisconnect", "Success");
                     Log.d(TAG, "Connection lost");
@@ -254,21 +277,44 @@ public class BleFramework{
 
 	public void scanLeDevice(final boolean enable)
 	{
+        Log.d("BLEScan","scanLeDevice ..... " + Boolean.toString(enable));
 		if (enable)
 		{
 			// Stops scanning after a pre-defined scan period.
 			mHandler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					Log.d(TAG, "scanLeDevice time out!");
-					mBluetoothAdapter.stopLeScan(mLeScanCallback);
-					searchingDevice = false;
-					UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                    if(searchingDevice)
+                    {
+                        Log.d(TAG, "scanLeDevice time out!");
+                        Log.d("BLEScan","scanLeDevice .....  Device time out ! ( 60sec ) ");
+
+                        //  没有掃到指定機,就再重掃
+                        boolean isFindBLE = false;
+                        for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
+                            BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+
+                            if(bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+                            {
+                                isFindBLE = true;
+                                break;
+                            }
+                        }
+                        if (isFindBLE) {
+                            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                            searchingDevice = false;
+                            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                        }
+                        else
+                        {
+                            // re scan
+                            scanLeDevice(true);
+                        }
+                    }
 				}
-			}, SCAN_PERIOD);
+			},5*1000/* 最多掃5分鐘,掃到第一台緒C1就取消執行緒*/);//SCAN_PERIOD);
 			searchingDevice = true;
 			mBluetoothAdapter.startLeScan(mLeScanCallback);
-
 		}
 		else
 		{
@@ -330,6 +376,9 @@ public class BleFramework{
     }
 
     public void _ScanForPeripherals() {
+        if ( GetConnectStat() )
+            return;
+
         LogFile.GetInstance().AddLogAndSave(true,"_ScanForPeripherals");
         Log.d(TAG, "_ScanForPeripherals: Launching scanLeDevice");
         connectHandler.removeCallbacks(runnableReconnect);
@@ -340,7 +389,7 @@ public class BleFramework{
 
     public boolean _IsDeviceConnected() {
 	    Log.d(TAG, "_IsDeviceConnected");
-        return this.bConnectState;
+        return GetConnectStat() ;//this.bConnectState;
     }
 
     public boolean _SearchDevicesDidFinish() {
@@ -538,6 +587,16 @@ public class BleFramework{
             case "20_500": // Set_APP_SendCmdInterval_500
                 Log.d(HandShake.Instance().Tag,"HandShake.Instance().setSendCmdIntervalTick(500)");
                 HandShake.Instance().setSendCmdIntervalTick(500);
+                break;
+            case "30_05": //  Command Packet 重送次數 5 以後會斷線重連
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setReSendPacket_count_To_Disconnect(5)");
+                HandShake.Instance().setReSendPacket_count_To_Disconnect(5);
+            case "30_10": // Command Packet 重送次數 10 以後會斷線重+ 連
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setReSendPacket_count_To_Disconnect(10)");
+                HandShake.Instance().setReSendPacket_count_To_Disconnect(10);
+            case "30_50": //  Command Packet 重送次數 50 以後會斷線重連
+                Log.d(HandShake.Instance().Tag,"HandShake.Instance().setReSendPacket_count_To_Disconnect(50)");
+                HandShake.Instance().setReSendPacket_count_To_Disconnect(50);
                 break;
 
         }

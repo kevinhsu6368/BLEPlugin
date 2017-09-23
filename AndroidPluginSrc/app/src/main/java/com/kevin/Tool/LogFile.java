@@ -19,12 +19,13 @@ import java.util.List;
 public class LogFile
 {
     // 延遲寫入時間
-    long delayWriteTime = 60 * 1000; //  預設為 60 秒 寫入一次
+    long delayWriteTime = 10 * 1000; //  預設為 60 秒 寫入一次
 
     //  最近一次寫入的時間點
     long preWriteTime = 0;
 
     String fileName;
+    String data;
     List<String> lsData = new ArrayList<String>();
 
     public LogFile()
@@ -151,40 +152,40 @@ public class LogFile
 
 
     /** 將資料寫入記憶卡內 */
-    private void writeInfo(String fileName, String data)
+    private void writeInfo(String fName, String sData)
     {
+        this.fileName = fName;
+        this.data = sData;
         if(bStopSave)
             return ;
 
-        try {
 
-            /*
-            String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        Thread tf = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
 
-            // check folder
-            String saveFolder = fullPath + File.separator + "/BLE_Test";
-            File Folder = new File(saveFolder);
-            if (!Folder.exists())
-                Folder.mkdirs();
-*/
-            // create file
-            //String savePath = fullPath + File.separator + "/BLE_Test/" + fileName + ".txt";
-            File file = new File(fileName);
+                    File file = new File(fileName);
 
-            if (!file.exists()) {
-                file.createNewFile();
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+
+                    FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    bw.write(data);
+                    bw.flush();
+                    bw.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(data);
-            bw.flush();
-            bw.close();
+        });
+        tf.start();
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
