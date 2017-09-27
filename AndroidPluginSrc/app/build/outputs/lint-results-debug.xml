@@ -83,7 +83,7 @@ If your activity is simply a parent class intended to be subclassed by other &qu
         errorLine2="             ~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
-            line="48"
+            line="49"
             column="14"/>
     </issue>
 
@@ -103,7 +103,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="350"
+            line="401"
             column="36"/>
     </issue>
 
@@ -123,7 +123,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
-            line="96"
+            line="102"
             column="36"/>
     </issue>
 

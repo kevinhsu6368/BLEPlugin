@@ -217,9 +217,7 @@ public class HandShake
                         resetReSendPacket_count();
                         if(CheckGetServiceTimeOut())
                         {
-
-                            Log.d(Tag, "CheckGetServiceTimeOut ( ) , .... timoe out  , now  to disconnect ");
-                            LogFile.GetInstance().AddLogAndSave(true, "CheckGetServiceTimeOut ( ) , .... timoe out  , now  to disconnect ");
+                            HandShake.Instance().Log2File("CheckGetServiceTimeOut ( ) , .... timoe out  , now  to disconnect ");
                             isGetServiceing = false;
                             DisConnect();
 
@@ -229,15 +227,14 @@ public class HandShake
 
 
                     // 檢查是否 packet  time out -> 重發
-                    if ( isSendPacketing )  // 時間未到回 false
+                    if ( isSendPacketing)  // 時間未到回 false
                     {
                         if(CheckSendPacketTimeOut())
                         {
                             //  重送次數超過限制次數 , 將斷線
                             if(CheckReSendPacketOverLimit())
                             {
-                                Log.d(Tag, "CheckReSendPacketOverLimit ( Command Packet ) ..  , now  to disconnect ");
-                                LogFile.GetInstance().AddLogAndSave(true,"CheckReSendPacketOverLimit ( Command Packet ) ..  , now  to disconnect ");
+                                HandShake.Instance().Log2File("CheckReSendPacketOverLimit ( Command Packet ) ..  , now  to disconnect ");
                                 DisConnect();
                                 continue;
                             }
@@ -245,8 +242,7 @@ public class HandShake
                             // 重送 第 n 次封包
                             AddReSendCount();
                             SendPacket();
-                            Log.d(Tag, "CheckSendPacketTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
-                            LogFile.GetInstance().AddLogAndSave(true,"CheckSendPacketTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
+                            HandShake.Instance().Log2File("CheckSendPacketTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
                         }
                         continue;
                     }
@@ -257,15 +253,15 @@ public class HandShake
                     }
 
                     // 檢查 Pooling 是否逾時 , 沒有逾時繼續 , 逾時則會重發 Pooling Packet
-                    if(isSendPooling )
+                    if( isSendPooling )
                     {
                         if (CheckPoolingTimeOut())
                         {
                             //  重送次數超過限制次數 , 將斷線
                             if(CheckReSendPacketOverLimit())
                             {
-                                Log.d(Tag, "CheckReSendPacketOverLimit ( Pooling Packet ) ..  , now  to disconnect ");
-                                LogFile.GetInstance().AddLogAndSave(true, "CheckReSendPacketOverLimit ( Polling Packet ) ..  , now  to disconnect ");
+                                isSendPooling = false;
+                                HandShake.Instance().Log2File("CheckReSendPacketOverLimit ( Pooling Packet ) ..  , now  to disconnect ");
                                 DisConnect();
                                 continue;
                             }
@@ -273,8 +269,7 @@ public class HandShake
                             // 重送
                             AddReSendCount();
                             SendPoolingPacket();
-                            Log.d(Tag, "CheckPoolingTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
-                            LogFile.GetInstance().AddLogAndSave(true,"CheckPoolingTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
+                            HandShake.Instance().Log2File("CheckPoolingTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
                         }
                         continue;
                     }
@@ -284,7 +279,7 @@ public class HandShake
                     //if (SendPacket()) //  沒有發送一般封包 , 則往下發 pooling
                      //   continue;
 
-                    if(!isSendPacketing && CheckSendCmdInterval()) //  大於傳送cmd的 interval 時間,才能發送
+                    if(!isSendPacketing &&  CheckGameBoxON() && CheckSendCmdInterval()) //  大於傳送cmd的 interval 時間,才能發送
                     {
                         if (SendPacket()) //  沒有發送一般封包 , 則往下發 pooling
                         {
@@ -293,7 +288,7 @@ public class HandShake
                         }
                     }
                     // 是否發送 polling ?
-                    if(!isSendPooling && CheckPoolingTimeOut())
+                    if(CheckPoolingTimeOut())
                     {
                         resetReSendPacket_count();
                         //Log.d(Tag, "CheckPoolingTimeOut ( ) .. part - 2 , .... timoe out  , next  to  send packet ");
@@ -307,6 +302,11 @@ public class HandShake
         }
     });
 
+    private boolean CheckGameBoxON()
+    {
+        return (poolingResponseStatus == 0x01);
+    }
+
     public synchronized void Start() {
         if(isRunning)
             return;
@@ -317,6 +317,12 @@ public class HandShake
 
     public synchronized void Close() {
         isRunning = false;
+    }
+
+    public void Log2File(String msg)
+    {
+        Log.d(Tag, msg);
+        LogFile.GetInstance().AddLogAndSave(true,msg);
     }
 
     public synchronized void PostPacket(byte[] data) {
@@ -333,7 +339,8 @@ public class HandShake
 
     public synchronized void OnWritePacket(boolean isSuccess) {
 
-        Log.d(Tag,"OnWritePacket( ) ... done");
+        //Log.d(Tag,"OnWritePacket( ) ... done");
+        Log2File("OnWritePacket( ) ... done");
 
         if (!isResponseMode)  //  No Response Mode , 發送成功是在 OnRecv 判斷同一個 Packet Index 才表示 發送成功
         {
@@ -388,8 +395,9 @@ public class HandShake
     // 收到封包
     public synchronized void OnRecvPacket(boolean isSuccess, byte[] data) {
 
-        Log.d(Tag, "OnRecvPacket ( ) .. ");
-        Log.d(Tag, "Recv Data = " + StringTools.bytesToHex(data));
+        //Log.d(Tag, "OnRecvPacket ( ) .. ");
+        //Log.d(Tag, "Recv Data = " + StringTools.bytesToHex(data));
+        HandShake.Instance().Log2File("Recv Data = " +  StringTools.bytesToHex(data));
 
 
         if (!isSuccess) {
@@ -439,7 +447,7 @@ public class HandShake
                 Log.d(Tag,"isSendPooling  -  response , .... Success");
 
                 // 2017/09/20 BLE 主動發送的資料,己合併在 回應Polling 第三bytes以後, 所以APP不需要SendResponsePacket ,但必須抽出Poolling第三bytes為ox50的資料
-                if( data[2] == 0x50)
+                if( data[2] != 0x00 && data[2] != 0xFF) //== 0x50)  // 0x50 是 GBX 有接時的第一鍵值
                 {
                     // 切換到 發送回應封包給BLE ,只回應一次
                     SendResponsePacket(data);
@@ -451,6 +459,7 @@ public class HandShake
                     // 轉傳給 Unity
                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", sData);
                 }
+
             }
             else
             {
@@ -462,6 +471,17 @@ public class HandShake
 
             if(rspIndex == sendToBLE_PacketIndex) // 回應封包的 index 一樣,表示封包已經發送成功
             {
+                //  如果最後一個 byte 值 = 0x0F 表示 GBX - OFF , 則暫時不刪資料, 並切回 pooling 狀態
+                // 通知 Unity 顯示, 請重新插上 GBX 的訊息
+                if(data[19] == 0x0F)
+                {
+                    Log.d(Tag,"isSendPacketing  : GBX - OFF , 通知 Unity 顯示  GBX 己斷線,請重插上GBX ");
+                    LogFile.GetInstance().AddLogAndSave(true,"isSendPacketing  : GBX - OFF , 通知 Unity 顯示  GBX 己斷線,請重插上GBX ");
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnAPP_WritePacket_to_Ble_Fail", "GBX-OFF");
+                    isSendPacketing = false;
+                    return ;
+                }
+
                 isSendPacketing = false;
                 Log.d(Tag,"isSendPacketing  -  response , .... Success");
                 UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnAPP_WritePacket_to_Ble_Success", "isSendPacketing");
@@ -554,8 +574,8 @@ public class HandShake
         BleFramework.mBluetoothLeService.WriteData(data);
 
         String hex = StringTools.bytesToHex(data);
-        Log.d(Tag, "Send Command Packet  , WriteData = " + hex);
-        LogFile.GetInstance().AddLogAndSave(true,"Send Command Packet , WriteData =  " + hex);
+        Log.d(Tag, "Command , WriteData = " + hex);
+        LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
 
         return true;
     }
@@ -580,8 +600,8 @@ public class HandShake
         isResponsePacketing = true;
         preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
-        Log.d(Tag, "SendResponsePacket ( ) , .... WriteData ");
-        Log.d(Tag,"WriteData =  " + StringTools.bytesToHex(data));
+        Log.d(Tag, "SendResponsePacket ( ) .... ");
+        Log.d(Tag,"Write Data =  " + StringTools.byteToHexString(data," "));
         return true;
     }
 
@@ -597,8 +617,8 @@ public class HandShake
         preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
         String hex = StringTools.byteToHexString(data);
-        Log.d(Tag, "Send Pooling Response Packet  , WriteData =  " + hex);
-        LogFile.GetInstance().AddLogAndSave(true,hex);
+        Log.d(Tag, "Pooling Resp, WriteData =  " + hex);
+        LogFile.GetInstance().AddLogAndSave(true,"Pooling Resp, WriteData =  " + hex);
         return true;
     }
 
@@ -621,8 +641,8 @@ public class HandShake
         BleFramework.mBluetoothLeService.WriteData(data);
 
         String hex = StringTools.bytesToHex(data);
-        Log.d(Tag, "Send Pooling Packet  , WriteData = " + hex);
-        LogFile.GetInstance().AddLogAndSave(true,"Send Pooling Packet , WriteData =  " + hex);
+        Log.d(Tag, "Pooling  , WriteData =  " + hex);
+        LogFile.GetInstance().AddLogAndSave(true,"Pooling  , WriteData =  " + hex);
     }
 
 

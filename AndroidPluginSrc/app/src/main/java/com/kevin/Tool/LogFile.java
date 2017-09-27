@@ -1,6 +1,7 @@
 package com.kevin.Tool;
 
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
@@ -77,15 +78,20 @@ public class LogFile
 
 
 
-    public void AddLog(String msg)
+    public synchronized  void AddLog(String msg)
     {
         lsData.add(msg);
     }
 
     // 暫時關閉寫檔動作, 因為會有嚴重的 lag , 如果要寫未來需再開一條執緒去寫檔試看看
     boolean bStopSave = true;
+    public void SetStopSave(boolean bStop)
+    {
+        bStopSave = bStop;
+    }
 
-    public void AddLog(Boolean bLogTime,String msg)
+
+    public synchronized  void AddLog(Boolean bLogTime,String msg)
     {
         if(bStopSave)
             return ;
@@ -104,7 +110,7 @@ public class LogFile
 
     }
 
-    public void AddLogAndSave(Boolean bLogTime,String msg)
+    public synchronized  void AddLogAndSave(Boolean bLogTime,String msg)
     {
         if(bStopSave)
             return ;
@@ -122,7 +128,7 @@ public class LogFile
         Save(false);
     }
 
-    public void Save(boolean bCheckDelay)
+    public synchronized  void Save(boolean bCheckDelay)
     {
         if(bStopSave)
             return ;
@@ -142,6 +148,25 @@ public class LogFile
 
     }
 
+    public synchronized  void Start()
+    {
+        if(bRunning)
+            return;
+
+        bRunning = true;
+        tf.start();
+    }
+
+    public synchronized  void Close()
+    {
+        bRunning = false;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 檢查是否超過延遲寫入時間
     private boolean checkDelayWriteTimeOut()
     {
@@ -150,16 +175,97 @@ public class LogFile
         return (delta > delayWriteTime);
     }
 
+    boolean bRunning = false;
+    boolean bToWrite = false;
+    private synchronized void SetWriteState(boolean bWrite)
+    {
+        bToWrite = bWrite;
+    }
+    public synchronized  boolean CanWrite()
+    {
+        if ( bStopSave )
+            return false;
+
+        if(lsData.size() > 0)
+        {
+            if (bToWrite)
+                return true;
+            if (checkDelayWriteTimeOut())
+                return true;
+        }
+        return false;
+    }
+
+    Thread tf = new Thread(new Runnable() {
+        @Override
+        public void run()
+        {
+            while (bRunning)
+            {
+                try
+                {
+                    Thread.sleep(100);
+
+                    if(CanWrite())
+                    {
+                        //SetWriteState(false);
+                        SetWriteState(false);
+                        // write ...
+                        File file = new File(fileName);
+
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+
+                        FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        String sDate = GetData();
+                        bw.write(sDate);
+                        bw.flush();
+                        bw.close();
+                        fw.close();
+
+                        ClearData();
+
+                        Log.d("Log","Write Data = " + data);
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+
+
+
+    private synchronized void ClearData()
+    {
+        lsData.clear();
+    }
+    private synchronized  String GetData()
+    {
+        String str  = "";
+        for (String s : lsData)
+        {
+            str  += s + "\r\n";
+        }
+        return str;
+    }
 
     /** 將資料寫入記憶卡內 */
-    private void writeInfo(String fName, String sData)
+    private synchronized void writeInfo(String fName, String sData)
     {
         this.fileName = fName;
         this.data = sData;
         if(bStopSave)
             return ;
 
+        SetWriteState(true); // 開啟寫入
 
+/*
         Thread tf = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -184,7 +290,7 @@ public class LogFile
             }
         });
         tf.start();
-
+*/
 
     }
 

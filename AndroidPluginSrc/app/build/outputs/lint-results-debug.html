@@ -18,7 +18,7 @@ document.getElementById(id+'Link').style.display = 'none';
 <body>
 <h1>Lint Report</h1>
 <div class="titleSeparator"></div>
-Check performed at Sat Sep 23 20:47:31 CST 2017.<br/>
+Check performed at Tue Sep 26 21:33:09 CST 2017.<br/>
 3 errors and 7 warnings found:<br/><br/>
 <table class="overview">
 <tr><td></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
@@ -157,13 +157,13 @@ To fix this issue, set the <code>targetSdkVersion</code> to the highest availabl
 <div class="id"><a href="#" title="Return to top">Registered: Class is not registered in the manifest</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:48</span>: <span class="message">The <code>&lt;service> generalplus.com.blespeechplugin.BluetoothLeService</code> is not registered in the manifest</span><br /><pre class="errorlines">
-<span class="lineno">  45</span>  * Service for managing connection and data communication with a GATT server hosted on a
-<span class="lineno">  46</span>  * given Bluetooth LE device.
-<span class="lineno">  47</span>  */
-<span class="lineno">  48</span> public class <span class="errorspan">BluetoothLeService extends Service {</span>
-<span class="lineno">  49</span>     private final static String TAG = BluetoothLeService.class.getSimpleName();
-<span class="lineno">  50</span> 
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:49</span>: <span class="message">The <code>&lt;service> generalplus.com.blespeechplugin.BluetoothLeService</code> is not registered in the manifest</span><br /><pre class="errorlines">
+<span class="lineno">  46</span>  * Service for managing connection and data communication with a GATT server hosted on a
+<span class="lineno">  47</span>  * given Bluetooth LE device.
+<span class="lineno">  48</span>  */
+<span class="lineno">  49</span> public class <span class="errorspan">BluetoothLeService extends Service {</span>
+<span class="lineno">  50</span>     private final static String TAG = BluetoothLeService.class.getSimpleName();
+<span class="lineno">  51</span> 
 </pre>
 </div>
 <div class="metadata">Priority: 6 / 10<br/>
@@ -183,21 +183,21 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <div class="id"><a href="#" title="Return to top">SimpleDateFormat: Implied locale in date format</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:350</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno"> 347</span>         if(isInitLogFile==false)
-<span class="lineno"> 348</span>         {
-<span class="lineno"> 349</span>             isInitLogFile = true;
-<span class="lineno"> 350</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
-<span class="lineno"> 351</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno"> 352</span>             String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:401</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 398</span>         if(isInitLogFile==false)
+<span class="lineno"> 399</span>         {
+<span class="lineno"> 400</span>             isInitLogFile = true;
+<span class="lineno"> 401</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
+<span class="lineno"> 402</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 403</span>             String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
 </pre>
-<span class="location"><a href="../../src/main/java/com/kevin/Tool/LogFile.java">../../src/main/java/com/kevin/Tool/LogFile.java</a>:96</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno">  93</span>         String str = "";
-<span class="lineno">  94</span>         if(bLogTime)
-<span class="lineno">  95</span>         {
-<span class="lineno">  96</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("HH:mm:ss`SSS");</span>
-<span class="lineno">  97</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno">  98</span>             //String fileName = "BLE_Log_" + sTime;
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/LogFile.java">../../src/main/java/com/kevin/Tool/LogFile.java</a>:102</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno">  99</span>         String str = "";
+<span class="lineno"> 100</span>         if(bLogTime)
+<span class="lineno"> 101</span>         {
+<span class="lineno"> 102</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("HH:mm:ss`SSS");</span>
+<span class="lineno"> 103</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 104</span>             //String fileName = "BLE_Log_" + sTime;
 </pre>
 </div>
 <div class="metadata">Priority: 6 / 10<br/>

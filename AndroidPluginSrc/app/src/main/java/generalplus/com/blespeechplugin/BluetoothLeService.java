@@ -36,6 +36,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.kevin.Tool.HandShake;
+import com.kevin.Tool.LogFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,7 +173,7 @@ public class BluetoothLeService extends Service {
             broadcastUpdate(intentAction);
 
             try {  
-                Thread.sleep(100);  
+                Thread.sleep(1000);//100);   // kevin.hsu 20170925. 重連速度太快... 調慢一點
             } catch (InterruptedException e) {  
                 e.printStackTrace();  
             }
@@ -442,7 +443,9 @@ public class BluetoothLeService extends Service {
      * callback.
      */
     public synchronized void disconnect() {
-
+        //Log.d(HandShake.Instance().Tag,"BluetoothLeService.disconnect( )");
+        //LogFile.GetInstance().AddLogAndSave(true,"BluetoothLeService.disconnect( )");
+        HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... start");
         HandShake.Instance().SetConnected(false);
 
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
@@ -453,9 +456,11 @@ public class BluetoothLeService extends Service {
         StopReadData();
         mBluetoothGatt.disconnect();
         mNotifyCharacteristic = null;
+        HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... end");
     }
 
     public synchronized void ActiveDisconnect() {
+        HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... start");
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.e(TAG, "disconnect fail mBluetoothGatt not initialized");
             return;
@@ -465,6 +470,7 @@ public class BluetoothLeService extends Service {
         StopReadData();
         mBluetoothGatt.disconnect();
         mNotifyCharacteristic = null;
+        HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... end");
     }
 
     /**
@@ -867,17 +873,7 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
 				}
     };
     
-    public void StopScan()
-	{
-		scanLeDevice(false);		
-		disconnect();			
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
+
     
     public void ClearBTDeviceList()
     {
