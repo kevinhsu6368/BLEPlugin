@@ -35,8 +35,11 @@ public class HandShake
 
     public synchronized void SetConnected(boolean flag)
     {
+
         isConnected = flag;
         resetReSendPacket_count();
+
+        Log2File("SetConnected ( " + Boolean.toString(flag) + " )");
     }
 
     boolean isResponseMode = false;
@@ -109,7 +112,7 @@ public class HandShake
     }
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 500; //  0.3 秒
+    long sendPoolingIntervalTick = 300; //  0.3 秒
     public synchronized void SetSendPoolingIntervalTick(int ms)
     {
         sendPoolingIntervalTick = ms;
@@ -178,7 +181,7 @@ public class HandShake
         isResponsePacketing = false;
     }
 
-    int reSendPacket_count_To_Disconnect = 10 ; //  封包重送 n 次後, 將斷線
+    int reSendPacket_count_To_Disconnect = 50 ; //  封包重送 50 次 * 0.3sec = 15 sec 後, 將斷線
     int reSendPacket_count = 0; // 己經重發封包 n 次
     private int GetSendPacket_count()
     {
@@ -257,7 +260,7 @@ public class HandShake
                     {
                         if (CheckPoolingTimeOut())
                         {
-                            //  重送次數超過限制次數 , 將斷線
+                            //  重送次數超過限制次數 , 將斷線 --- > 改送超過 10 秒 就會 disconnect
                             if(CheckReSendPacketOverLimit())
                             {
                                 isSendPooling = false;
@@ -661,7 +664,7 @@ public class HandShake
 
     private void DisConnect()
     {
-        isConnected = false;
+        SetConnected(false);
         BleFramework.mBluetoothLeService.disconnect();;
         //BleFramework.mBluetoothLeService.connectDevice();
     }

@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
+import com.kevin.Tool.NetTools;
 import com.kevin.Tool.StringTools;
 import com.unity3d.player.UnityPlayer;
 
@@ -48,7 +49,7 @@ public class BleFramework{
     public static final String BLEUnityMessageName_OnBleDidCompletePeripheralScan = "OnBleDidCompletePeripheralScan";
     public static final String BLEUnityMessageName_OnBleDidDisconnect = "OnBleDidDisconnect";
     public static final String BLEUnityMessageName_OnBleDidReceiveData = "OnBleDidReceiveData";
-    private static final long SCAN_PERIOD = 5000;
+    private static final long SCAN_PERIOD = 15000;
 	private static final String TAG;
     //private List<BluetoothDevice> listBTDevice = new ArrayList<BluetoothDevice>();
     private byte[] _dataRx = new byte[3];
@@ -127,8 +128,10 @@ public class BleFramework{
                     HandShake.Instance().Log2File("BleFramework - runnableReconnect : (i32ReconnectCounter > MAX_RECONNECT_NUM(2次))");
                     return;
                 }
-
+                HandShake.Instance().Log2File("mBluetoothLeService.connectDevice(gCurBluetoothDevice)");
                 mBluetoothLeService.connectDevice(gCurBluetoothDevice);
+
+                HandShake.Instance().Log2File("connectHandler.postDelayed(this, RECONNECT_INTERVAL_TIME = 10 sec)");
                 connectHandler.postDelayed(this, RECONNECT_INTERVAL_TIME);
                 //Log.e("tag", "Reconnect");
                 HandShake.Instance().Log2File("BleFramework - runnableReconnect : connectHandler.postDelayed(10sec)");
@@ -172,12 +175,13 @@ public class BleFramework{
 
     public BleFramework(Activity activity)
     {
-
+        NetTools.Start_CheckNetworkState(activity);
 	    this.mServiceConnection = new ServiceConnection()
         {
             public void onServiceConnected(ComponentName componentName, IBinder service)
             {
                 HandShake.Instance().Log2File("onServiceConnected ( ) ... start ");
+
 
                 mBluetoothLeService = ((BluetoothLeService.LocalBinder)service).getService();
                 if (!mBluetoothLeService.initialize())
@@ -208,11 +212,15 @@ public class BleFramework{
             {
                 HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... start");
 	            if (null == device.getName()) {
+
+                    HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return");
 		            return;
 	            }
 
 	            for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); i++) {
-		            if (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress())) {
+		            if (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
+		            {
+                        HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
 			            return;
 		            }
 	            }
@@ -227,9 +235,10 @@ public class BleFramework{
                     //Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
                     HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
 
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    //mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     //searchingDevice = false;
-                    SetSearchingDevice(false);
+                    //SetSearchingDevice(false);
+                    scanLeDevice(false);
                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
                 }
                 HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... end");
@@ -299,16 +308,24 @@ public class BleFramework{
 	                //Log.d(TAG, "mGattUpdateReceiver AUTO_CONNECT");
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... AUTO_CONNECT");
 	                i32ReconnectCounter = 0;
-	                connectHandler.removeCallbacks(runnableReconnect);
+
+                    HandShake.Instance().Log2File("connectHandler.removeCallbacks(runnableReconnect)");
+                    connectHandler.removeCallbacks(runnableReconnect);
+
+                    HandShake.Instance().Log2File("connectHandler.postDelayed(runnableReconnect  , 10000 = 10 sec)");
 	                connectHandler.postDelayed(runnableReconnect  , 10000);//0);  // kevin hsu , delay 500 ms
                 }
                 else if (BluetoothLeService.NEXT_RECONNECT.equals(action)) {
                     //LogFile.GetInstance().AddLogAndSave(true,"NEXT_RECONNECT");
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... NEXT_RECONNECT");
+                    HandShake.Instance().Log2File("connectHandler.removeCallbacks(runnableReconnect)");
                     connectHandler.removeCallbacks(runnableReconnect);
-                    if (i32ReconnectCounter > MAX_RECONNECT_NUM) {
+                    if (i32ReconnectCounter > MAX_RECONNECT_NUM)
+                    {
+                        HandShake.Instance().Log2File("if (i32ReconnectCounter > MAX_RECONNECT_NUM = 2) return ");
                         return;
                     }
+                    HandShake.Instance().Log2File("connectHandler.postDelayed(runnableReconnect, 10000 = 10 sec)");
                     connectHandler.postDelayed(runnableReconnect, 10000);//100);  // kevin hsu , delay 1000 ms
                 }
                 HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... end");
@@ -317,18 +334,71 @@ public class BleFramework{
         this._unityActivity = activity;
     }
 
+    private long iScanForPeripherals_Count = 0;
+
+    public synchronized void AddScanForPeripheralsCount() {
+        iScanForPeripherals_Count++;
+        HandShake.Instance().Log2File("iScanForPeripherals_Count = " + iScanForPeripherals_Count);
+    }
+
+    public synchronized void ResetScanForPeripheralsCount()
+    {
+        iScanForPeripherals_Count = 0;
+        HandShake.Instance().Log2File("iScanForPeripherals_Count = " + iScanForPeripherals_Count);
+    }
+
+    public long GetScanForPeripheralsCount() {
+        return iScanForPeripherals_Count;
+    }
+
+    public long GetSCAN_PERIOD()
+    {
+        int period = 15*1000;
+        if(iScanForPeripherals_Count == 0)
+        {
+            return period;
+        }
+        else if(iScanForPeripherals_Count == 1)
+        {
+            return period;
+        }
+
+        return period*2;
+
+    }
+
+    private long pre_ScanForPeripherals = 0;
+    public long Get_pre_ScanForPeripherals()
+    {
+        return pre_ScanForPeripherals;
+    }
+/*
+    private synchronized boolean CanScanForPeripherals()
+    {
+        long delta = (System.currentTimeMillis() - pre_ScanForPeripherals);
+        return (delta > GetSCAN_PERIOD());
+    }
+
+    public long GetSCAN_PERIOD()
+    {
+        return mBluetoothLeService.GetSCAN_PERIOD();
+    }
+*/
 	public synchronized void scanLeDevice(final boolean enable)
 	{
 
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... start");
 		if (enable)
 		{
+
 			// Stops scanning after a pre-defined scan period.
 			mHandler.postDelayed(new Runnable() {
 				@Override
-				public void run() {
-                    if( GetSearchingDevice()) //;searchingDevice)
+				public void run()
+                {
+                    if(GetSearchingDevice()) //;searchingDevice)
                     {
+
                         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - start ");
 
                         //  没有掃到指定機,就再重掃
@@ -342,31 +412,54 @@ public class BleFramework{
                                 break;
                             }
                         }
+                        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - mBluetoothAdapter.stopLeScan(mLeScanCallback)  ");
+                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+
                         if (isFindBLE) {
-                            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                            //mBluetoothAdapter.stopLeScan(mLeScanCallback);
                             //searchingDevice = false;
                             SetSearchingDevice(false);
-                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - is scan find C1 ");
+                            ResetScanForPeripheralsCount();
+                            //scanLeDevice(false);
+
+                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - is scan find C1 , and notify unity ");
                             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
                         }
                         else
                         {
-                            // re scan
-                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - and no find c1 , then , re scan");
-                            scanLeDevice(true);
+
+                            //scanLeDevice(true);
+
+                            AddScanForPeripheralsCount();
+                            long sleepTick = GetSCAN_PERIOD();
+                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - and no find c1 ,  sleep  : " + sleepTick + " ms" );
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    if(!GetConnectStat()) {
+                                        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - and no find c1 , to re scan : call scanLeDevice(true) ");
+                                        SetSearchingDevice(true);
+                                        scanLeDevice(true);
+                                    }
+                                }
+                            },sleepTick);
+
                         }
                     }
 				}
-			},5*1000/* 最多掃5分鐘,掃到第一台緒C1就取消執行緒*/);//SCAN_PERIOD);
+			},SCAN_PERIOD /* 最多掃5分鐘,掃到第一台緒C1就取消執行緒*/);//SCAN_PERIOD);
 			//searchingDevice = true;
             SetSearchingDevice(true);
+            AddScanForPeripheralsCount();
 			mBluetoothAdapter.startLeScan(mLeScanCallback);
 		}
 		else
 		{
-			mBluetoothAdapter.stopLeScan(mLeScanCallback);
-			//searchingDevice = false;
+            ResetScanForPeripheralsCount();
             SetSearchingDevice(false);
+			mBluetoothAdapter.stopLeScan(mLeScanCallback);
+			//searchingDevice = false
 		}
 
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... end");
@@ -392,6 +485,7 @@ public class BleFramework{
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... start");
         HandShake.Instance().Start();
+
 
 
         // kevin.hsu.add log to file
@@ -430,12 +524,17 @@ public class BleFramework{
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... end");
     }
 
-    private long pre_ScanForPeripherals = 0;
-    private long ScanForPeripheralsInterval = 3000 ; //
+    /*
+    public long Get_pre_ScanForPeripherals()
+    {
+        return mBluetoothLeService.Get_pre_ScanForPeripherals();
+    }
+*/
+    //private long pre_ScanForPeripherals = 0;
     private synchronized boolean CanScanForPeripherals()
     {
-        long delta = (System.currentTimeMillis() - pre_ScanForPeripherals);
-        return (delta > ScanForPeripheralsInterval);
+        long delta = (System.currentTimeMillis() - Get_pre_ScanForPeripherals());
+        return (delta > GetSCAN_PERIOD());
     }
 
     public  synchronized  void _ScanForPeripherals()
@@ -447,7 +546,7 @@ public class BleFramework{
             return;
         }
 
-        pre_ScanForPeripherals = System.currentTimeMillis();
+        //pre_ScanForPeripherals = System.currentTimeMillis();
         LogFile.GetInstance().AddLogAndSave(true,"_ScanForPeripherals ( )");
         Log.d(HandShake.Instance().Tag, "_ScanForPeripherals ( )");
         connectHandler.removeCallbacks(runnableReconnect);

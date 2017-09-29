@@ -52,15 +52,15 @@ public class BluetoothLeService extends Service {
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String m_strOldAddress = null;
-    private	BluetoothGatt mBluetoothGatt;
+    private BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
     public boolean m_bAck = false;
     private String m_strVersion = "";
-    
+
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
-    
+
     boolean Write_Characteristic_Status = false;
 
     public final static String ACTION_GATT_CONNECTED =
@@ -73,35 +73,35 @@ public class BluetoothLeService extends Service {
             "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
-    
+
     public final static String READ_DATA =
             "com.example.bluetooth.le.READ_DATA";
-    
+
     public final static String WRITE_DATA =
             "com.example.bluetooth.le.WRITE_DATA";
-    
+
     public final static String AUTO_CONNECT =
             "AUTO_CONNECT";
     public final static String GET_VERSION =
             "GET_VERSION";
     public final static String GET_ACK =
             "GET_ACK";
-    
+
     public final static String NEXT_RECONNECT =
             "NEXT_RECONNECT";
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
-    
+
     public final static UUID UUID_FFF0_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF0_CHARACTERISTIC);
     public final static UUID UUID_FFF1_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF1_CHARACTERISTIC);
     public final static UUID UUID_FFF2_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF2_CHARACTERISTIC);
-    
+
     public Handler mHandler = new Handler();
     // Stops scanning after 20 seconds.
     private static final long SCAN_PERIOD = 20000;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
-    
+
     public ArrayList<BLEObj> listBTDevice = new ArrayList<BLEObj>();
     private String m_strAckType = "";
     private boolean m_bActiveDiscoonnect = false;
@@ -125,12 +125,11 @@ public class BluetoothLeService extends Service {
                         return;
                     } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                         if (false == m_bActiveDiscoonnect) {
-                        	doReConnect();
-						}
-                        else {
-                        	close();
-                        	m_bActiveDiscoonnect = false;
-                        	intentAction = ACTION_GATT_DISCONNECTED;
+                            doReConnect();
+                        } else {
+                            close();
+                            m_bActiveDiscoonnect = false;
+                            intentAction = ACTION_GATT_DISCONNECTED;
                             mConnectionState = STATE_DISCONNECTED;
                             Log.e(TAG, "Disconnected from GATT server.");
                             broadcastUpdate(intentAction);
@@ -172,37 +171,35 @@ public class BluetoothLeService extends Service {
             Log.e(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
 
-            try {  
+            try {
                 Thread.sleep(1000);//100);   // kevin.hsu 20170925. 重連速度太快... 調慢一點
-            } catch (InterruptedException e) {  
-                e.printStackTrace();  
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            
+
             intentAction = NEXT_RECONNECT;
             broadcastUpdate(intentAction);
             Log.e(TAG, "NEXT_RECONNECT");
         }
-        
+
         private void doReConnect() {
-        	String intentAction = ACTION_GATT_DISCONNECTED;
+            String intentAction = ACTION_GATT_DISCONNECTED;
             mConnectionState = STATE_DISCONNECTED;
             Log.e(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
-            
-            if(null != m_strOldAddress) {
-            	for (int i = 0; i < listBTDevice.size(); i++) {
-					if (listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(m_strOldAddress)) {
-						Log.e(TAG, "Auto connecting.");    			
-						intentAction = AUTO_CONNECT;
-	                    broadcastUpdate(intentAction);
-						//connectDevice(listBTDevice.get(i).m_BluetoothDevice);
-						return;
-					}
-				}
-            }
-            else
-            {
-            	Log.e(TAG, "Not Auto connecting.");
+
+            if (null != m_strOldAddress) {
+                for (int i = 0; i < listBTDevice.size(); i++) {
+                    if (listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(m_strOldAddress)) {
+                        Log.e(TAG, "Auto connecting.");
+                        intentAction = AUTO_CONNECT;
+                        broadcastUpdate(intentAction);
+                        //connectDevice(listBTDevice.get(i).m_BluetoothDevice);
+                        return;
+                    }
+                }
+            } else {
+                Log.e(TAG, "Not Auto connecting.");
             }
         }
 
@@ -221,56 +218,51 @@ public class BluetoothLeService extends Service {
                     Log.e(TAG, "char not found!");
                     HandShake.Instance().OnGetServiceFinished(false);
                     return;
-                }
-                else {
-                	int iType = characteristic.getProperties();
-                	
-                	String intentAction = GET_ACK;
-                	if (BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE == iType) {
-                		m_bAck = false;
-                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... no Response Mode");
+                } else {
+                    int iType = characteristic.getProperties();
+
+                    String intentAction = GET_ACK;
+                    if (BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE == iType) {
+                        m_bAck = false;
+                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... no Response Mode");
                         HandShake.Instance().SetResponseMode(false);
-                		//m_strAckType = "No Ack";
-					}
-                	else if (BluetoothGattCharacteristic.PROPERTY_WRITE == iType) {
-                		m_bAck = true;
-                		//m_strAckType = "Ack";
-                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... Response Mode");
+                        //m_strAckType = "No Ack";
+                    } else if (BluetoothGattCharacteristic.PROPERTY_WRITE == iType) {
+                        m_bAck = true;
+                        //m_strAckType = "Ack";
+                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode");
                         HandShake.Instance().SetResponseMode(true);
-					}
-                	else {
-                		m_bAck = true;
-                		m_strAckType = "error ack:" + iType;
-                        Log.d(HandShake.Instance().Tag,"GetService ... is  ... Response Mode ( error ack:)");
+                    } else {
+                        m_bAck = true;
+                        m_strAckType = "error ack:" + iType;
+                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode ( error ack:)");
                         HandShake.Instance().SetResponseMode(true);
-                	}
-                	//broadcastUpdate(intentAction);
+                    }
+                    //broadcastUpdate(intentAction);
                 }
 
-                try {  
-                    Thread.sleep(500);  
-                } catch (InterruptedException e) {  
-                    e.printStackTrace();  
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                if(ReadData(gatt)) {
-                	for (int i = 0; i < listBTDevice.size(); i++) {
-						if (gatt.getDevice() == listBTDevice.get(i).m_BluetoothDevice) {
-							BLEObj obj = listBTDevice.get(i);
-							//obj.m_WriteCharacteristic = characteristic;
-							//obj.m_BluetoothGatt = gatt;
-							mBluetoothGatt = gatt;
-							m_strOldAddress = obj.m_BluetoothDevice.getAddress();
-							broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
-							mConnectionState = STATE_CONNECTED;
-							HandShake.Instance().SetConnected(true);
+                if (ReadData(gatt)) {
+                    for (int i = 0; i < listBTDevice.size(); i++) {
+                        if (gatt.getDevice() == listBTDevice.get(i).m_BluetoothDevice) {
+                            BLEObj obj = listBTDevice.get(i);
+                            //obj.m_WriteCharacteristic = characteristic;
+                            //obj.m_BluetoothGatt = gatt;
+                            mBluetoothGatt = gatt;
+                            m_strOldAddress = obj.m_BluetoothDevice.getAddress();
+                            broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+                            mConnectionState = STATE_CONNECTED;
+                            HandShake.Instance().SetConnected(true);
                             HandShake.Instance().OnGetServiceFinished(true);
-							return;
-						}
-					}
-                }
-                else
-                {
-                	Log.e(TAG, "ReadData failed.");
+                            return;
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "ReadData failed.");
                 }
 
             } else {
@@ -282,41 +274,36 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS)
-            {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                HandShake.Instance().OnRecvPacket(true,characteristic.getValue());
-            }
-            else
-            {
-                HandShake.Instance().OnRecvPacket(false,characteristic.getValue());
+                HandShake.Instance().OnRecvPacket(true, characteristic.getValue());
+            } else {
+                HandShake.Instance().OnRecvPacket(false, characteristic.getValue());
             }
         }
-        
+
         @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, 
-        								  BluetoothGattCharacteristic characteristic, 
-        								  int status) {
-        	if (status == BluetoothGatt.GATT_SUCCESS) {
-        		Log.e(TAG, "InWrite");
-        		
+        public void onCharacteristicWrite(BluetoothGatt gatt,
+                                          BluetoothGattCharacteristic characteristic,
+                                          int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.e(TAG, "InWrite");
+
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
                 HandShake.Instance().OnWritePacket(true);
 
                 //OnWritePacket
-            }
-        	else
-            {
+            } else {
                 HandShake.Instance().OnWritePacket(false);
-        		Log.e(TAG, "InWrite fail");
-        	}
-            
+                Log.e(TAG, "InWrite fail");
+            }
+
         }
-        
+
         @Override
-        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {         
-           
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+
 //            if (status == BluetoothGatt.GATT_SUCCESS) {
 //            	Log.e("minwen",  "Callback: Wrote GATT Descriptor successfully.");           
 //            }           
@@ -328,8 +315,8 @@ public class BluetoothLeService extends Service {
 //                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 //            	mBluetoothGatt.writeDescriptor(descriptor);
 //            }
-           }
-        
+        }
+
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
@@ -340,49 +327,47 @@ public class BluetoothLeService extends Service {
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
-        sendBroadcast(intent); 
-        
-        try {  
-            Thread.sleep(10);  
-        } catch (InterruptedException e) {  
-            e.printStackTrace();  
+        sendBroadcast(intent);
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
-    
+
     private void broadcastUpdate(final String action,
-            final BluetoothGattCharacteristic characteristic) {
-		final Intent intent = new Intent(action);
-		
-		String strOutput = "";
-		
-		// === For all other profiles, writes the data formatted in HEX. ===
-		final byte[] data = characteristic.getValue();
-		if (data != null && data.length > 0) {
-			final StringBuilder stringBuilder = new StringBuilder(data.length);
-			for(byte byteChar : data)
-				stringBuilder.append(String.format("%02X ", byteChar));
-			//intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-			//intent.putExtra(EXTRA_DATA, stringBuilder.toString());
-			
-			strOutput = stringBuilder.toString();
-		}        
-		
-		// === For Read Characteristic ===
-		if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) 
-		{
-			intent.putExtra(READ_DATA, strOutput);
-			//LogDataManager.getInstance().AddLogText("Read Data : " + strOutput);
-		}
-		
-		// === For Write Characteristic ===
-		if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) 
-		{  
-			intent.putExtra(WRITE_DATA, strOutput);
-			//LogDataManager.getInstance().AddLogText("Write Data : " + strOutput);
-		}  
-		
-		sendBroadcast(intent);
-	}
+                                 final BluetoothGattCharacteristic characteristic) {
+        final Intent intent = new Intent(action);
+
+        String strOutput = "";
+
+        // === For all other profiles, writes the data formatted in HEX. ===
+        final byte[] data = characteristic.getValue();
+        if (data != null && data.length > 0) {
+            final StringBuilder stringBuilder = new StringBuilder(data.length);
+            for (byte byteChar : data)
+                stringBuilder.append(String.format("%02X ", byteChar));
+            //intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+            //intent.putExtra(EXTRA_DATA, stringBuilder.toString());
+
+            strOutput = stringBuilder.toString();
+        }
+
+        // === For Read Characteristic ===
+        if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) {
+            intent.putExtra(READ_DATA, strOutput);
+            //LogDataManager.getInstance().AddLogText("Read Data : " + strOutput);
+        }
+
+        // === For Write Characteristic ===
+        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+            intent.putExtra(WRITE_DATA, strOutput);
+            //LogDataManager.getInstance().AddLogText("Write Data : " + strOutput);
+        }
+
+        sendBroadcast(intent);
+    }
 
 
     public class LocalBinder extends Binder {
@@ -431,9 +416,9 @@ public class BluetoothLeService extends Service {
 
         return true;
     }
-    
+
     public void cleanAddress() {
-    	m_strOldAddress = null;
+        m_strOldAddress = null;
     }
 
     /**
@@ -482,10 +467,10 @@ public class BluetoothLeService extends Service {
             return;
         }
         disconnect();
-        try {  
-            Thread.sleep(100);  
-        } catch (InterruptedException e) {  
-            e.printStackTrace();  
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         mBluetoothGatt.close();
         mBluetoothGatt = null;
@@ -505,15 +490,15 @@ public class BluetoothLeService extends Service {
         }
         bluetoothGatt.readCharacteristic(characteristic);
     }
-    
-    
+
+
     public BluetoothGattCharacteristic writeCharacteristic(BluetoothGattCharacteristic characteristic, byte byData[]) {
-        
-    	if (mBluetoothGatt == null) {
+
+        if (mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothGatt not initialized");
             return null;
         }
-        
+
         BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             Log.e(TAG, "service not found!");
@@ -524,10 +509,9 @@ public class BluetoothLeService extends Service {
             Log.e(TAG, "char not found!");
             return null;
         }
-        
-        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid()))
-        { 
-        	
+
+        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+
 //        	byte[] value1 = {(byte)0xF0, (byte)0x80, (byte)0xA8, (byte)0x00, (byte)0x00,
 //        			(byte)0x38, (byte)0x18    			};
 //        	byte[] value2 = {(byte)0x00, (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF,
@@ -538,34 +522,31 @@ public class BluetoothLeService extends Service {
 //        	
 //        	if(i32ByteCounter<=255)
 //        		i32ByteCounter++;
-        	
-        	
-        	
-        	
-        	characteristic1.setValue(byData);
+
+
+            characteristic1.setValue(byData);
 
             m_bAck = HandShake.Instance().GetIsResponseMode();
             if (m_bAck) {
-        		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); 
-			}
-        	else {
-        		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE); 
-        	}
-            
-            
-            Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1); 
-            
-            
+                characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+            } else {
+                characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+            }
+
+
+            Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1);
+
+
             //Log.e("minwen", "Write_Characteristic_Status " + Write_Characteristic_Status);
-                        
+
             try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}            
-            
-            
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
             // === 2. Get Return data after Write data ===        
             /*BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
             if (Response_characteristic1 == null) {
@@ -573,21 +554,21 @@ public class BluetoothLeService extends Service {
                 return null;
             }            
             
-            setCharacteristicNotification(Response_characteristic1, true);  */  
-            
+            setCharacteristicNotification(Response_characteristic1, true);  */
+
             return characteristic1;
         }
         return null;
-       
+
     }
-    
-public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacteristic characteristic, byte byData[]) {
-        
-    	if (mBluetoothGatt == null) {
+
+    public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacteristic characteristic, byte byData[]) {
+
+        if (mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothGatt not initialized");
             return null;
         }
-        
+
         BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             Log.e(TAG, "service not found!");
@@ -597,53 +578,51 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
         if (characteristic1 == null) {
             Log.e(TAG, "char not found!");
             return null;
-        }   
-        
-        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid()))
-        {       
-        	// === 1. Write data to Characteristic ===        	
-        	characteristic1.setValue(byData);
-              
+        }
+
+        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+            // === 1. Write data to Characteristic ===
+            characteristic1.setValue(byData);
+
             //characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
             m_bAck = HandShake.Instance().GetIsResponseMode();
 
             if (m_bAck) {
-        		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); 
-			}
-        	else {
-        		characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE); 
-        	}
-            Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1); 
-                        
+                characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+            } else {
+                characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+            }
+            Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1);
+
             try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}            
-            
-                        
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
             // === 2. Get Return data after Write data ===                   
             BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
             if (Response_characteristic1 == null) {
                 Log.e(TAG, "char not found!");
                 return null;
-            }            
-            
+            }
+
             //setCharacteristicNotification(Response_characteristic1, true); 
-            
+
             return characteristic1;
         }
         return null;
-       
+
     }
 
     /**
      * Enables or disables notification on a give characteristic.
      *
      * @param characteristic Characteristic to act on.
-     * @param enabled If true, enable notification.  False otherwise.
+     * @param enabled        If true, enable notification.  False otherwise.
      */
     public void setCharacteristicNotification(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
@@ -651,19 +630,18 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
             Log.w(TAG, "setCharacteristicNotification BluetoothAdapter not initialized");
             return;
         }
-        
+
         boolean bNotify = bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
         // Enable Notification for FFF1, added by Ryan        
-        if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) 
-        {	
-        	BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-        	UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
-        	descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
-        	descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-        	bluetoothGatt.writeDescriptor(descriptor);
-        }                
-        
+        if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) {
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+                    UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            bluetoothGatt.writeDescriptor(descriptor);
+        }
+
         // This is specific to Heart Rate Measurement.
         if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
@@ -672,7 +650,7 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
             bluetoothGatt.writeDescriptor(descriptor);
         }
     }
-    
+
 //    public BluetoothGattService getBLEGattService()
 //    {
 //    	return null;
@@ -690,23 +668,21 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
 
         return mBluetoothGatt.getServices();
     }
-    
-    public void setWriteStatus(boolean status)
-    {
-    	 Write_Characteristic_Status = status;
+
+    public void setWriteStatus(boolean status) {
+        Write_Characteristic_Status = status;
     }
-    
-    public boolean getWriteStatus()
-    {
-    	return Write_Characteristic_Status;
+
+    public boolean getWriteStatus() {
+        return Write_Characteristic_Status;
     }
+
     // ======================================== Adding ............ ============================================
-    public boolean WriteData(byte[] byVRCommand)
-	{	
-		if(this == null || mBluetoothGatt == null)
-			return false;
-		
-		BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+    public boolean WriteData(byte[] byVRCommand) {
+        if (this == null || mBluetoothGatt == null)
+            return false;
+
+        BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             return false;
         }
@@ -714,46 +690,45 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
         if (characteristic == null) {
             return false;
         }
-		
+
         writeCharacteristic(characteristic, byVRCommand);
         // Sleep for a while to call onCharacteristicWrite
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		return true;
-	} 
-    
-    public boolean WriteReadData(byte[] byVRCommand)
-   	{	
-   		if(this == null || mBluetoothGatt == null)
-   			return false;
-   		
-   		BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
-           if (Service == null) {
-               return false;
-           }
-           BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
-           if (characteristic == null) {
-               return false;
-           }
-   		
-           writeReadCharacteristic(characteristic, byVRCommand);
-           // Sleep for a while to call onCharacteristicWrite
-   		try {
-   			Thread.sleep(10);
-   		} catch (InterruptedException e) {
-   			// TODO Auto-generated catch block
-   			e.printStackTrace();
-   		}		
-   		return true;
-   	} 
-    
-    
-    public boolean ReadData(BluetoothGatt bluetoothGatt) {        
-       
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean WriteReadData(byte[] byVRCommand) {
+        if (this == null || mBluetoothGatt == null)
+            return false;
+
+        BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+        if (Service == null) {
+            return false;
+        }
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+        if (characteristic == null) {
+            return false;
+        }
+
+        writeReadCharacteristic(characteristic, byVRCommand);
+        // Sleep for a while to call onCharacteristicWrite
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
+    public boolean ReadData(BluetoothGatt bluetoothGatt) {
+
         BluetoothGattService Service = bluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             return false;
@@ -762,28 +737,27 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
         if (characteristic == null) {
             return false;
         }
-        
+
         // === Start Listen Notify and Read Data === 	        
         final int charaProp = characteristic.getProperties();
-        
+
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
             // If there is an active notification on a characteristic, clear
             // it first so it doesn't update the data field on the user interface.
             if (mNotifyCharacteristic != null) {
-                setCharacteristicNotification(bluetoothGatt, mNotifyCharacteristic, false); 
+                setCharacteristicNotification(bluetoothGatt, mNotifyCharacteristic, false);
                 mNotifyCharacteristic = null;
             }
-            readCharacteristic(bluetoothGatt,characteristic);
+            readCharacteristic(bluetoothGatt, characteristic);
         }
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
             mNotifyCharacteristic = characteristic;
             setCharacteristicNotification(bluetoothGatt, characteristic, true);
         }
-        return true;  
-	}
-    
-    public boolean StopReadData() 
-    {  
+        return true;
+    }
+
+    public boolean StopReadData() {
         BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             return false;
@@ -792,30 +766,72 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
         if (characteristic == null) {
             return false;
         }
-        
+
         // === Start Listen Notify and Read Data === 	        
         final int charaProp = characteristic.getProperties();
-        
+
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
             // If there is an active notification on a characteristic, clear
             // it first so it doesn't update the data field on the user interface.
             if (mNotifyCharacteristic != null) {
-                setCharacteristicNotification(mBluetoothGatt, mNotifyCharacteristic, false); 
+                setCharacteristicNotification(mBluetoothGatt, mNotifyCharacteristic, false);
                 mNotifyCharacteristic = null;
             }
-            readCharacteristic(mBluetoothGatt,characteristic);
+            readCharacteristic(mBluetoothGatt, characteristic);
         }
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
             mNotifyCharacteristic = characteristic;
             setCharacteristicNotification(mBluetoothGatt, characteristic, true);
         }
-        
-        setCharacteristicNotification(mBluetoothGatt, characteristic, false);        
-        return true;  
-    	
+
+        setCharacteristicNotification(mBluetoothGatt, characteristic, false);
+        return true;
+
+    }
+
+    private long iScanForPeripherals_Count = 0;
+
+    public synchronized void AddScanForPeripheralsCount() {
+        iScanForPeripherals_Count++;
+    }
+
+    public synchronized void ResetScanForPeripheralsCount() {
+        iScanForPeripherals_Count = 0;
+    }
+
+    public long GetScanForPeripheralsCount() {
+        return iScanForPeripherals_Count;
+    }
+
+    public long GetSCAN_PERIOD()
+    {
+        int period = 15*1000;
+        if(iScanForPeripherals_Count == 0)
+        {
+            return period;
+        }
+        else if(iScanForPeripherals_Count == 1)
+        {
+            return period;
+        }
+
+        return period*2;
+
+    }
+
+    private long pre_ScanForPeripherals = 0;
+    public long Get_pre_ScanForPeripherals()
+    {
+        return pre_ScanForPeripherals;
+    }
+
+    private synchronized boolean CanScanForPeripherals()
+    {
+        long delta = (System.currentTimeMillis() - pre_ScanForPeripherals);
+        return (delta > GetSCAN_PERIOD());
     }
     
-    public void scanLeDevice(final boolean enable) {
+    public synchronized void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
@@ -824,10 +840,12 @@ public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacte
                     Log.e(TAG, "scanLeDevice stopLeScan");
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);                    
                 }
-            }, SCAN_PERIOD);
+            }, GetSCAN_PERIOD());
 
             Log.e(TAG, "scanLeDevice startLeScan");
-            mBluetoothAdapter.startLeScan(mLeScanCallback); 
+            pre_ScanForPeripherals = System.currentTimeMillis();
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
+
 
         } else {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,6 +59,8 @@ public class LogFile
             Folder.mkdirs();
 
         this.fileName = saveFolder + File.separator + shortFileName;
+
+        DeleteOldFile(Folder);
     }
 
     public LogFile(String fileName)
@@ -196,6 +199,12 @@ public class LogFile
         return false;
     }
 
+    public void Log2File(String msg)
+    {
+        Log.d(HandShake.Instance().Tag,msg);
+        AddLogAndSave(true,msg);
+    }
+
     Thread tf = new Thread(new Runnable() {
         @Override
         public void run()
@@ -265,33 +274,41 @@ public class LogFile
 
         SetWriteState(true); // 開啟寫入
 
-/*
-        Thread tf = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+    }
 
-                    File file = new File(fileName);
+    // log file 只保留最新的 N 個檔案
+    int keepFileCount = 5;
+    private void DeleteOldFile(File Folder)
+    {
+        // CLEAR ALL FILES
+        try {
+            File[] fs = Folder.listFiles();
+            List<String> lsFileName = new ArrayList<String>();
+            for (File f : fs) {
+                lsFileName.add(f.getAbsolutePath());
+            }
+            Collections.sort(lsFileName);
 
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
+            int delCount = fs.length - keepFileCount;
+            if (delCount < 1)
+                return;
 
-                    FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    bw.write(data);
-                    bw.flush();
-                    bw.close();
+            for (int i = 0; i < delCount; i++) {
+                String delFileName = lsFileName.get(i);
+                for (File f : fs) {
+                    String s = f.getAbsolutePath();
+                    if (!s.equalsIgnoreCase(delFileName))
+                        continue;
 
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    f.delete();
+                    break;
                 }
             }
-        });
-        tf.start();
-*/
-
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
 }
