@@ -16,7 +16,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
         errorLine1="  throw new Exception(String.format(&quot;Error. Unknown permissionEnum %d&quot;,permissionEnum));"
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="33"
             column="23"/>
     </issue>
@@ -41,7 +41,7 @@ Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate
         errorLine2="     ~~~~~~~~~~~~~~~~~~"
         quickfix="studio,adt">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="66"
             column="6"/>
     </issue>
@@ -62,7 +62,7 @@ To fix this issue, set the `targetSdkVersion` to the highest available value. Th
         errorLine2="  ~~~~~~~~~~~~~~~~~~~"
         quickfix="studio">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
             line="15"
             column="3"/>
     </issue>
@@ -82,7 +82,7 @@ If your activity is simply a parent class intended to be subclassed by other &qu
         errorLine1="public class BluetoothLeService extends Service {"
         errorLine2="             ~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
             line="49"
             column="14"/>
     </issue>
@@ -102,8 +102,8 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyyMMdd_HHmmss&quot;);"
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="401"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="495"
             column="36"/>
     </issue>
 
@@ -122,8 +122,8 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;HH:mm:ss`SSS&quot;);"
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
-            line="102"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
+            line="105"
             column="36"/>
     </issue>
 
@@ -141,7 +141,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="   final Fragment request = new Fragment() {"
         errorLine2="                                ~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="58"
             column="33"/>
     </issue>
@@ -157,7 +157,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="   Log.w(&quot;[NoodlePermissionGranter]&quot;, String.format(&quot;Unable to request permission: %s&quot;, error.getMessage()));"
         errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="104"
             column="4"/>
     </issue>
@@ -173,8 +173,25 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1=" &lt;uses-feature android:name=&quot;android.hardware.bluetooth_le&quot; android:required=&quot;true&quot;/>"
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\AndroidManifest.xml"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\src\main\AndroidManifest.xml"
             line="13"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="Old buildToolsVersion 23.0.2; recommended version is 23.0.3 or later"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1=" buildToolsVersion &quot;23.0.2&quot;"
+        errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
+            line="5"
             column="2"/>
     </issue>
 
@@ -190,7 +207,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         quickfix="studio">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
+            file="E:\Work\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
             line="31"
             column="2"/>
     </issue>
