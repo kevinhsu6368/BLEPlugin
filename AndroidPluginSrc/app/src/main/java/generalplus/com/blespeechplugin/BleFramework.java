@@ -481,6 +481,15 @@ public class BleFramework{
 
     private boolean isInitLogFile = false;
 
+    private void CheckOpenBluetooth()
+    {
+        if(this.mBluetoothAdapter.isEnabled())
+            return;
+
+        // 未開啟 --> 自動開啟
+        this.mBluetoothAdapter.enable();
+    }
+
 	public void _InitBLEFramework() {
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... start");
@@ -514,6 +523,11 @@ public class BleFramework{
             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Context.BLUETOOTH_SERVICE");
             return;
         }
+
+        // 確保開啟藍芽功能
+        CheckOpenBluetooth();
+
+
 		this.registerBleUpdatesReceiver();
 		Intent gattServiceIntent = new Intent((Context)this._unityActivity, (Class)BluetoothLeService.class);
 		this._unityActivity.bindService(gattServiceIntent, this.mServiceConnection, Context.BIND_AUTO_CREATE);
