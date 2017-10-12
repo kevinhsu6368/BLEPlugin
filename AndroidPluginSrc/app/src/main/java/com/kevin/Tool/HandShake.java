@@ -35,8 +35,11 @@ public class HandShake
 
     public synchronized void SetConnected(boolean flag)
     {
+
         isConnected = flag;
         resetReSendPacket_count();
+
+        Log2File("SetConnected ( " + Boolean.toString(flag) + " )");
     }
 
     boolean isResponseMode = false;
@@ -109,7 +112,7 @@ public class HandShake
     }
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 500; //  0.3 秒
+    long sendPoolingIntervalTick = 300; //  0.3 秒
     public synchronized void SetSendPoolingIntervalTick(int ms)
     {
         sendPoolingIntervalTick = ms;
@@ -125,6 +128,19 @@ public class HandShake
     public static HandShake Instance() {
         return sInst;
     }
+
+    boolean bNotifyUnityConnected = false;
+    public boolean GetNotifyUnityConnected()
+    {
+        return bNotifyUnityConnected;
+    }
+
+    // 設定 Unity 是否被通知已連線 , 如果未被通知,但 HandShake的 pooling 已經可以讀寫,則要 主動通知已連線成功(原因是某些情況,不會觸發 GetService , 但已連線成功)
+    public  synchronized void SetNotifyUnityConnected(boolean state)
+    {
+        bNotifyUnityConnected = state;
+    }
+
 
     private HandShake() {
 
@@ -178,7 +194,7 @@ public class HandShake
         isResponsePacketing = false;
     }
 
-    int reSendPacket_count_To_Disconnect = 10 ; //  封包重送 n 次後, 將斷線
+    int reSendPacket_count_To_Disconnect = 50 ; //  封包重送 50 次 * 0.3sec = 15 sec 後, 將斷線
     int reSendPacket_count = 0; // 己經重發封包 n 次
     private int GetSendPacket_count()
     {
@@ -257,7 +273,7 @@ public class HandShake
                     {
                         if (CheckPoolingTimeOut())
                         {
-                            //  重送次數超過限制次數 , 將斷線
+                            //  重送次數超過限制次數 , 將斷線 --- > 改送超過 10 秒 就會 disconnect
                             if(CheckReSendPacketOverLimit())
                             {
                                 isSendPooling = false;
@@ -341,6 +357,13 @@ public class HandShake
 
         //Log.d(Tag,"OnWritePacket( ) ... done");
         Log2File("OnWritePacket( ) ... done");
+
+        // [2017/10/03] Kevin. 如果已連線但未觸發GetService,但又已經正常 pooling 了, 那麼則要補通知 Unity 已經連線成功
+        if(!GetNotifyUnityConnected())
+        {
+            SetNotifyUnityConnected(true);
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidConnect", "Success");
+        }
 
         if (!isResponseMode)  //  No Response Mode , 發送成功是在 OnRecv 判斷同一個 Packet Index 才表示 發送成功
         {
@@ -661,7 +684,7 @@ public class HandShake
 
     private void DisConnect()
     {
-        isConnected = false;
+        SetConnected(false);
         BleFramework.mBluetoothLeService.disconnect();;
         //BleFramework.mBluetoothLeService.connectDevice();
     }
