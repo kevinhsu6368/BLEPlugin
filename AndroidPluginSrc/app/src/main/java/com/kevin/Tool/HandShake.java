@@ -15,7 +15,7 @@ import generalplus.com.blespeechplugin.BleFramework;
 import generalplus.com.blespeechplugin.BluetoothLeService;
 
 /**
- * Created by Regulud on 2017/9/14.
+ * Created by Kevin Hsu  on 2017/9/14.
  */
 
 // 處理 Polling  , Packet quece
@@ -147,9 +147,26 @@ public class HandShake
     }
 
     //  欲找的藍芽靶設備
-    public String BLE_Device_Name = "C1";
-    public String BLE_Device_Address = "";
+    //public String BLE_Device_Name = "C1";
+    //public String BLE_Device_Address = "";
 
+    //  SDB BLE 設備
+    //public List<String> lsSDB_Ble_DeviceName = new ArrayList<String>();
+    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","sdb Bt dongle"};
+
+    // 是否有可用的 SDB BLE 設備
+    public boolean CheckSDBBleDevice(String deviceName)
+    {
+        for(String s : lsSDB_Ble_DeviceName)
+        {
+            if(deviceName.startsWith(s))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public synchronized void Simulator_Recv_BLE_Pooling(boolean bGBX_ON)
     {
@@ -194,7 +211,7 @@ public class HandShake
         isResponsePacketing = false;
     }
 
-    int reSendPacket_count_To_Disconnect = 50 ; //  封包重送 50 次 * 0.3sec = 15 sec 後, 將斷線
+    int reSendPacket_count_To_Disconnect = 50 * 4 * 10 ; //  封包重送 50 次 * 0.3sec = 15 sec  * 4 * 10  = 10 分鐘 後, 將斷線
     int reSendPacket_count = 0; // 己經重發封包 n 次
     private int GetSendPacket_count()
     {
@@ -443,6 +460,9 @@ public class HandShake
 
         if(!isGetServiceing)
             ResetTimeOut();
+        else
+            isGetServiceing = false; // [2017/10/16].adj. by kevin
+
 
         byte rspIndex = data[0];
         if (isSendPooling ) // pooling 的封包

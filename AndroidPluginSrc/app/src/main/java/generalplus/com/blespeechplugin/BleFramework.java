@@ -122,20 +122,27 @@ public class BleFramework{
                     e.printStackTrace();
                 }
 
+                // [2017/10/17] 暫時拿掉 重連 功能
+                /*
                 if(i32ReconnectCounter > MAX_RECONNECT_NUM)
                 {
                     connectHandler.removeCallbacks(runnableReconnect);
                     HandShake.Instance().Log2File("BleFramework - runnableReconnect : (i32ReconnectCounter > MAX_RECONNECT_NUM(2次))");
                     return;
                 }
+                */
+
                 HandShake.Instance().Log2File("mBluetoothLeService.connectDevice(gCurBluetoothDevice)");
                 mBluetoothLeService.connectDevice(gCurBluetoothDevice);
 
+                // [2017/10/17] 暫時拿掉 重連 功能
+                /*
                 HandShake.Instance().Log2File("connectHandler.postDelayed(this, RECONNECT_INTERVAL_TIME = 10 sec)");
                 connectHandler.postDelayed(this, RECONNECT_INTERVAL_TIME);
                 //Log.e("tag", "Reconnect");
                 HandShake.Instance().Log2File("BleFramework - runnableReconnect : connectHandler.postDelayed(10sec)");
                 i32ReconnectCounter++;
+                */
             }
         }
     };
@@ -163,6 +170,7 @@ public class BleFramework{
     public synchronized void SetConnectState(boolean bConnected)
     {
         bConnectState = bConnected;
+        HandShake.Instance().SetConnected(false);
         HandShake.Instance().Log2File("SetConnectState ( " + Boolean.toString(bConnected) + " ) ");
     }
 
@@ -230,7 +238,7 @@ public class BleFramework{
 	            mBluetoothLeService.listBTDevice.add(obj);
 
                 // 如果找到 C1 就結束掃描
-                if(device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+                if(HandShake.Instance().CheckSDBBleDevice(device.getName())) // device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
                 {
                     //Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
                     HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
@@ -304,6 +312,15 @@ public class BleFramework{
                         //UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
                         if(HandShake.Instance().GetIsResponseMode()) // no response mode
                             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
+                    }
+                    else if (null != intent.getStringExtra(BluetoothLeService.WRITE_DATA))
+                    {
+                        String data = intent.getStringExtra(BluetoothLeService.WRITE_DATA);
+                        HandShake.Instance().Log2File("WRITE_DATA = " + data);
+                    }
+                    else
+                    {
+                        HandShake.Instance().Log2File("unknow data");
                     }
                 }
                 else if (AUTO_CONNECT.equals(action))
@@ -419,9 +436,9 @@ public class BleFramework{
                         //  没有掃到指定機,就再重掃
                         boolean isFindBLE = false;
                         for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
-                            BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+                            BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
 
-                            if(bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+                            if(HandShake.Instance().CheckSDBBleDevice(device.getName()))  //bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
                             {
                                 isFindBLE = true;
                                 break;
