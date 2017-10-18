@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.kevin.Tool.BatteryTools;
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
 import com.kevin.Tool.NetTools;
@@ -500,6 +501,7 @@ public class BleFramework{
 	private void unregisterBleUpdatesReceiver() {
         Log.d(TAG, "unregisterBleUpdatesReceiver:");
         this._unityActivity.unregisterReceiver(this.mGattUpdateReceiver);
+        BatteryTools.Instance().Close();
     }
 
     private void registerBleUpdatesReceiver() {
@@ -527,7 +529,7 @@ public class BleFramework{
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... start");
         HandShake.Instance().Start();
 
-
+        BatteryTools.Instance().Init(this._unityActivity);
 
         // kevin.hsu.add log to file
         if(isInitLogFile==false)
