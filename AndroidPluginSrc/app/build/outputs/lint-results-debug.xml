@@ -103,7 +103,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="536"
+            line="538"
             column="36"/>
     </issue>
 
