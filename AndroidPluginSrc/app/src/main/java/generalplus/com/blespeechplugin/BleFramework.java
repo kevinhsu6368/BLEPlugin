@@ -50,7 +50,7 @@ public class BleFramework{
     public static final String BLEUnityMessageName_OnBleDidCompletePeripheralScan = "OnBleDidCompletePeripheralScan";
     public static final String BLEUnityMessageName_OnBleDidDisconnect = "OnBleDidDisconnect";
     public static final String BLEUnityMessageName_OnBleDidReceiveData = "OnBleDidReceiveData";
-    private static final long SCAN_PERIOD = 15000;
+    private static final long SCAN_PERIOD = 10000;
 	private static final String TAG;
     //private List<BluetoothDevice> listBTDevice = new ArrayList<BluetoothDevice>();
     private byte[] _dataRx = new byte[3];
@@ -171,7 +171,7 @@ public class BleFramework{
     public synchronized void SetConnectState(boolean bConnected)
     {
         bConnectState = bConnected;
-        HandShake.Instance().SetConnected(false);
+        HandShake.Instance().SetConnected(bConnected);
         HandShake.Instance().Log2File("SetConnectState ( " + Boolean.toString(bConnected) + " ) ");
     }
 
@@ -197,11 +197,13 @@ public class BleFramework{
                 {
                     //Log.e(TAG, "onServiceConnected: Unable to initialize Bluetooth");
                     HandShake.Instance().Log2File("onServiceConnected ( ) ... Unable to initialize Bluetooth ");
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Unable to initialize Bluetooth");
                 }
 	            else
                 {
 	                //Log.d(TAG, "onServiceConnected: Success!");
                     HandShake.Instance().Log2File("onServiceConnected ( ) ... Success ");
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
                 }
 
                 HandShake.Instance().Log2File("onServiceConnected ( ) ... end ");
@@ -267,8 +269,10 @@ public class BleFramework{
                 if (ACTION_GATT_CONNECTED.equals(action))
                 {
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_CONNECTED");
-                    SetConnectState(true);
+                    SetConnectState(false);
                     HandShake.Instance().SetNotifyUnityConnected(false);
+                    HandShake.Instance().OnGetServiceStart();
+                    HandShake.Instance().ResetTimeOut();
 	                //bConnectState = true;
                     RECONNECT_INTERVAL_TIME = 10000;
                     //LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_CONNECTED");
@@ -281,11 +285,14 @@ public class BleFramework{
 	                //bConnectState = false;
                     //LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_DISCONNECTED");
                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidDisconnect", "Success");
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_DISCONNECTED ... notify unity : disconnect ");
                     //Log.d(TAG, "Connection lost");
                     HandShake.Instance().SetNotifyUnityConnected(false);
                 }
                 else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action))
                 {
+                    SetConnectState(true);
+                    HandShake.Instance().OnGetServiceFinished(true);
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_SERVICES_DISCOVERED");
                     connectHandler.removeCallbacks(runnableReconnect);
                     i32ReconnectCounter = 0;
@@ -375,7 +382,7 @@ public class BleFramework{
 
     public long GetSCAN_PERIOD()
     {
-        int period = 15*1000;
+        int period = 10*1000;
         if(iScanForPeripherals_Count == 0)
         {
             return period;
@@ -391,8 +398,8 @@ public class BleFramework{
 
     public long GetWaitForScan()
     {
-        long waitForScan = 5*1000;
-        if(iScanForPeripherals_Count % 4 == 3) // 每掃到第4次 , 下一次 delay 30 秒 , 否則 delay 5 秒
+        long waitForScan = 2*1000;
+        if(iScanForPeripherals_Count % 4 == 3) // 每掃到第4次 , 下一次 delay 30 秒 , 否則 delay 2  秒
         {
             return 30*1000 ;
         }
@@ -546,28 +553,32 @@ public class BleFramework{
 
         System.out.println("Android Executing: _InitBLEFramework");
         if (!this._unityActivity.getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
-            Log.d(TAG, "onCreate: fail: missing FEATURE_BLUETOOTH_LE");
+           // Log.d(TAG, "onCreate: fail: missing FEATURE_BLUETOOTH_LE");
             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: missing FEATURE_BLUETOOTH_LE");
+            HandShake.Instance().Log2File("_InitBLEFramework ( ) ... onCreate: fail: missing FEATURE_BLUETOOTH_LE .... end");
             return;
         }
         BluetoothManager mBluetoothManager = (BluetoothManager)this._unityActivity.getSystemService(BLUETOOTH_SERVICE);
         this.mBluetoothAdapter = mBluetoothManager.getAdapter();
         if (this.mBluetoothAdapter == null) {
-            Log.d(TAG, "onCreate: fail: _mBluetoothAdapter is null");
+           // Log.d(TAG, "onCreate: fail: _mBluetoothAdapter is null");
             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Context.BLUETOOTH_SERVICE");
+            HandShake.Instance().Log2File("_InitBLEFramework ( ) ... onCreate: fail: _mBluetoothAdapter is null  ..... end");
             return;
         }
 
         // 確保開啟藍芽功能
         CheckOpenBluetooth();
-
+        HandShake.Instance().Log2File("_InitBLEFramework ( ) ... Check Open Bluetooth ");
 
 		this.registerBleUpdatesReceiver();
 		Intent gattServiceIntent = new Intent((Context)this._unityActivity, (Class)BluetoothLeService.class);
 		this._unityActivity.bindService(gattServiceIntent, this.mServiceConnection, Context.BIND_AUTO_CREATE);
 
         Log.d(TAG, "onCreate: _mBluetoothAdapter correctly initialized");
-        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
+
+        // [2017/10/18]. adj , Init Success 應該要放在 拿到 BluetoothLeService 後才算 ok
+        // UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... end");
     }
@@ -587,7 +598,7 @@ public class BleFramework{
 
     public  synchronized  void _ScanForPeripherals()
     {
-        HandShake.Instance().Log2File("_ScanForPeripherals ( ) ... start");
+        HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... start");
         if ( GetConnectStat() && CanScanForPeripherals()) // 限定3 秒內不能重新掃描,以免快連線前又被斷線
         {
             HandShake.Instance().Log2File("_ScanForPeripherals ( ) ... 限定3 秒內不能重新掃描,以免快連線前又被斷線 ,  return 掉不處理");
@@ -595,13 +606,19 @@ public class BleFramework{
         }
 
         //pre_ScanForPeripherals = System.currentTimeMillis();
-        LogFile.GetInstance().AddLogAndSave(true,"_ScanForPeripherals ( )");
-        Log.d(HandShake.Instance().Tag, "_ScanForPeripherals ( )");
+       // LogFile.GetInstance().AddLogAndSave(true,"_ScanForPeripherals ( )");
+       // Log.d(HandShake.Instance().Tag, "_ScanForPeripherals ( )");
+
         connectHandler.removeCallbacks(runnableReconnect);
-        mBluetoothLeService.disconnect();
+
+        //mBluetoothLeService.disconnect();    [2017/10/18]. Kevin.Hsu , adj , 不要執行 , 不然進去會 收到廣播 DISCONNEECT 然後又跑 ReConnect  , 會把 scan , connect 打在一起
+
         mBluetoothLeService.listBTDevice.clear();
+
+
 		this.scanLeDevice(true);
-        HandShake.Instance().Log2File("_ScanForPeripherals ( ) ... end");
+
+        HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... end");
     }
 
     public boolean _IsDeviceConnected() {
@@ -614,7 +631,8 @@ public class BleFramework{
         return !GetSearchingDevice();
     }
 
-    public String _GetListOfDevices() {
+    public String _GetListOfDevices()
+    {
         String jsonListString;
         if (mBluetoothLeService.listBTDevice.size() > 0) {
 	        Log.d(TAG, "_GetListOfDevices");
@@ -652,8 +670,8 @@ public class BleFramework{
 
     public boolean _ConnectPeripheralAtIndex(int peripheralIndex) {
 
-        HandShake.Instance().OnGetServiceStart();
-        HandShake.Instance().Log2File("_ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. start");
+        //HandShake.Instance().OnGetServiceStart();
+        HandShake.Instance().Log2File("unity  call  :   _ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. start");
         //Log.d(HandShake.Instance().Tag, ("_ConnectPeripheralAtIndex: " + peripheralIndex));
         //LogFile.GetInstance().AddLogAndSave(true,"_ConnectPeripheralAtIndex: " + peripheralIndex);
 
@@ -681,7 +699,7 @@ public class BleFramework{
 	    connectHandler.removeCallbacks(runnableReconnect);
 	    connectHandler.postDelayed(runnableReconnect  , 0);
 
-        HandShake.Instance().Log2File("_ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. end");
+        HandShake.Instance().Log2File("unity  call  :   _ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. end");
         return true;
     }
 
@@ -695,16 +713,23 @@ public class BleFramework{
         return this._dataRx;
     }
 
-    public void _SendData(byte[] data, int size) {
+    public void _SendData(byte[] data, int size)
+    {
+        HandShake.Instance().Log2File("unity  call  :   _SendData (   ) .. start");
 	    //mBluetoothLeService.WriteData(data);
+
         HandShake.Instance().PostPacket(data);
+
+        HandShake.Instance().Log2File("unity  call  :   _SendData (  ) .. end");
     }
 
     // Post Data
     public void _PostData(byte[] data,int size)
     {
+        HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
         //mBluetoothLeService.WriteData(data);
         HandShake.Instance().PostPacket(data);
+        HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
 
     }
 

@@ -110,59 +110,95 @@ public class BluetoothLeService extends Service {
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
+        {
+            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  start");
             String intentAction;
             Log.e(TAG, "onConnectionStateChange received: " + status + " newState = " + newState);
             switch (status) {
                 case BluetoothGatt.GATT_SUCCESS:
-                    if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    if (newState == BluetoothProfile.STATE_CONNECTED)
+                    {
                         intentAction = ACTION_GATT_CONNECTED;
                         broadcastUpdate(intentAction);
-                        Log.i(TAG, "Connected to GATT server.");
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_CONNECTED");
+                        //Log.i(TAG, "Connected to GATT server.");
                         // Attempts to discover services after successful connection.
-                        Log.e(TAG, "Attempting to start service discovery:" +
-                                gatt.discoverServices());
+                        //Log.e(TAG, "Attempting to start service discovery:" +
+                        //        gatt.discoverServices());
+
+                        boolean bGetService = gatt.discoverServices();
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  discoverServices( )  : " + bGetService + "   .... end");
+
                         return;
-                    } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                        if (false == m_bActiveDiscoonnect) {
+                    }
+                    else if (newState == BluetoothProfile.STATE_DISCONNECTED)
+                    {
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... newState == BluetoothProfile.STATE_DISCONNECTED ... start");
+
+                        // [2017/10/18] . adj   . disable doReConnect( ) 不主動做重連, 只通知 unity 斷線
+                        /*
+                        if (false == m_bActiveDiscoonnect)
+                        {
                             doReConnect();
-                        } else {
+                            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... doReConnect");
+                        }
+                        else
+                        {
                             close();
                             m_bActiveDiscoonnect = false;
                             intentAction = ACTION_GATT_DISCONNECTED;
                             mConnectionState = STATE_DISCONNECTED;
                             Log.e(TAG, "Disconnected from GATT server.");
                             broadcastUpdate(intentAction);
+                            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... broadcastUpdate  .... ACTION_GATT_DISCONNECTED");
                         }
+                        */
+                        intentAction = ACTION_GATT_DISCONNECTED;
+                        mConnectionState = STATE_DISCONNECTED;
+                        // Log.e(TAG, "Disconnected from GATT server.");
+                        broadcastUpdate(intentAction);
+
+
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... newState == BluetoothProfile.STATE_DISCONNECTED ... end");
                         return;
                     }
                     break;
                 case 0x01:
                     Log.e(TAG, "GATT CONN L2C FAILURE");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... 0x01: GATT CONN L2C FAILURE");
                     break;
                 case 0x08:
                     Log.e(TAG, "GATT CONN TIMEOUT");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x08: GATT CONN TIMEOUT");
                     break;
                 case 0x13:
                     Log.e(TAG, "GATT CONN TERMINATE PEER USER");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x13: GATT CONN TERMINATE PEER USER ");
                     break;
                 case 0x16:
                     Log.e(TAG, "GATT CONN TERMINATE LOCAL HOST");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...   0x16: GATT CONN TERMINATE LOCAL HOST");
                     break;
                 case 0x3E:
                     Log.e(TAG, "GATT CONN FAIL ESTABLISH");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x3E: GATT CONN FAIL ESTABLISH");
                     break;
                 case 0x22:
                     Log.e(TAG, "GATT CONN LMP TIMEOUT");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x22: GATT CONN LMP TIMEOUT");
                     break;
                 case 0x0100:
                     Log.e(TAG, "GATT CONN CANCEL ");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x0100: GATT CONN CANCEL ");
                     break;
                 case 0x0085:
                     Log.e(TAG, "GATT ERROR"); // Device not reachable
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x0085: GATT ERROR ");
                     break;
                 default:
                     Log.e(TAG, "UNKNOWN (" + status + ")");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  UNKNOWN (" + status + ")");
                     break;
             }
 
@@ -170,23 +206,34 @@ public class BluetoothLeService extends Service {
             mConnectionState = STATE_DISCONNECTED;
             Log.e(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
-
-            try {
-                Thread.sleep(1000);//100);   // kevin.hsu 20170925. 重連速度太快... 調慢一點
-            } catch (InterruptedException e) {
+            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_DISCONNECTED");
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            // [2017/10/18] . Kevin.Hsu ... adj . disable NEXT_CONNECT
+            /*
             intentAction = NEXT_RECONNECT;
             broadcastUpdate(intentAction);
-            Log.e(TAG, "NEXT_RECONNECT");
+            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  NEXT_RECONNECT");
+
+            //Log.e(TAG, "NEXT_RECONNECT");
+            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  end");
+            */
         }
 
-        private void doReConnect() {
+        private void doReConnect()
+        {
+            HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  start ");
             String intentAction = ACTION_GATT_DISCONNECTED;
             mConnectionState = STATE_DISCONNECTED;
             Log.e(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
+            HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  broadcastUpdate ...  ACTION_GATT_DISCONNECTED  .... end");
 
             if (null != m_strOldAddress) {
                 for (int i = 0; i < listBTDevice.size(); i++) {
@@ -194,6 +241,7 @@ public class BluetoothLeService extends Service {
                         Log.e(TAG, "Auto connecting.");
                         intentAction = AUTO_CONNECT;
                         broadcastUpdate(intentAction);
+                        HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  broadcastUpdate ...  AUTO_CONNECT  .... end");
                         //connectDevice(listBTDevice.get(i).m_BluetoothDevice);
                         return;
                     }
@@ -201,52 +249,71 @@ public class BluetoothLeService extends Service {
             } else {
                 Log.e(TAG, "Not Auto connecting.");
             }
+            HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  end ");
         }
 
         @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
+        public void onServicesDiscovered(BluetoothGatt gatt, int status)
+        {
+            HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... start ");
+            if (status == BluetoothGatt.GATT_SUCCESS)
+            {
                 Log.e("Minwen", "Service discovered " + status);
                 BluetoothGattService Service = gatt.getService(UUID_FFF0_CHARACTERISTIC);
                 if (Service == null) {
                     Log.e(TAG, "service not found!");
                     HandShake.Instance().OnGetServiceFinished(false);
+                    HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... service not found!  ...  end ");
                     return;
                 }
                 BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
-                if (characteristic == null) {
+                if (characteristic == null)
+                {
                     Log.e(TAG, "char not found!");
                     HandShake.Instance().OnGetServiceFinished(false);
+                    HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... char not found!  ...  end ");
                     return;
-                } else {
+                }
+                else
+                {
+
+
                     int iType = characteristic.getProperties();
 
                     String intentAction = GET_ACK;
                     if (BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE == iType) {
                         m_bAck = false;
-                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... no Response Mode");
+                        //Log.d(HandShake.Instance().Tag, "GetService ... is  ... no Response Mode");
                         HandShake.Instance().SetResponseMode(false);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... no Response Mode ");
                         //m_strAckType = "No Ack";
                     } else if (BluetoothGattCharacteristic.PROPERTY_WRITE == iType) {
                         m_bAck = true;
                         //m_strAckType = "Ack";
-                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode");
+                        //Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode");
                         HandShake.Instance().SetResponseMode(true);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  Response Mode ");
                     } else {
                         m_bAck = true;
                         m_strAckType = "error ack:" + iType;
-                        Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode ( error ack:)");
+                        //Log.d(HandShake.Instance().Tag, "GetService ... is  ... Response Mode ( error ack:)");
                         HandShake.Instance().SetResponseMode(true);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  Response Mode ( error ack:) ");
                     }
                     //broadcastUpdate(intentAction);
+
+
                 }
 
-                try {
+                try
+                {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
-                if (ReadData(gatt)) {
+                if (ReadData(gatt))
+                {
                     for (int i = 0; i < listBTDevice.size(); i++) {
                         if (gatt.getDevice() == listBTDevice.get(i).m_BluetoothDevice) {
                             BLEObj obj = listBTDevice.get(i);
@@ -258,16 +325,24 @@ public class BluetoothLeService extends Service {
                             mConnectionState = STATE_CONNECTED;
                             HandShake.Instance().SetConnected(true);
                             HandShake.Instance().OnGetServiceFinished(true);
+                            HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... end ");
                             return;
                         }
                     }
-                } else {
+                }
+                else
+                {
+                    HandShake.Instance().OnGetServiceFinished(false);
                     Log.e(TAG, "ReadData failed.");
                 }
-
-            } else {
+            }
+            else
+            {
+                HandShake.Instance().OnGetServiceFinished(false);
                 Log.e(TAG, "onServicesDiscovered received: " + status);
             }
+
+            HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... end ");
         }
 
         @Override
@@ -400,19 +475,26 @@ public class BluetoothLeService extends Service {
     public boolean initialize() {
         // For API level 18 and above, get a reference to BluetoothAdapter through
         // BluetoothManager.
-        if (mBluetoothManager == null) {
+        HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... start ");
+        if (mBluetoothManager == null)
+        {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-            if (mBluetoothManager == null) {
-                Log.e(TAG, "Unable to initialize BluetoothManager.");
+            if (mBluetoothManager == null)
+            {
+                //Log.e(TAG, "Unable to initialize BluetoothManager.");
+                HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... Unable to obtain a BluetoothManager ******* ... end ");
                 return false;
             }
         }
 
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-        if (mBluetoothAdapter == null) {
-            Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
+        if (mBluetoothAdapter == null)
+        {
+            //Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
+            HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... Unable to obtain a BluetoothAdapter *******  ... end");
             return false;
         }
+        HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ...  success  ... end ");
 
         return true;
     }
@@ -433,21 +515,27 @@ public class BluetoothLeService extends Service {
         HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... start");
         HandShake.Instance().SetConnected(false);
 
-        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.e(TAG, "disconnect fail mBluetoothGatt not initialized");
+        if (mBluetoothAdapter == null || mBluetoothGatt == null)
+        {
+            //Log.e(TAG, "disconnect fail mBluetoothGatt not initialized");
+            HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... disconnect fail mBluetoothGatt not initialized  and return ... end");
             return;
         }
         Log.e(TAG, "Try Disconnecting");
+
         StopReadData();
         mBluetoothGatt.disconnect();
+        HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... mBluetoothGatt.disconnect()");
         mNotifyCharacteristic = null;
         HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... end");
     }
 
     public synchronized void ActiveDisconnect() {
         HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... start");
-        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.e(TAG, "disconnect fail mBluetoothGatt not initialized");
+        if (mBluetoothAdapter == null || mBluetoothGatt == null)
+        {
+            //Log.e(TAG, "disconnect fail mBluetoothGatt not initialized");
+            HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... disconnect fail mBluetoothGatt not initialized  and return ... end");
             return;
         }
         m_bActiveDiscoonnect = true;
@@ -462,18 +550,24 @@ public class BluetoothLeService extends Service {
      * After using a given BLE device, the app must call this method to ensure resources are
      * released properly.
      */
-    public synchronized void close() {
+    public synchronized void close()
+    {
+        HandShake.Instance().Log2File("BluetoothLeService.close( ) ... start");
         if (mBluetoothGatt == null) {
             return;
         }
+
         disconnect();
+
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000); // [2017/10/18]. Kevin.Hsu 由 100ms 改為 1000 ms
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         mBluetoothGatt.close();
         mBluetoothGatt = null;
+
+        HandShake.Instance().Log2File("BluetoothLeService.close( ) ... end");
     }
 
     /**
@@ -910,7 +1004,7 @@ public class BluetoothLeService extends Service {
     	Log.e(TAG, "Before connecting device");
     	close();
     	try {
-            Thread.sleep(100);
+            Thread.sleep(1000); // [2017/10/18]. Kevin.Hsu , ajd 由 100 ms 調成 1000 ms
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

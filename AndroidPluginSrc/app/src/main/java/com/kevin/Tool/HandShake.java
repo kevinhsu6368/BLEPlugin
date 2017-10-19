@@ -241,7 +241,7 @@ public class HandShake
                 try {
                     Thread.sleep(50);
 
-                    if(!isConnected)
+                    if(!isConnected && !isGetServiceing)
                         continue;;
 
                     // 檢查是否連線取得 service -  time out
@@ -427,7 +427,7 @@ public class HandShake
     }
 
     //  當有收到 BLE - response cmd , response pool , cmd 時皆要新時間
-    public void ResetTimeOut()
+    public synchronized void ResetTimeOut()
     {
         preTime = System.currentTimeMillis();
     }
