@@ -26,10 +26,11 @@ android {
 }
 
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	testCompile 'junit:junit:4.12'
-	compile 'com.android.support:appcompat-v7:23.3.0'
-	compile files('libs/classes.jar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile files('libs/classes.jar')
+    compile files('libs/commons-net-3.6.jar')
 }
 
 task deleteOldJar(type: Delete) {

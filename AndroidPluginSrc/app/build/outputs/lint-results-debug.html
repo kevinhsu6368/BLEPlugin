@@ -18,13 +18,13 @@ document.getElementById(id+'Link').style.display = 'none';
 <body>
 <h1>Lint Report</h1>
 <div class="titleSeparator"></div>
-Check performed at Thu Oct 19 15:27:16 CST 2017.<br/>
-3 errors and 7 warnings found:<br/><br/>
+Check performed at Wed Oct 25 22:09:27 CST 2017.<br/>
+3 errors and 17 warnings found:<br/><br/>
 <table class="overview">
 <tr><td></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
 </td></tr>
 <tr>
-<td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
+<td class="countColumn">2</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
 <a href="#DefaultLocale">DefaultLocale: Implied default locale in case conversion</a>
 </td></tr>
 <tr>
@@ -40,7 +40,7 @@ Check performed at Thu Oct 19 15:27:16 CST 2017.<br/>
 <a href="#Registered">Registered: Class is not registered in the manifest</a>
 </td></tr>
 <tr>
-<td class="countColumn">2</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
+<td class="countColumn">9</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
 <a href="#SimpleDateFormat">SimpleDateFormat: Implied locale in date format</a>
 </td></tr>
 <tr>
@@ -59,6 +59,12 @@ Check performed at Thu Oct 19 15:27:16 CST 2017.<br/>
 <td class="countColumn">1</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
 <a href="#GradleDependency">GradleDependency: Obsolete Gradle Dependency</a>
 </td></tr>
+<tr><td></td><td class="categoryColumn"><a href="#Security">Security</a>
+</td></tr>
+<tr>
+<td class="countColumn">2</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
+<a href="#TrustAllX509TrustManager">TrustAllX509TrustManager: Insecure TLS/SSL trust manager</a>
+</td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#MissingIssues">Disabled Checks (15)</a>
 </td></tr></table>
 <br/>
@@ -70,6 +76,14 @@ Check performed at Thu Oct 19 15:27:16 CST 2017.<br/>
 <div class="id"><a href="#" title="Return to top">DefaultLocale: Implied default locale in case conversion</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java</a>:338</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>toUpperCase(Locale)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno"> 335</span>                 // file.
+<span class="lineno"> 336</span>                 // Save files are a special type of files which are used
+<span class="lineno"> 337</span>                 // to save objects, e.g. for backups.
+<span class="lineno"> 338</span>                 if (name != null &amp;&amp; name.<span class="errorspan">toUpperCase().endsWith(".SAVF"))</span>
+<span class="lineno"> 339</span>                 {
+<span class="lineno"> 340</span>                     mustScanForPathSeparator = false;
+</pre>
 <span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:33</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
 <span class="lineno">  30</span> 			// "and the rest is still unwritten" - Natasha Bedingfield
 <span class="lineno">  31</span> 		}
@@ -183,13 +197,55 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <div class="id"><a href="#" title="Return to top">SimpleDateFormat: Implied locale in date format</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:545</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno"> 542</span>         if(isInitLogFile==false)
-<span class="lineno"> 543</span>         {
-<span class="lineno"> 544</span>             isInitLogFile = true;
-<span class="lineno"> 545</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
-<span class="lineno"> 546</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno"> 547</span>             String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:548</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 545</span>         if(isInitLogFile==false)
+<span class="lineno"> 546</span>         {
+<span class="lineno"> 547</span>             isInitLogFile = true;
+<span class="lineno"> 548</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
+<span class="lineno"> 549</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 550</span>             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:214</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 211</span>             // e.g. if today is Jan 1 2001 and the short date is Feb 29
+<span class="lineno"> 212</span>             String year = Integer.toString(now.get(Calendar.YEAR));
+<span class="lineno"> 213</span>             String timeStampStrPlusYear = timestampStr + " " + year;
+<span class="lineno"> 214</span>             SimpleDateFormat hackFormatter = <span class="errorspan">new SimpleDateFormat(recentDateFormat.toPattern() + " yyyy",</span>
+<span class="lineno"> 215</span>                     recentDateFormat.getDateFormatSymbols());
+<span class="lineno"> 216</span>             hackFormatter.setLenient(false);
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:271</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 268</span>     private void setDefaultDateFormat(String format, DateFormatSymbols dfs) {
+<span class="lineno"> 269</span>         if (format != null) {
+<span class="lineno"> 270</span>             if (dfs != null) {
+<span class="lineno"> 271</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
+<span class="lineno"> 272</span>             } else {
+<span class="lineno"> 273</span>                 this.defaultDateFormat = new SimpleDateFormat(format);
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:273</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 270</span>             if (dfs != null) {
+<span class="lineno"> 271</span>                 this.defaultDateFormat = new SimpleDateFormat(format, dfs);
+<span class="lineno"> 272</span>             } else {
+<span class="lineno"> 273</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
+<span class="lineno"> 274</span>             }
+<span class="lineno"> 275</span>             this.defaultDateFormat.setLenient(false);
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:300</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 297</span>     private void setRecentDateFormat(String format, DateFormatSymbols dfs) {
+<span class="lineno"> 298</span>         if (format != null) {
+<span class="lineno"> 299</span>             if (dfs != null) {
+<span class="lineno"> 300</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
+<span class="lineno"> 301</span>             } else {
+<span class="lineno"> 302</span>                 this.recentDateFormat = new SimpleDateFormat(format);
+</pre>
+<button id="SimpleDateFormatDivLink" onclick="reveal('SimpleDateFormatDiv');" />+ 4 More Occurrences...</button>
+<div id="SimpleDateFormatDiv" style="display: none">
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:302</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 299</span>             if (dfs != null) {
+<span class="lineno"> 300</span>                 this.recentDateFormat = new SimpleDateFormat(format, dfs);
+<span class="lineno"> 301</span>             } else {
+<span class="lineno"> 302</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
+<span class="lineno"> 303</span>             }
+<span class="lineno"> 304</span>             this.recentDateFormat.setLenient(false);
 </pre>
 <span class="location"><a href="../../src/main/java/com/kevin/Tool/LogFile.java">../../src/main/java/com/kevin/Tool/LogFile.java</a>:105</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
 <span class="lineno"> 102</span>         String str = "";
@@ -199,6 +255,23 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 106</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
 <span class="lineno"> 107</span>             //String fileName = "BLE_Log_" + sTime;
 </pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java</a>:195</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 192</span>         final SimpleDateFormat sdf;
+<span class="lineno"> 193</span>         final boolean hasMillis;
+<span class="lineno"> 194</span>         if (timestamp.contains(".")){
+<span class="lineno"> 195</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss.SSS");</span>
+<span class="lineno"> 196</span>             hasMillis = true;
+<span class="lineno"> 197</span>         } else {
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java</a>:198</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 195</span>             sdf = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
+<span class="lineno"> 196</span>             hasMillis = true;
+<span class="lineno"> 197</span>         } else {
+<span class="lineno"> 198</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss");</span>
+<span class="lineno"> 199</span>             hasMillis = false;
+<span class="lineno"> 200</span>         }
+</pre>
+</div>
 </div>
 <div class="metadata">Priority: 6 / 10<br/>
 Category: Correctness</div>
@@ -290,11 +363,11 @@ The &lt;application> tag should appear after the elements which declare which ve
 <div class="warningslist">
 <span class="location"><a href="../../build.gradle">../../build.gradle</a>:31</span>: <span class="message">A newer version of com.android.support:appcompat-v7 than 23.3.0 is available: 25.3.1</span><br /><pre class="errorlines">
 <span class="lineno">  28</span> dependencies {
-<span class="lineno">  29</span> 	compile fileTree(include: ['*.jar'], dir: 'libs')
-<span class="lineno">  30</span> 	testCompile 'junit:junit:4.12'
-<span class="lineno">  31</span> 	<span class="errorspan">compile 'com.android.support:appcompat-v7:23.3.0'</span>
-<span class="lineno">  32</span> 	compile files('libs/classes.jar')
-<span class="lineno">  33</span> }
+<span class="lineno">  29</span>     compile fileTree(include: ['*.jar'], dir: 'libs')
+<span class="lineno">  30</span>     testCompile 'junit:junit:4.12'
+<span class="lineno">  31</span>     <span class="errorspan">compile 'com.android.support:appcompat-v7:23.3.0'</span>
+<span class="lineno">  32</span>     compile files('libs/classes.jar')
+<span class="lineno">  33</span>     compile files('libs/commons-net-3.6.jar')
 </pre>
 </div>
 <div class="metadata">Note: This issue has an associated quickfix operation in Android Studio/IntelliJ&nbsp;<img alt="Fix" border="0" align="top" src="lint-results-debug_files/lint-run.png" />
@@ -307,6 +380,41 @@ Explanation: Obsolete Gradle Dependency.</div>
 This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find.
 </div>
 <br/><div class="moreinfo">More info: </div><br/>To suppress this error, use the issue id "GradleDependency" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+</div>
+
+<a name="Security"></a>
+<div class="category"><a href="#" title="Return to top">Security</a><div class="categorySeparator"></div>
+</div>
+<a name="TrustAllX509TrustManager"></a>
+<div class="issue">
+<div class="id"><a href="#" title="Return to top">TrustAllX509TrustManager: Insecure TLS/SSL trust manager</a><div class="issueSeparator"></div>
+</div>
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/FTPSTrustManager.java">../../src/main/java/org/apache/commons/net/ftp/FTPSTrustManager.java</a>:41</span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br /><pre class="errorlines">
+<span class="lineno">  38</span>      * No-op
+<span class="lineno">  39</span>      */
+<span class="lineno">  40</span>     @Override
+<span class="lineno">  41</span>     public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
+<span class="lineno">  42</span>     {
+<span class="lineno">  43</span>         return;
+</pre>
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/util/TrustManagerUtils.java">../../src/main/java/org/apache/commons/net/util/TrustManagerUtils.java</a>:49</span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br /><pre class="errorlines">
+<span class="lineno">  46</span>          * Never generates a CertificateException.
+<span class="lineno">  47</span>          */
+<span class="lineno">  48</span>         @Override
+<span class="lineno">  49</span>         public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
+<span class="lineno">  50</span>         {
+<span class="lineno">  51</span>             return;
+</pre>
+</div>
+<div class="metadata">Priority: 6 / 10<br/>
+Category: Security</div>
+Severity: <span class="warning">Warning</span><div class="summary">
+Explanation: Insecure TLS/SSL trust manager.</div>
+<div class="explanation">
+This check looks for X509TrustManager implementations whose <code>checkServerTrusted</code> or <code>checkClientTrusted</code> methods do nothing (thus trusting any certificate chain) which could result in insecure network traffic caused by trusting arbitrary TLS/SSL certificates presented by peers.
+</div>
+<br/><div class="moreinfo">More info: </div><br/>To suppress this error, use the issue id "TrustAllX509TrustManager" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
 </div>
 
 <a name="MissingIssues"></a>

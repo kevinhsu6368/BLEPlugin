@@ -16,10 +16,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.kevin.Tool.BatteryTools;
+import com.kevin.Tool.FTPTools;
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
 import com.kevin.Tool.NetTools;
 import com.kevin.Tool.StringTools;
+import com.kevin.Tool.SystemInfo;
 import com.unity3d.player.UnityPlayer;
 
 import org.json.JSONArray;
@@ -537,6 +539,7 @@ public class BleFramework{
         HandShake.Instance().Start();
 
         BatteryTools.Instance().Init(this._unityActivity);
+        SystemInfo.Init(this._unityActivity);
 
         // kevin.hsu.add log to file
         if(isInitLogFile==false)
@@ -544,10 +547,14 @@ public class BleFramework{
             isInitLogFile = true;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String sTime = sdf.format(Calendar.getInstance().getTime());
-            String shortFileName = "AndroidPluginLog_" + sTime + ".txt";
+            String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
             LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
             LogFile.GetInstance().SetStopSave(false);
             LogFile.GetInstance().Start();
+
+            // report log to ftp
+
+            //LogFile.GetInstance().ReportToFTP();
         }
 
 
@@ -581,6 +588,9 @@ public class BleFramework{
         // UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... end");
+
+
+
     }
 
     /*
@@ -733,6 +743,10 @@ public class BleFramework{
 
     }
 
+    public void _ReportLog()
+    {
+        LogFile.GetInstance().ReportToFTP();
+    }
 
     public void TestCommand(String cmd,String data)
     {

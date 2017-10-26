@@ -222,12 +222,21 @@ public class LogFile
                         // write ...
                         File file = new File(fileName);
 
+                        boolean bWriteSystemInfo = false;
                         if (!file.exists()) {
                             file.createNewFile();
+                            // write system info
+                            bWriteSystemInfo = true;
                         }
 
                         FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
                         BufferedWriter bw = new BufferedWriter(fw);
+
+                        if(bWriteSystemInfo)
+                        {
+                            bw.write(SystemInfo.ToString());
+                        }
+
                         String sDate = GetData();
                         bw.write(sDate);
                         bw.flush();
@@ -311,4 +320,19 @@ public class LogFile
         }
     }
 
+    public void ReportToFTP()
+    {
+
+        int iFlag = this.fileName.lastIndexOf('/');
+        String sFolder = this.fileName.substring(0,iFlag);
+        File folder = new File(sFolder);
+        File [] fs = folder.listFiles();
+
+        if(fs.length>0)
+        {
+            FTPTools.Instance().Init("211.72.174.44","21","sdblog","sdbsdb");
+            FTPTools.Instance().AddUpLoadFile(fs[fs.length - 1].getAbsolutePath());
+            FTPTools.Instance().StartUpload();
+        }
+    }
 }
