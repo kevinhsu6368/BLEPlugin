@@ -18,5 +18,9 @@
     {
         "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\mipmap-mdpi-v4\\ic_launcher.png",
         "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\mipmap-mdpi-v4\\ic_launcher.png",
+        "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
     }
 ]

@@ -4,8 +4,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiInfo;
+
 
 import com.unity3d.player.UnityPlayer;
+
+import static android.content.Context.WIFI_SERVICE;
 
 /**
  * Created by Regulud on 2017/9/29.
@@ -86,4 +91,12 @@ public class NetTools
         isCheckNetworkState = false;
     }
 
+    public static String GetWifiIP()
+    {
+        WifiManager wifi_service = (WifiManager)context.getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifi_service.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        String ip = String.format("%d.%d.%d.%d",(ipAddress & 0xff),(ipAddress >> 8 & 0xff),(ipAddress >> 16 & 0xff),(ipAddress >> 24 & 0xff));
+        return ip;
+    }
 }

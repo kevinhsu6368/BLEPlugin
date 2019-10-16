@@ -37,6 +37,13 @@ public class HandShake
     {
 
         isConnected = flag;
+
+        if(isConnected)
+        {
+            isDelayPoolingOnConnected = true;
+            Log2File("isDelayPoolingOnConnected = true" );
+        }
+
         resetReSendPacket_count();
 
         Log2File("SetConnected ( " + Boolean.toString(flag) + " )");
@@ -112,14 +119,14 @@ public class HandShake
     }
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 300; //  0.3 秒
+    long sendPoolingIntervalTick = 100; //  0.3 秒
     public synchronized void SetSendPoolingIntervalTick(int ms)
     {
         sendPoolingIntervalTick = ms;
     }
 
 
-    long sendCmdIntervalTick = 300; // 0.3 sec
+    long sendCmdIntervalTick = 100; // 0.3 sec
     public synchronized void setSendCmdIntervalTick(int ms)
     {
         sendCmdIntervalTick = ms;
@@ -146,13 +153,34 @@ public class HandShake
 
     }
 
+    public static String bytesToHexString(byte [] src)
+    {
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i=0;i<src.length;i++)
+        {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+
+            stringBuilder.append(hv);
+        }
+
+        return stringBuilder.toString();
+    }
+
     //  欲找的藍芽靶設備
     //public String BLE_Device_Name = "C1";
     //public String BLE_Device_Address = "";
 
     //  SDB BLE 設備
     //public List<String> lsSDB_Ble_DeviceName = new ArrayList<String>();
-    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","sdb Bt dongle"};
+    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","sdb Bt dongle","DB-2"};
 
     // 是否有可用的 SDB BLE 設備
     public boolean CheckSDBBleDevice(String deviceName)
@@ -211,7 +239,7 @@ public class HandShake
         isResponsePacketing = false;
     }
 
-    int reSendPacket_count_To_Disconnect = 50 * 4 * 10 ; //  封包重送 50 次 * 0.3sec = 15 sec  * 4 * 10  = 10 分鐘 後, 將斷線
+    int reSendPacket_count_To_Disconnect = 50 * 2 ;//* 10 ; //  封包重送 50 次 * 0.3sec = 15 sec  * 4 * 10  = 10 分鐘 後, 將斷線
     int reSendPacket_count = 0; // 己經重發封包 n 次
     private int GetSendPacket_count()
     {
@@ -234,12 +262,16 @@ public class HandShake
         reSendPacket_count++;
     }
 
+    public boolean AllowPolling = true;
+
     Thread t = new Thread(new Runnable() {
         @Override
         public void run() {
             while (isRunning) {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(20);
+
+
 
                     if(!isConnected && !isGetServiceing)
                         continue;;
@@ -257,6 +289,8 @@ public class HandShake
                         }
                         continue;
                     }
+
+
 
 
                     // 檢查是否 packet  time out -> 重發
@@ -284,6 +318,9 @@ public class HandShake
                     {
                         continue;
                     }
+
+                    if (AllowPolling == false)
+                        continue;
 
                     // 檢查 Pooling 是否逾時 , 沒有逾時繼續 , 逾時則會重發 Pooling Packet
                     if( isSendPooling )
@@ -676,6 +713,18 @@ public class HandShake
 //        if(isSendPooling)
 //            return;
 
+        // [kevin.hsu/2018/06/22].adj . willson 說連線成功後要 delay 1 秒後才態開始發送 pooling]
+        if(isDelayPoolingOnConnected)
+        {
+            isDelayPoolingOnConnected = false;
+            Log2File("isDelayPoolingOnConnected = false , and sleep 1 sec " );
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         isSendPooling = true;
         preTime = System.currentTimeMillis();
 
@@ -688,6 +737,8 @@ public class HandShake
         LogFile.GetInstance().AddLogAndSave(true,"Pooling  , WriteData =  " + hex);
     }
 
+    // 連線成功後要等待1秒延遲時間
+    private boolean isDelayPoolingOnConnected = true;
 
     // 檢查連線後取得 service 是否逾時 ,  如果 逾時 -->  斷線,重連
     private synchronized boolean CheckGetServiceTimeOut() {
@@ -707,6 +758,7 @@ public class HandShake
         SetConnected(false);
         BleFramework.mBluetoothLeService.disconnect();;
         //BleFramework.mBluetoothLeService.connectDevice();
+        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidDisconnect", "Success");
     }
 
     private synchronized boolean CheckSendPacketTimeOut() {

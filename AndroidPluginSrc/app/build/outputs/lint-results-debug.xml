@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="4" by="lint 25.2.5">
+<issues format="4" by="lint 26.1.1">
+
+    <issue
+        id="DefaultLocale"
+        severity="Warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        category="Correctness"
+        priority="6"
+        summary="Implied default locale in case conversion"
+        explanation="Calling `String#toLowerCase()` or `#toUpperCase()` *without specifying an explicit locale* is a common source of bugs. The reason for that is that those methods will use the current locale on the user&apos;s device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for `i` is *not* `I`.
+
+If you want the methods to just perform ASCII replacement, for example to convert an enum name, call `String#toUpperCase(Locale.US)` instead. If you really want to use the current locale, call `String#toUpperCase(Locale.getDefault())` instead."
+        url="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        urls="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        errorLine1="                    String sRSSI = String.format(&quot;%d&quot;,rssi);"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="329"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        severity="Warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        category="Correctness"
+        priority="6"
+        summary="Implied default locale in case conversion"
+        explanation="Calling `String#toLowerCase()` or `#toUpperCase()` *without specifying an explicit locale* is a common source of bugs. The reason for that is that those methods will use the current locale on the user&apos;s device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for `i` is *not* `I`.
+
+If you want the methods to just perform ASCII replacement, for example to convert an enum name, call `String#toUpperCase(Locale.US)` instead. If you really want to use the current locale, call `String#toUpperCase(Locale.getDefault())` instead."
+        url="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        urls="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        errorLine1="                            HandShake.Instance().Log2File( String.format(&quot;dev - %d = %s , Hex = %s&quot;,(i+1),devName,hexDevName));"
+        errorLine2="                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="510"
+            column="60"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        severity="Warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        category="Correctness"
+        priority="6"
+        summary="Implied default locale in case conversion"
+        explanation="Calling `String#toLowerCase()` or `#toUpperCase()` *without specifying an explicit locale* is a common source of bugs. The reason for that is that those methods will use the current locale on the user&apos;s device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for `i` is *not* `I`.
+
+If you want the methods to just perform ASCII replacement, for example to convert an enum name, call `String#toUpperCase(Locale.US)` instead. If you really want to use the current locale, call `String#toUpperCase(Locale.getDefault())` instead."
+        url="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        urls="http://developer.android.com/reference/java/util/Locale.html#default_locale"
+        errorLine1="        String ip = String.format(&quot;%d.%d.%d.%d&quot;,(ipAddress &amp; 0xff),(ipAddress >> 8 &amp; 0xff),(ipAddress >> 16 &amp; 0xff),(ipAddress >> 24 &amp; 0xff));"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\NetTools.java"
+            line="99"
+            column="21"/>
+    </issue>
 
     <issue
         id="DefaultLocale"
@@ -13,10 +73,10 @@
 If you want the methods to just perform ASCII replacement, for example to convert an enum name, call `String#toUpperCase(Locale.US)` instead. If you really want to use the current locale, call `String#toUpperCase(Locale.getDefault())` instead."
         url="http://developer.android.com/reference/java/util/Locale.html#default_locale"
         urls="http://developer.android.com/reference/java/util/Locale.html#default_locale"
-        errorLine1="                if (name != null &amp;&amp; name.toUpperCase().endsWith(&quot;.SAVF&quot;))"
+        errorLine1="                if (name != null &amp;&amp; name.toUpperCase().endsWith(&quot;.SAVF&quot;))"
         errorLine2="                                         ~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\OS400FTPEntryParser.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\OS400FTPEntryParser.java"
             line="338"
             column="42"/>
     </issue>
@@ -36,7 +96,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
         errorLine1="  throw new Exception(String.format(&quot;Error. Unknown permissionEnum %d&quot;,permissionEnum));"
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="33"
             column="23"/>
     </issue>
@@ -44,7 +104,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
     <issue
         id="NewApi"
         severity="Error"
-        message="Call requires API level 23 (current min is 18): `android.app.Fragment#requestPermissions`"
+        message="Call requires API level 23 (current min is 21): `android.app.Fragment#requestPermissions`"
         category="Correctness"
         priority="6"
         summary="Calling new methods on older versions"
@@ -61,7 +121,7 @@ Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate
         errorLine2="     ~~~~~~~~~~~~~~~~~~"
         quickfix="studio,adt">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="66"
             column="6"/>
     </issue>
@@ -78,11 +138,11 @@ Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate
 To fix this issue, set the `targetSdkVersion` to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
         url="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
         urls="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
-        errorLine1="  targetSdkVersion 23"
+        errorLine1="  targetSdkVersion 22"
         errorLine2="  ~~~~~~~~~~~~~~~~~~~"
         quickfix="studio">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\build.gradle"
             line="15"
             column="3"/>
     </issue>
@@ -102,7 +162,7 @@ If your activity is simply a parent class intended to be subclassed by other &qu
         errorLine1="public class BluetoothLeService extends Service {"
         errorLine2="             ~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BluetoothLeService.java"
             line="49"
             column="14"/>
     </issue>
@@ -122,8 +182,8 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyyMMdd_HHmmss&quot;);"
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="548"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="739"
             column="36"/>
     </issue>
 
@@ -139,10 +199,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="            SimpleDateFormat hackFormatter = new SimpleDateFormat(recentDateFormat.toPattern() + &quot; yyyy&quot;,"
+        errorLine1="            SimpleDateFormat hackFormatter = new SimpleDateFormat(recentDateFormat.toPattern() + &quot; yyyy&quot;,"
         errorLine2="                                             ^">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
             line="214"
             column="46"/>
     </issue>
@@ -159,10 +219,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="                this.defaultDateFormat = new SimpleDateFormat(format, dfs);"
+        errorLine1="                this.defaultDateFormat = new SimpleDateFormat(format, dfs);"
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
             line="271"
             column="42"/>
     </issue>
@@ -179,10 +239,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="                this.defaultDateFormat = new SimpleDateFormat(format);"
+        errorLine1="                this.defaultDateFormat = new SimpleDateFormat(format);"
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
             line="273"
             column="42"/>
     </issue>
@@ -199,10 +259,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="                this.recentDateFormat = new SimpleDateFormat(format, dfs);"
+        errorLine1="                this.recentDateFormat = new SimpleDateFormat(format, dfs);"
         errorLine2="                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
             line="300"
             column="41"/>
     </issue>
@@ -219,10 +279,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="                this.recentDateFormat = new SimpleDateFormat(format);"
+        errorLine1="                this.recentDateFormat = new SimpleDateFormat(format);"
         errorLine2="                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\FTPTimestampParserImpl.java"
             line="302"
             column="41"/>
     </issue>
@@ -242,7 +302,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="            SimpleDateFormat sdf = new SimpleDateFormat(&quot;HH:mm:ss`SSS&quot;);"
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\com\kevin\Tool\LogFile.java"
             line="105"
             column="36"/>
     </issue>
@@ -259,10 +319,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="            sdf = new SimpleDateFormat(&quot;yyyyMMddHHmmss.SSS&quot;);"
+        errorLine1="            sdf = new SimpleDateFormat(&quot;yyyyMMddHHmmss.SSS&quot;);"
         errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\MLSxEntryParser.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\MLSxEntryParser.java"
             line="195"
             column="19"/>
     </issue>
@@ -279,10 +339,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
 Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing."
         url="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
         urls="http://developer.android.com/reference/java/text/SimpleDateFormat.html"
-        errorLine1="            sdf = new SimpleDateFormat(&quot;yyyyMMddHHmmss&quot;);"
+        errorLine1="            sdf = new SimpleDateFormat(&quot;yyyyMMddHHmmss&quot;);"
         errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\MLSxEntryParser.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\parser\MLSxEntryParser.java"
             line="198"
             column="19"/>
     </issue>
@@ -301,7 +361,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="   final Fragment request = new Fragment() {"
         errorLine2="                                ~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="58"
             column="33"/>
     </issue>
@@ -317,7 +377,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1="   Log.w(&quot;[NoodlePermissionGranter]&quot;, String.format(&quot;Unable to request permission: %s&quot;, error.getMessage()));"
         errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
             line="104"
             column="4"/>
     </issue>
@@ -333,7 +393,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine1=" &lt;uses-feature android:name=&quot;android.hardware.bluetooth_le&quot; android:required=&quot;true&quot;/>"
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\AndroidManifest.xml"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\AndroidManifest.xml"
             line="13"
             column="2"/>
     </issue>
@@ -350,7 +410,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         quickfix="studio">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\build.gradle"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\build.gradle"
             line="31"
             column="5"/>
     </issue>
@@ -363,10 +423,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         priority="6"
         summary="Insecure TLS/SSL trust manager"
         explanation="This check looks for X509TrustManager implementations whose `checkServerTrusted` or `checkClientTrusted` methods do nothing (thus trusting any certificate chain) which could result in insecure network traffic caused by trusting arbitrary TLS/SSL certificates presented by peers."
-        errorLine1="    public void checkClientTrusted(X509Certificate[] certificates, String authType)"
+        errorLine1="    public void checkClientTrusted(X509Certificate[] certificates, String authType)"
         errorLine2="                ~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\FTPSTrustManager.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\ftp\FTPSTrustManager.java"
             line="41"
             column="17"/>
     </issue>
@@ -379,10 +439,10 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         priority="6"
         summary="Insecure TLS/SSL trust manager"
         explanation="This check looks for X509TrustManager implementations whose `checkServerTrusted` or `checkClientTrusted` methods do nothing (thus trusting any certificate chain) which could result in insecure network traffic caused by trusting arbitrary TLS/SSL certificates presented by peers."
-        errorLine1="        public void checkClientTrusted(X509Certificate[] certificates, String authType)"
+        errorLine1="        public void checkClientTrusted(X509Certificate[] certificates, String authType)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~">
         <location
-            file="D:\Work2\BLE_Plugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\util\TrustManagerUtils.java"
+            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\org\apache\commons\net\util\TrustManagerUtils.java"
             line="49"
             column="21"/>
     </issue>

@@ -1,18 +1,31 @@
 package generalplus.com.blespeechplugin;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ParcelUuid;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.kevin.Tool.BatteryTools;
@@ -29,16 +42,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
+import static android.provider.Settings.Secure.LOCATION_MODE_BATTERY_SAVING;
+import static android.provider.Settings.Secure.LOCATION_MODE_HIGH_ACCURACY;
+import static android.provider.Settings.Secure.LOCATION_MODE_SENSORS_ONLY;
 import static generalplus.com.blespeechplugin.BluetoothLeService.ACTION_DATA_AVAILABLE;
 import static generalplus.com.blespeechplugin.BluetoothLeService.ACTION_GATT_CONNECTED;
 import static generalplus.com.blespeechplugin.BluetoothLeService.ACTION_GATT_DISCONNECTED;
+import static generalplus.com.blespeechplugin.BluetoothLeService.ACTION_GATT_RSSI;
 import static generalplus.com.blespeechplugin.BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED;
 import static generalplus.com.blespeechplugin.BluetoothLeService.AUTO_CONNECT;
 import static generalplus.com.blespeechplugin.BluetoothLeService.NEXT_RECONNECT;
@@ -59,11 +78,15 @@ public class BleFramework{
     public static BluetoothLeService mBluetoothLeService;
     private Map<UUID, BluetoothGattCharacteristic> _map = new HashMap<UUID, BluetoothGattCharacteristic>();
     private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothLeScanner mScanner ;
     private BluetoothDevice _device;
     private String _mDeviceAddress;
     private String _mDeviceName;
     private boolean bConnectState = false;
     private boolean searchingDevice = false;
+    private ScanSettings mScannerSetting = null;
+    private ArrayList<ScanFilter> mScannerFilters = null;
+
     public synchronized boolean GetSearchingDevice()
     {
         return searchingDevice;
@@ -95,6 +118,7 @@ public class BleFramework{
         intentFilter.addAction(ACTION_GATT_CONNECTED);
         intentFilter.addAction(ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(ACTION_GATT_RSSI);
         intentFilter.addAction(ACTION_DATA_AVAILABLE);
         intentFilter.addAction(AUTO_CONNECT);
         intentFilter.addAction(NEXT_RECONNECT);
@@ -219,6 +243,8 @@ public class BleFramework{
             }
         };
 
+        // mScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
 		mLeScanCallback = new BluetoothAdapter.LeScanCallback()
 		{
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord)
@@ -241,6 +267,12 @@ public class BleFramework{
 	            BLEObj obj = new BLEObj();
 	            obj.m_BluetoothDevice = device;
 	            mBluetoothLeService.listBTDevice.add(obj);
+
+                String devName = device.getName();
+                byte [] bs = devName.getBytes();
+                String hexDevName = HandShake.bytesToHexString(bs);
+                HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
+
 
                 // 如果找到 C1 就結束掃描
                 if(HandShake.Instance().CheckSDBBleDevice(device.getName())) // device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
@@ -290,6 +322,12 @@ public class BleFramework{
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_DISCONNECTED ... notify unity : disconnect ");
                     //Log.d(TAG, "Connection lost");
                     HandShake.Instance().SetNotifyUnityConnected(false);
+                }
+                else if(ACTION_GATT_RSSI.equals(action))
+                {
+                    int rssi = intent.getIntExtra("value",0);
+                    String sRSSI = String.format("%d",rssi);
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadRSSI", sRSSI);
                 }
                 else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action))
                 {
@@ -414,6 +452,25 @@ public class BleFramework{
     {
         return pre_ScanForPeripherals;
     }
+
+    public void DoStopScan()
+    {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            this.mScanner.stopScan(this.mScannerCallback);
+        else
+           this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+    }
+
+    public void DoStartScan()
+    {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.mScanner.startScan(this.mScannerFilters, this.mScannerSetting, this.mScannerCallback);
+            //this.mScanner.startScan(this.mScannerCallback);
+        }
+        else {
+            this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+        }
+    }
 /*
     private synchronized boolean CanScanForPeripherals()
     {
@@ -432,7 +489,7 @@ public class BleFramework{
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... start");
 		if (enable)
 		{
-
+            CheckOpenBluetooth(); // 檢查沒開藍芽的話,幫它開啟來
 			// Stops scanning after a pre-defined scan period.
 			mHandler.postDelayed(new Runnable() {
 				@Override
@@ -447,7 +504,10 @@ public class BleFramework{
                         boolean isFindBLE = false;
                         for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
                             BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
-
+                            String devName = device.getName();
+                            byte [] bs = devName.getBytes();
+                            String hexDevName = HandShake.bytesToHexString(bs);
+                            HandShake.Instance().Log2File( String.format("dev - %d = %s , Hex = %s",(i+1),devName,hexDevName));
                             if(HandShake.Instance().CheckSDBBleDevice(device.getName()))  //bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
                             {
                                 isFindBLE = true;
@@ -455,7 +515,8 @@ public class BleFramework{
                             }
                         }
                         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - mBluetoothAdapter.stopLeScan(mLeScanCallback)  ");
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                        //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                        DoStopScan();
 
                         if (isFindBLE) {
                             //mBluetoothAdapter.stopLeScan(mLeScanCallback);
@@ -490,22 +551,95 @@ public class BleFramework{
                         }
                     }
 				}
-			},SCAN_PERIOD /* 最多掃5分鐘,掃到第一台緒C1就取消執行緒*/);//SCAN_PERIOD);
+			},SCAN_PERIOD /* 最多掃5分鐘,掃到第一台緒C1就取消執行緒*/);
+			//  下面直接掃描 , 然後 等 (SCAN_PERIOD) 10 秒後 ,
+            //                            上面程式碼 檢查  ble 清單 (有資料的話)
+            //
 			//searchingDevice = true;
             SetSearchingDevice(true);
             AddScanForPeripheralsCount();
-			mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+            this.DoStartScan();
+
+
+//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // API 23 - Android 6
+//            {
+//                this.mScanner.startScan(mScannerFilters,mScannerSetting,mScannerCallback);
+//            }
+//            else
+//            {
+//                mBluetoothAdapter.startLeScan(mLeScanCallback);
+//            }
 		}
 		else
 		{
             ResetScanForPeripheralsCount();
             SetSearchingDevice(false);
-			mBluetoothAdapter.stopLeScan(mLeScanCallback);
+			//mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            DoStopScan();
 			//searchingDevice = false
 		}
 
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... end");
 	}
+
+    ScanCallback mScannerCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+
+            HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... start");
+            BluetoothDevice device = result.getDevice();
+            if (null == device.getName()) {
+
+                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return");
+                return;
+            }
+
+            for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); i++) {
+                if (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
+                {
+                    HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+                    return;
+                }
+            }
+
+            BLEObj obj = new BLEObj();
+            obj.m_BluetoothDevice = device;
+            mBluetoothLeService.listBTDevice.add(obj);
+
+            String devName = device.getName();
+            byte [] bs = devName.getBytes();
+            String hexDevName = HandShake.bytesToHexString(bs);
+            HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
+
+
+            // 如果找到 C1 就結束掃描
+            if(HandShake.Instance().CheckSDBBleDevice(device.getName())) // device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+            {
+                //Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
+                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
+
+                //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                //searchingDevice = false;
+                //SetSearchingDevice(false);
+                scanLeDevice(false);
+                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+            }
+            HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... end");
+
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+        }
+    };
 
 	private void unregisterBleUpdatesReceiver() {
         Log.d(TAG, "unregisterBleUpdatesReceiver:");
@@ -523,6 +657,63 @@ public class BleFramework{
     }
 
     private boolean isInitLogFile = false;
+
+	private void CheckOpenGPS(Context context)
+    {
+        Intent GPSIntent = new Intent();
+        GPSIntent.setClassName("com.android.settings",
+                "com.android.settings.widget.SettingsAppWidgetProvider");
+        GPSIntent.addCategory("android.intent.category.ALTERNATIVE");
+        GPSIntent.setData(Uri.parse("custom:3"));
+        try {
+            PendingIntent.getBroadcast(context, 0, GPSIntent, 0).send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            String sMode = "";
+            switch (locationMode)
+            {
+                case LOCATION_MODE_SENSORS_ONLY:
+                    sMode = "SENSORS_ONLY";
+                    break;
+                case LOCATION_MODE_BATTERY_SAVING:
+                    sMode = "BATTERY_SAVING";
+                    break;
+                case LOCATION_MODE_HIGH_ACCURACY:
+                    sMode = "HIGH_ACCURACY";
+                    break;
+                default:
+                    sMode = "OFF";
+                    break;
+            }
+            Log.d("[GPS] ","Get GPS Status ... " + sMode);
+
+            return (locationMode  != Settings.Secure.LOCATION_MODE_OFF);
+
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+
+
+    }
+
 
     private void CheckOpenBluetooth()
     {
@@ -566,13 +757,34 @@ public class BleFramework{
             return;
         }
         BluetoothManager mBluetoothManager = (BluetoothManager)this._unityActivity.getSystemService(BLUETOOTH_SERVICE);
+
         this.mBluetoothAdapter = mBluetoothManager.getAdapter();
+
+
         if (this.mBluetoothAdapter == null) {
            // Log.d(TAG, "onCreate: fail: _mBluetoothAdapter is null");
             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Context.BLUETOOTH_SERVICE");
             HandShake.Instance().Log2File("_InitBLEFramework ( ) ... onCreate: fail: _mBluetoothAdapter is null  ..... end");
             return;
         }
+
+        this.mScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
+        mScannerSetting = new ScanSettings.Builder()
+                //退到后台时设置扫描模式为低功耗
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                .build();
+
+        mScannerFilters = new ArrayList<ScanFilter>();
+
+        ScanFilter filter1 = new ScanFilter.Builder().setDeviceName("C1       ").build();
+        ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("DB-2").build();
+
+        mScannerFilters.add(filter1);
+        mScannerFilters.add(filter2);
+
+        // 開啟 GPS 功能
+        //this.CheckOpenGPS((Context)this._unityActivity);
 
         // 確保開啟藍芽功能
         CheckOpenBluetooth();
@@ -602,14 +814,15 @@ public class BleFramework{
     //private long pre_ScanForPeripherals = 0;
     private synchronized boolean CanScanForPeripherals()
     {
-        long delta = (System.currentTimeMillis() - Get_pre_ScanForPeripherals());
+        long delta = (System.currentTimeMillis() - Get_pre_ScanForPeripherals()); // 誤差單位為豪秒
+        Log.d("[ScanBle]" , ".......... CanScanForPeripherals  Delta -  ms : " + String.valueOf(delta) );
         return (delta > GetSCAN_PERIOD());
     }
 
     public  synchronized  void _ScanForPeripherals()
     {
         HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... start");
-        if ( GetConnectStat() && CanScanForPeripherals()) // 限定3 秒內不能重新掃描,以免快連線前又被斷線
+        if ( GetConnectStat() && !CanScanForPeripherals()) // 限定3 秒內不能重新掃描,以免快連線前又被斷線
         {
             HandShake.Instance().Log2File("_ScanForPeripherals ( ) ... 限定3 秒內不能重新掃描,以免快連線前又被斷線 ,  return 掉不處理");
             return;
@@ -631,6 +844,20 @@ public class BleFramework{
         HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... end");
     }
 
+    public  void _GetRSSI()
+    {
+        mBluetoothLeService.ReadRSSI();
+    }
+
+    public  String _GetUUID()
+    {
+        if(mBluetoothLeService.listBTDevice.size()==0)
+            return "";
+
+        String mac = mBluetoothLeService.listBTDevice.get(curPeripheralIndex).m_BluetoothDevice.getAddress();
+        return mac;
+    }
+
     public boolean _IsDeviceConnected() {
 	    Log.d(TAG, "_IsDeviceConnected");
         return GetConnectStat() ;//this.bConnectState;
@@ -639,6 +866,11 @@ public class BleFramework{
     public boolean _SearchDevicesDidFinish() {
 	    Log.d(TAG, "_SearchDevicesDidFinish");
         return !GetSearchingDevice();
+    }
+
+    public String _GetWifiIP()
+    {
+        return NetTools.GetWifiIP();
     }
 
     public String _GetListOfDevices()
@@ -678,6 +910,11 @@ public class BleFramework{
         return jsonListString;
     }
 
+    /*
+        @breif 目前連接的 BLE 設備 device index
+        */
+    int curPeripheralIndex = 0;
+
     public boolean _ConnectPeripheralAtIndex(int peripheralIndex) {
 
         //HandShake.Instance().OnGetServiceStart();
@@ -698,6 +935,22 @@ public class BleFramework{
 
 	    mDeviceName = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName();
 	    mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
+
+        curPeripheralIndex = peripheralIndex;
+        HandShake.Instance().AllowPolling = true; // 預設會做 pooling  的動作
+        if(mDeviceName.contains("C1"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.C1;
+        }
+        else if(mDeviceName.contains("sdb Bt dongle"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.USB_DONGLE;
+        }
+        else if(mDeviceName.contains("DB-2"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.DB2;
+            HandShake.Instance().AllowPolling = false; // 不做 pooling  的動作
+        }
 
         Log.d(HandShake.Instance().Tag, "Try connect device = " + mDeviceName + "( " + mDeviceAddress + " )");
         LogFile.GetInstance().AddLogAndSave(true, "Try connect device = " + mDeviceName + "( " + mDeviceAddress + " )");
@@ -748,11 +1001,41 @@ public class BleFramework{
         LogFile.GetInstance().ReportToFTP();
     }
 
-    public void TestCommand(String cmd,String data)
+    public String TestCommand(String cmd,String data)
     {
-
+        String rs = "";
         switch (data)
         {
+            case "isOpenGPS":
+            {
+                boolean isOpenGPS = this.isLocationEnabled(this._unityActivity);
+                rs = isOpenGPS ? "true" : "false";
+            }
+            break;
+            case "VersionCode":
+            {
+
+                try
+                {
+                    PackageInfo pInfo = this._unityActivity.getPackageManager().getPackageInfo(this._unityActivity.getPackageName(), 0);
+                    int versionCode = pInfo.versionCode;
+                    rs = String.valueOf(versionCode);
+                }
+                catch (PackageManager.NameNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+                break;
+            case "OpenGPSSetting":
+                this._unityActivity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                break;
+            case "ExitAPP":
+                _unityActivity.finish();
+                //activity.finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+                break;
             case "00_00":
                 Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSimulate(false)");
                 HandShake.Instance().SetSimulate(false);
@@ -860,21 +1143,24 @@ public class BleFramework{
                 break;
 
         }
+        return rs;
     }
 
 
     //  給 Unity 下 Log  到 Android 這邊顯示
-    public void Log(String tag,String msg)
+    public String Log(String tag,String msg)
     {
-
+        String rs = "";
         if(tag == null || tag.isEmpty())
             Log.d(TAG, msg);
         else if (tag.equals("TestCommand"))
         {
-            TestCommand(tag, msg);
+            rs = TestCommand(tag, msg);
         }
         else
             Log.d(tag,msg);
+
+        return rs;
     }
 
 	static {

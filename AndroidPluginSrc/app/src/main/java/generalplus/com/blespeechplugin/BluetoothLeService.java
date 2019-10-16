@@ -63,6 +63,9 @@ public class BluetoothLeService extends Service {
 
     boolean Write_Characteristic_Status = false;
 
+    public final static String ACTION_GATT_RSSI =
+            "com.example.bluetooth.le.ACTION_GATT_RSSI";
+
     public final static String ACTION_GATT_CONNECTED =
             "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
@@ -96,6 +99,40 @@ public class BluetoothLeService extends Service {
     public final static UUID UUID_FFF0_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF0_CHARACTERISTIC);
     public final static UUID UUID_FFF1_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF1_CHARACTERISTIC);
     public final static UUID UUID_FFF2_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF2_CHARACTERISTIC);
+    public final static UUID UUID_FFF4_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF4_CHARACTERISTIC);
+    public final static UUID UUID_FFF5_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF5_CHARACTERISTIC);
+
+    enum SDB_BLE_TYPE
+    {
+        C1 ,
+        USB_DONGLE,
+        DB2
+    }
+
+    // 設定 連接藍芽靶種類
+    public SDB_BLE_TYPE sdb_ble_type = SDB_BLE_TYPE.C1;
+
+    public UUID getUuid_ReadCharacteristic()
+    {
+        if (this.sdb_ble_type == SDB_BLE_TYPE.C1 || this.sdb_ble_type == SDB_BLE_TYPE.USB_DONGLE )
+            return UUID_FFF1_CHARACTERISTIC;
+        if (this.sdb_ble_type == SDB_BLE_TYPE.DB2)
+            return UUID_FFF4_CHARACTERISTIC;
+
+        return UUID_FFF1_CHARACTERISTIC;
+    }
+
+    public UUID getUuid_WriteCharacteristic()
+    {
+        if (this.sdb_ble_type == SDB_BLE_TYPE.C1 || this.sdb_ble_type == SDB_BLE_TYPE.USB_DONGLE )
+            return UUID_FFF2_CHARACTERISTIC;
+
+        if (this.sdb_ble_type == SDB_BLE_TYPE.DB2)
+            return UUID_FFF5_CHARACTERISTIC;
+
+        return UUID_FFF2_CHARACTERISTIC;
+    }
+
 
     public Handler mHandler = new Handler();
     // Stops scanning after 20 seconds.
@@ -266,7 +303,7 @@ public class BluetoothLeService extends Service {
                     HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... service not found!  ...  end ");
                     return;
                 }
-                BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+                BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_WriteCharacteristic());
                 if (characteristic == null)
                 {
                     Log.e(TAG, "char not found!");
@@ -398,10 +435,32 @@ public class BluetoothLeService extends Service {
                                             BluetoothGattCharacteristic characteristic) {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
+
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+
+            if (status == BluetoothGatt.GATT_SUCCESS)
+            {
+                broadcastUpdate(ACTION_GATT_RSSI,rssi);
+            }
+        }
     };
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
+        sendBroadcast(intent);
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void broadcastUpdate(final String action,int value) {
+        final Intent intent = new Intent(action);
+        intent.putExtra("value",value);
         sendBroadcast(intent);
 
         try {
@@ -430,13 +489,13 @@ public class BluetoothLeService extends Service {
         }
 
         // === For Read Characteristic ===
-        if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) {
+        if (getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
             intent.putExtra(READ_DATA, strOutput);
             //LogDataManager.getInstance().AddLogText("Read Data : " + strOutput);
         }
 
         // === For Write Characteristic ===
-        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+        if (getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
             intent.putExtra(WRITE_DATA, strOutput);
             //LogDataManager.getInstance().AddLogText("Write Data : " + strOutput);
         }
@@ -598,13 +657,13 @@ public class BluetoothLeService extends Service {
             Log.e(TAG, "service not found!");
             return null;
         }
-        BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(getUuid_WriteCharacteristic());
         if (characteristic1 == null) {
             Log.e(TAG, "char not found!");
             return null;
         }
 
-        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+        if (getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
 
 //        	byte[] value1 = {(byte)0xF0, (byte)0x80, (byte)0xA8, (byte)0x00, (byte)0x00,
 //        			(byte)0x38, (byte)0x18    			};
@@ -668,13 +727,13 @@ public class BluetoothLeService extends Service {
             Log.e(TAG, "service not found!");
             return null;
         }
-        BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(getUuid_WriteCharacteristic());
         if (characteristic1 == null) {
             Log.e(TAG, "char not found!");
             return null;
         }
 
-        if (UUID_FFF2_CHARACTERISTIC.equals(characteristic.getUuid())) {
+        if (getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
             // === 1. Write data to Characteristic ===
             characteristic1.setValue(byData);
 
@@ -698,7 +757,7 @@ public class BluetoothLeService extends Service {
 
 
             // === 2. Get Return data after Write data ===                   
-            BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
+            BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(getUuid_ReadCharacteristic());
             if (Response_characteristic1 == null) {
                 Log.e(TAG, "char not found!");
                 return null;
@@ -728,7 +787,7 @@ public class BluetoothLeService extends Service {
         boolean bNotify = bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
         // Enable Notification for FFF1, added by Ryan        
-        if (UUID_FFF1_CHARACTERISTIC.equals(characteristic.getUuid())) {
+        if (getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                     UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
@@ -780,7 +839,7 @@ public class BluetoothLeService extends Service {
         if (Service == null) {
             return false;
         }
-        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_WriteCharacteristic());
         if (characteristic == null) {
             return false;
         }
@@ -804,7 +863,7 @@ public class BluetoothLeService extends Service {
         if (Service == null) {
             return false;
         }
-        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF2_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_WriteCharacteristic());
         if (characteristic == null) {
             return false;
         }
@@ -820,6 +879,13 @@ public class BluetoothLeService extends Service {
         return true;
     }
 
+    /*
+        @brief 取得藍芽信號強度
+        */
+    public  boolean ReadRSSI()
+    {
+        return mBluetoothGatt.readRemoteRssi();
+    }
 
     public boolean ReadData(BluetoothGatt bluetoothGatt) {
 
@@ -827,7 +893,7 @@ public class BluetoothLeService extends Service {
         if (Service == null) {
             return false;
         }
-        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_ReadCharacteristic());
         if (characteristic == null) {
             return false;
         }
@@ -846,6 +912,12 @@ public class BluetoothLeService extends Service {
         }
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
             mNotifyCharacteristic = characteristic;
+            // [kevin.hsu/2018/06/22].adj. Willson 說在這之 Notify Enable 之前要 delay 1 sec .
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             setCharacteristicNotification(bluetoothGatt, characteristic, true);
         }
         return true;
@@ -856,7 +928,7 @@ public class BluetoothLeService extends Service {
         if (Service == null) {
             return false;
         }
-        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_ReadCharacteristic());
         if (characteristic == null) {
             return false;
         }

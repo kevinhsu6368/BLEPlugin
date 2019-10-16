@@ -27,8 +27,10 @@ public class SampleGattAttributes {
     public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
     
     public static String FFF0_CHARACTERISTIC = "0000fff0-0000-1000-8000-00805f9b34fb";
-    public static String FFF1_CHARACTERISTIC = "0000fff1-0000-1000-8000-00805f9b34fb";
-    public static String FFF2_CHARACTERISTIC = "0000fff2-0000-1000-8000-00805f9b34fb";
+    public static String FFF1_CHARACTERISTIC = "0000fff1-0000-1000-8000-00805f9b34fb";  //   C1 ---- Notify
+    public static String FFF2_CHARACTERISTIC = "0000fff2-0000-1000-8000-00805f9b34fb";  //   C1 ---- WRITE
+    public static String FFF4_CHARACTERISTIC = "0000fff4-0000-1000-8000-00805f9b34fb";  //   DB-2 ---- Notify
+    public static String FFF5_CHARACTERISTIC = "0000fff5-0000-1000-8000-00805f9b34fb";  //   DB-2 ----- READ
 
     static {
         // Sample Services.
@@ -41,7 +43,8 @@ public class SampleGattAttributes {
         
         attributes.put("0000fff0-0000-1000-8000-00805f9b34fb", "UUID:FFF0");
         attributes.put("0000fff1-0000-1000-8000-00805f9b34fb", "0xFFF1");
-        attributes.put("0000fff2-0000-1000-8000-00805f9b34fb", "0xFFF2");
+        attributes.put("0000fff2-0000-1000-8000-00805f9b34fb", "0xFFF2"); // for C1 get service
+        attributes.put("0000fff4-0000-1000-8000-00805f9b34fb", "0xFFF4"); // for DB-2  get service
         
         attributes.put("00001809-0000-1000-8000-00805f9b34fb", "Unknow");          
         

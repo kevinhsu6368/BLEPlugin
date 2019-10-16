@@ -18,13 +18,13 @@ document.getElementById(id+'Link').style.display = 'none';
 <body>
 <h1>Lint Report</h1>
 <div class="titleSeparator"></div>
-Check performed at Wed Oct 25 22:09:27 CST 2017.<br/>
-3 errors and 17 warnings found:<br/><br/>
+Check performed at Wed Oct 16 15:17:53 CST 2019.<br/>
+3 errors and 20 warnings found:<br/><br/>
 <table class="overview">
 <tr><td></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
 </td></tr>
 <tr>
-<td class="countColumn">2</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
+<td class="countColumn">5</td><td class="issueColumn"><img border="0" align="top" src="lint-results-debug_files/lint-warning.png" alt="Warning" />
 <a href="#DefaultLocale">DefaultLocale: Implied default locale in case conversion</a>
 </td></tr>
 <tr>
@@ -76,11 +76,35 @@ Check performed at Wed Oct 25 22:09:27 CST 2017.<br/>
 <div class="id"><a href="#" title="Return to top">DefaultLocale: Implied default locale in case conversion</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:329</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno"> 326</span>                 else if(ACTION_GATT_RSSI.equals(action))
+<span class="lineno"> 327</span>                 {
+<span class="lineno"> 328</span>                     int rssi = intent.getIntExtra("value",0);
+<span class="lineno"> 329</span>                     String sRSSI = <span class="errorspan">String.format("%d",rssi);</span>
+<span class="lineno"> 330</span>                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadRSSI", sRSSI);
+<span class="lineno"> 331</span>                 }
+</pre>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:510</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno"> 507</span>                             String devName = device.getName();
+<span class="lineno"> 508</span>                             byte [] bs = devName.getBytes();
+<span class="lineno"> 509</span>                             String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno"> 510</span>                             HandShake.Instance().Log2File( <span class="errorspan">String.format("dev - %d = %s , Hex = %s",(i+1),devName,hexDevName));</span>
+<span class="lineno"> 511</span>                             if(HandShake.Instance().CheckSDBBleDevice(device.getName()))  //bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+<span class="lineno"> 512</span>                             {
+</pre>
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:99</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno">  96</span>         WifiManager wifi_service = (WifiManager)context.getSystemService(WIFI_SERVICE);
+<span class="lineno">  97</span>         WifiInfo wifiInfo = wifi_service.getConnectionInfo();
+<span class="lineno">  98</span>         int ipAddress = wifiInfo.getIpAddress();
+<span class="lineno">  99</span>         String ip = <span class="errorspan">String.format("%d.%d.%d.%d",(ipAddress &amp; 0xff),(ipAddress >> 8 &amp; 0xff),(ipAddress >> 16 &amp; 0xff),(ipAddress >> 24 &amp; 0xff));</span>
+<span class="lineno"> 100</span>         return ip;
+<span class="lineno"> 101</span>     }
+</pre>
 <span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java</a>:338</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>toUpperCase(Locale)</code> instead</span><br /><pre class="errorlines">
 <span class="lineno"> 335</span>                 // file.
 <span class="lineno"> 336</span>                 // Save files are a special type of files which are used
 <span class="lineno"> 337</span>                 // to save objects, e.g. for backups.
-<span class="lineno"> 338</span>                 if (name != null &amp;&amp; name.<span class="errorspan">toUpperCase().endsWith(".SAVF"))</span>
+<span class="lineno"> 338</span>                 if (name != null &amp;&amp; name.<span class="errorspan">toUpperCase().endsWith(".SAVF"))</span>
 <span class="lineno"> 339</span>                 {
 <span class="lineno"> 340</span>                     mustScanForPathSeparator = false;
 </pre>
@@ -110,7 +134,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
 <div class="id"><a href="#" title="Return to top">NewApi: Calling new methods on older versions</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:66</span>: <span class="message">Call requires API level 23 (current min is 18): <code>android.app.Fragment#requestPermissions</code></span><br /><pre class="errorlines">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:66</span>: <span class="message">Call requires API level 23 (current min is 21): <code>android.app.Fragment#requestPermissions</code></span><br /><pre class="errorlines">
 <span class="lineno">  63</span> 					Log.i("NoodlePermissionGranter","fragment start");
 <span class="lineno">  64</span> 					String[] permissionsToRequest = new String [] {permissionFromEnumInt};
 <span class="lineno">  65</span> 					Log.i("NoodlePermissionGranter","fragment start " + permissionsToRequest[0]);
@@ -146,8 +170,8 @@ Similarly, you can use tools:targetApi="11" in an XML file to indicate that the 
 <span class="location"><a href="../../build.gradle">../../build.gradle</a>:15</span>: <span class="message">Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.</span><br /><pre class="errorlines">
 <span class="lineno">  12</span> 	}
 <span class="lineno">  13</span> 	defaultConfig {
-<span class="lineno">  14</span> 		minSdkVersion 18
-<span class="lineno">  15</span> 		<span class="errorspan">targetSdkVersion 23</span>
+<span class="lineno">  14</span> 		minSdkVersion 21
+<span class="lineno">  15</span> 		<span class="errorspan">targetSdkVersion 22</span>
 <span class="lineno">  16</span> 	}
 <span class="lineno">  17</span> 	buildTypes {
 </pre>
@@ -197,19 +221,19 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <div class="id"><a href="#" title="Return to top">SimpleDateFormat: Implied locale in date format</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:548</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno"> 545</span>         if(isInitLogFile==false)
-<span class="lineno"> 546</span>         {
-<span class="lineno"> 547</span>             isInitLogFile = true;
-<span class="lineno"> 548</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
-<span class="lineno"> 549</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno"> 550</span>             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:739</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 736</span>         if(isInitLogFile==false)
+<span class="lineno"> 737</span>         {
+<span class="lineno"> 738</span>             isInitLogFile = true;
+<span class="lineno"> 739</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
+<span class="lineno"> 740</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 741</span>             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
 </pre>
 <span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:214</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
 <span class="lineno"> 211</span>             // e.g. if today is Jan 1 2001 and the short date is Feb 29
 <span class="lineno"> 212</span>             String year = Integer.toString(now.get(Calendar.YEAR));
 <span class="lineno"> 213</span>             String timeStampStrPlusYear = timestampStr + " " + year;
-<span class="lineno"> 214</span>             SimpleDateFormat hackFormatter = <span class="errorspan">new SimpleDateFormat(recentDateFormat.toPattern() + " yyyy",</span>
+<span class="lineno"> 214</span>             SimpleDateFormat hackFormatter = <span class="errorspan">new SimpleDateFormat(recentDateFormat.toPattern() + " yyyy",</span>
 <span class="lineno"> 215</span>                     recentDateFormat.getDateFormatSymbols());
 <span class="lineno"> 216</span>             hackFormatter.setLenient(false);
 </pre>
@@ -217,7 +241,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 268</span>     private void setDefaultDateFormat(String format, DateFormatSymbols dfs) {
 <span class="lineno"> 269</span>         if (format != null) {
 <span class="lineno"> 270</span>             if (dfs != null) {
-<span class="lineno"> 271</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
+<span class="lineno"> 271</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
 <span class="lineno"> 272</span>             } else {
 <span class="lineno"> 273</span>                 this.defaultDateFormat = new SimpleDateFormat(format);
 </pre>
@@ -225,7 +249,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 270</span>             if (dfs != null) {
 <span class="lineno"> 271</span>                 this.defaultDateFormat = new SimpleDateFormat(format, dfs);
 <span class="lineno"> 272</span>             } else {
-<span class="lineno"> 273</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
+<span class="lineno"> 273</span>                 this.defaultDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
 <span class="lineno"> 274</span>             }
 <span class="lineno"> 275</span>             this.defaultDateFormat.setLenient(false);
 </pre>
@@ -233,7 +257,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 297</span>     private void setRecentDateFormat(String format, DateFormatSymbols dfs) {
 <span class="lineno"> 298</span>         if (format != null) {
 <span class="lineno"> 299</span>             if (dfs != null) {
-<span class="lineno"> 300</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
+<span class="lineno"> 300</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format, dfs);</span>
 <span class="lineno"> 301</span>             } else {
 <span class="lineno"> 302</span>                 this.recentDateFormat = new SimpleDateFormat(format);
 </pre>
@@ -243,7 +267,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 299</span>             if (dfs != null) {
 <span class="lineno"> 300</span>                 this.recentDateFormat = new SimpleDateFormat(format, dfs);
 <span class="lineno"> 301</span>             } else {
-<span class="lineno"> 302</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
+<span class="lineno"> 302</span>                 this.recentDateFormat = <span class="errorspan">new SimpleDateFormat(format);</span>
 <span class="lineno"> 303</span>             }
 <span class="lineno"> 304</span>             this.recentDateFormat.setLenient(false);
 </pre>
@@ -259,7 +283,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 192</span>         final SimpleDateFormat sdf;
 <span class="lineno"> 193</span>         final boolean hasMillis;
 <span class="lineno"> 194</span>         if (timestamp.contains(".")){
-<span class="lineno"> 195</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss.SSS");</span>
+<span class="lineno"> 195</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss.SSS");</span>
 <span class="lineno"> 196</span>             hasMillis = true;
 <span class="lineno"> 197</span>         } else {
 </pre>
@@ -267,7 +291,7 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <span class="lineno"> 195</span>             sdf = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
 <span class="lineno"> 196</span>             hasMillis = true;
 <span class="lineno"> 197</span>         } else {
-<span class="lineno"> 198</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss");</span>
+<span class="lineno"> 198</span>             sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMddHHmmss");</span>
 <span class="lineno"> 199</span>             hasMillis = false;
 <span class="lineno"> 200</span>         }
 </pre>
@@ -394,7 +418,7 @@ This detector looks for usages of libraries where the version you are using is n
 <span class="lineno">  38</span>      * No-op
 <span class="lineno">  39</span>      */
 <span class="lineno">  40</span>     @Override
-<span class="lineno">  41</span>     public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
+<span class="lineno">  41</span>     public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
 <span class="lineno">  42</span>     {
 <span class="lineno">  43</span>         return;
 </pre>
@@ -402,7 +426,7 @@ This detector looks for usages of libraries where the version you are using is n
 <span class="lineno">  46</span>          * Never generates a CertificateException.
 <span class="lineno">  47</span>          */
 <span class="lineno">  48</span>         @Override
-<span class="lineno">  49</span>         public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
+<span class="lineno">  49</span>         public void <span class="errorspan">checkClientTrusted(X509Certificate[] certificates, String authType)</span>
 <span class="lineno">  50</span>         {
 <span class="lineno">  51</span>             return;
 </pre>
