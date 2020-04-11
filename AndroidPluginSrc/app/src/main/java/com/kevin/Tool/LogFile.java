@@ -136,6 +136,8 @@ public class LogFile
         if(bStopSave)
             return ;
 
+        // 由於下面處理可能會太浪費時間,導致當機發生,故先拿掉下面程式碼
+
         // 檢查時間
         if(bCheckDelay && !checkDelayWriteTimeOut())
             return;

@@ -37,7 +37,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
         errorLine2="                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="510"
+            line="517"
             column="60"/>
     </issue>
 
@@ -183,7 +183,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="739"
+            line="746"
             column="36"/>
     </issue>
 

@@ -18,7 +18,7 @@ document.getElementById(id+'Link').style.display = 'none';
 <body>
 <h1>Lint Report</h1>
 <div class="titleSeparator"></div>
-Check performed at Wed Oct 16 15:17:53 CST 2019.<br/>
+Check performed at Fri Mar 27 17:26:35 CST 2020.<br/>
 3 errors and 20 warnings found:<br/><br/>
 <table class="overview">
 <tr><td></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
@@ -84,13 +84,13 @@ Check performed at Wed Oct 16 15:17:53 CST 2019.<br/>
 <span class="lineno"> 330</span>                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadRSSI", sRSSI);
 <span class="lineno"> 331</span>                 }
 </pre>
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:510</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
-<span class="lineno"> 507</span>                             String devName = device.getName();
-<span class="lineno"> 508</span>                             byte [] bs = devName.getBytes();
-<span class="lineno"> 509</span>                             String hexDevName = HandShake.bytesToHexString(bs);
-<span class="lineno"> 510</span>                             HandShake.Instance().Log2File( <span class="errorspan">String.format("dev - %d = %s , Hex = %s",(i+1),devName,hexDevName));</span>
-<span class="lineno"> 511</span>                             if(HandShake.Instance().CheckSDBBleDevice(device.getName()))  //bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
-<span class="lineno"> 512</span>                             {
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:517</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno"> 514</span>                             String devName = device.getName();
+<span class="lineno"> 515</span>                             byte [] bs = devName.getBytes();
+<span class="lineno"> 516</span>                             String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno"> 517</span>                             HandShake.Instance().Log2File( <span class="errorspan">String.format("dev - %d = %s , Hex = %s",(i+1),devName,hexDevName));</span>
+<span class="lineno"> 518</span>                             if(HandShake.Instance().CheckSDBBleDevice(device.getName()))  //bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))
+<span class="lineno"> 519</span>                             {
 </pre>
 <span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:99</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
 <span class="lineno">  96</span>         WifiManager wifi_service = (WifiManager)context.getSystemService(WIFI_SERVICE);
@@ -221,13 +221,13 @@ If your activity is simply a parent class intended to be subclassed by other "re
 <div class="id"><a href="#" title="Return to top">SimpleDateFormat: Implied locale in date format</a><div class="issueSeparator"></div>
 </div>
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:739</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
-<span class="lineno"> 736</span>         if(isInitLogFile==false)
-<span class="lineno"> 737</span>         {
-<span class="lineno"> 738</span>             isInitLogFile = true;
-<span class="lineno"> 739</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
-<span class="lineno"> 740</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
-<span class="lineno"> 741</span>             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:746</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 743</span>         if(isInitLogFile==false)
+<span class="lineno"> 744</span>         {
+<span class="lineno"> 745</span>             isInitLogFile = true;
+<span class="lineno"> 746</span>             SimpleDateFormat sdf = <span class="errorspan">new SimpleDateFormat("yyyyMMdd_HHmmss");</span>
+<span class="lineno"> 747</span>             String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 748</span>             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
 </pre>
 <span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:214</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
 <span class="lineno"> 211</span>             // e.g. if today is Jan 1 2001 and the short date is Feb 29

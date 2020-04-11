@@ -119,7 +119,7 @@ public class HandShake
     }
 
     //   間隔時間發送一次 Pooling Packet
-    long sendPoolingIntervalTick = 100; //  0.3 秒
+    long sendPoolingIntervalTick = 300; //  0.3 秒
     public synchronized void SetSendPoolingIntervalTick(int ms)
     {
         sendPoolingIntervalTick = ms;

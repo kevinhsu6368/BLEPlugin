@@ -456,9 +456,16 @@ public class BleFramework{
     public void DoStopScan()
     {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if( this.mScanner == null)
+                return;
             this.mScanner.stopScan(this.mScannerCallback);
-        else
-           this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        }
+        else {
+            if(this.mBluetoothAdapter == null)
+                return ;
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        }
     }
 
     public void DoStartScan()
@@ -740,7 +747,7 @@ public class BleFramework{
             String sTime = sdf.format(Calendar.getInstance().getTime());
             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
             LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
-            LogFile.GetInstance().SetStopSave(false);
+            LogFile.GetInstance().SetStopSave(true);
             LogFile.GetInstance().Start();
 
             // report log to ftp
@@ -780,8 +787,9 @@ public class BleFramework{
         ScanFilter filter1 = new ScanFilter.Builder().setDeviceName("C1       ").build();
         ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("DB-2").build();
 
-        mScannerFilters.add(filter1);
         mScannerFilters.add(filter2);
+        mScannerFilters.add(filter1);
+        //mScannerFilters.add(filter2);
 
         // 開啟 GPS 功能
         //this.CheckOpenGPS((Context)this._unityActivity);
