@@ -102,11 +102,32 @@ public class BluetoothLeService extends Service {
     public final static UUID UUID_FFF4_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF4_CHARACTERISTIC);
     public final static UUID UUID_FFF5_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF5_CHARACTERISTIC);
 
+    public void EnableCharReadNotify(boolean bEnable)
+    {
+        //setCharacteristicNotification(mBluetoothGatt,char,);
+        BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+        if (Service == null) {
+            return ;
+        }
+        BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_ReadCharacteristic());
+        if (characteristic == null) {
+            return ;
+        }
+
+        final int charaProp = characteristic.getProperties();
+
+        setCharacteristicNotification(mBluetoothGatt, characteristic, bEnable);
+
+
+    }
+
     enum SDB_BLE_TYPE
     {
         C1 ,
         USB_DONGLE,
-        DB2
+        DB2 ,
+        SDB_BT ,
+        DB2_Pro
     }
 
     // 設定 連接藍芽靶種類
@@ -114,19 +135,25 @@ public class BluetoothLeService extends Service {
 
     public UUID getUuid_ReadCharacteristic()
     {
-        if (this.sdb_ble_type == SDB_BLE_TYPE.C1 || this.sdb_ble_type == SDB_BLE_TYPE.USB_DONGLE )
+        /*
+        if (this.sdb_ble_type == SDB_BLE_TYPE.C1 || this.sdb_ble_type == SDB_BLE_TYPE.USB_DONGLE ) {
             return UUID_FFF1_CHARACTERISTIC;
-        if (this.sdb_ble_type == SDB_BLE_TYPE.DB2)
-            return UUID_FFF4_CHARACTERISTIC;
+        }
+        */
 
+
+        if (this.sdb_ble_type == SDB_BLE_TYPE.DB2) {
+            return UUID_FFF4_CHARACTERISTIC;
+        }
         return UUID_FFF1_CHARACTERISTIC;
     }
 
     public UUID getUuid_WriteCharacteristic()
     {
+        /*
         if (this.sdb_ble_type == SDB_BLE_TYPE.C1 || this.sdb_ble_type == SDB_BLE_TYPE.USB_DONGLE )
             return UUID_FFF2_CHARACTERISTIC;
-
+*/
         if (this.sdb_ble_type == SDB_BLE_TYPE.DB2)
             return UUID_FFF5_CHARACTERISTIC;
 
@@ -399,7 +426,8 @@ public class BluetoothLeService extends Service {
                                           BluetoothGattCharacteristic characteristic,
                                           int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e(TAG, "InWrite");
+                if(!LogFile.GetInstance().bStopSave)
+                    Log.e(TAG, "InWrite");
 
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
@@ -444,6 +472,12 @@ public class BluetoothLeService extends Service {
             {
                 broadcastUpdate(ACTION_GATT_RSSI,rssi);
             }
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            Log.d(TAG,String.format("onMtuChanged --> mtu = %d , status = %d",mtu,status));
+            super.onMtuChanged(gatt, mtu, status);
         }
     };
 
@@ -556,6 +590,14 @@ public class BluetoothLeService extends Service {
         HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ...  success  ... end ");
 
         return true;
+    }
+
+
+    public boolean setMTU(int len)
+    {
+        if(len > 200 )
+            len =200;
+        return this.mBluetoothGatt.requestMtu(len);
     }
 
     public void cleanAddress() {
@@ -679,6 +721,7 @@ public class BluetoothLeService extends Service {
 
             characteristic1.setValue(byData);
 
+            /*
             m_bAck = HandShake.Instance().GetIsResponseMode();
             if (m_bAck) {
                 characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
@@ -686,6 +729,9 @@ public class BluetoothLeService extends Service {
                 characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
             }
 
+             */
+            // [kevin.hsu/2020/08/04] 全部強制使用 Write_No_Response
+            characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
             Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1);
 
@@ -771,6 +817,8 @@ public class BluetoothLeService extends Service {
 
     }
 
+    public  boolean isNotifySuccess = false;
+
     /**
      * Enables or disables notification on a give characteristic.
      *
@@ -792,7 +840,7 @@ public class BluetoothLeService extends Service {
                     UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-            bluetoothGatt.writeDescriptor(descriptor);
+            isNotifySuccess = bluetoothGatt.writeDescriptor(descriptor); //  設定 "BLE - 通知 " 成功 ?
         }
 
         // This is specific to Heart Rate Measurement.
@@ -912,12 +960,15 @@ public class BluetoothLeService extends Service {
         }
         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
             mNotifyCharacteristic = characteristic;
-            // [kevin.hsu/2018/06/22].adj. Willson 說在這之 Notify Enable 之前要 delay 1 sec .
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // [kevin.hsu/2018/06/22].adj. Willson 說在這之 Notify Enable 之前要 delay 1 sec . <---- [kevin.hsu/2020/08/02].經測試即,史在此停一秒仍然無法把指令送出給 BLE
+           /*
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                 */
             setCharacteristicNotification(bluetoothGatt, characteristic, true);
         }
         return true;

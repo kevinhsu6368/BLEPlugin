@@ -13,6 +13,7 @@ import java.util.List;
 
 import generalplus.com.blespeechplugin.BleFramework;
 import generalplus.com.blespeechplugin.BluetoothLeService;
+import generalplus.com.blespeechplugin.BuildConfig;
 
 /**
  * Created by Kevin Hsu  on 2017/9/14.
@@ -77,6 +78,15 @@ public class HandShake
 
     // 回應 BLE 的 Command Packet 中
     boolean isResponsePacketing = false;
+
+    // 是否為使用 nRF52832 晶片
+    boolean isNRF52832 = false;
+
+    // 設定是否為 NRF52832 晶片
+    public void SetNRF52832(boolean _isNRF52832)
+    {
+        this.isNRF52832 = _isNRF52832;
+    }
 
     // debug tag name
     public String Tag = "HandShake";
@@ -180,7 +190,7 @@ public class HandShake
 
     //  SDB BLE 設備
     //public List<String> lsSDB_Ble_DeviceName = new ArrayList<String>();
-    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","sdb Bt dongle","DB-2"};
+    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","C2","SDB-BT","DB-2-Pro","DB-2","sdb Bt dongle"};
 
     // 是否有可用的 SDB BLE 設備
     public boolean CheckSDBBleDevice(String deviceName)
@@ -264,19 +274,28 @@ public class HandShake
 
     public boolean AllowPolling = true;
 
+    public  int threed_sleep_interval = 20; // 20ms
+
+    public  int iThreadLoopIndex = 0;
+
     Thread t = new Thread(new Runnable() {
         @Override
         public void run() {
             while (isRunning) {
                 try {
-                    Thread.sleep(20);
-
+                    Thread.sleep(threed_sleep_interval);
+                    iThreadLoopIndex++;
 
 
                     if(!isConnected && !isGetServiceing)
                         continue;;
 
+
+                    if(iThreadLoopIndex % 50 == 0 )
+                        BleFramework.getInstance().EnableCharReadNotify(true);
+
                     // 檢查是否連線取得 service -  time out
+                    /*
                     if (isGetServiceing) // 時間未到回 false　--->  測試是否發生在連線後要service失敗,若失敗則要重新連線
                     {
                         resetReSendPacket_count();
@@ -290,7 +309,20 @@ public class HandShake
                         continue;
                     }
 
+                     */
 
+                    //---------------------------------------------- for SDB_BT  [kevin/2020/07/17] add
+                    if(isResponseMode) //  C1 是使用 NoResposeMode , 而此處的 SDB_BT , DB-Pro  ResponseMode  = false , 此處不做重發機制, 重發由 unity 決定
+                    { // 是否考處判段藍牙設備名稱比較保險
+                        threed_sleep_interval = 10; // 每 10 ms 處理一次
+
+                        //AddReSendCount();
+                        SendPacket();
+                        //HandShake.Instance().Log2File("CheckSendPacketTimeOut ( ) , now  to re send packet ( " + GetSendPacket_count() + " )");
+
+                        continue;
+                    }
+                    // ------------------------------------------ for c2 . end
 
 
                     // 檢查是否 packet  time out -> 重發
@@ -391,13 +423,24 @@ public class HandShake
 
     public void Log2File(String msg)
     {
-        Log.d(Tag, msg);
+        //if(BuildConfig.DEBUG)
+        //    Log.d(Tag, msg);
         LogFile.GetInstance().AddLogAndSave(true,msg);
     }
 
     public synchronized void PostPacket(byte[] data) {
-        BLEPacket p = new BLECmdPacket(data);
-        lsPacket.add(p);
+
+        if(isNRF52832)
+        {
+            BLE_NRF52832_Packet p = new BLE_NRF52832_Packet(data);
+            lsPacket.add(p);
+            return;
+        }
+        else
+        {
+            BLEPacket p = new BLECmdPacket(data);
+            lsPacket.add(p);
+        }
     }
 
     public synchronized byte MakeNewPacketIndex() {
@@ -524,7 +567,9 @@ public class HandShake
                         UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleGameBoxState", "DisConnected");
                     }
                 }
-                Log.d(Tag,"isSendPooling  -  response , .... Success");
+
+                if(!LogFile.GetInstance().bStopSave)
+                    Log.d(Tag,"isSendPooling  -  response , .... Success");
 
                 // 2017/09/20 BLE 主動發送的資料,己合併在 回應Polling 第三bytes以後, 所以APP不需要SendResponsePacket ,但必須抽出Poolling第三bytes為ox50的資料
                 if( data[2] != 0x00 && data[2] != 0xFF) //== 0x50)  // 0x50 是 GBX 有接時的第一鍵值
@@ -618,6 +663,9 @@ public class HandShake
         isGetServiceing = true;
     }
 
+    // 記錄最近一次 app 2 ble 的 packet index
+    int nrf52832_app2ble_packet_index = 0;
+
     public synchronized void OnGetServiceFinished(boolean isSuccess) {
         isGetServiceing = false;
     }
@@ -644,18 +692,42 @@ public class HandShake
 
         BLEPacket p = lsPacket.get(0);
 
-        //  No Response 使用
+        //  No Response 使用 , C1 ==> No Respon0 = 114se Mode ==> 使用 Data 第一個 byte 當做是 Packet Index
+        //   當連接設備是 C2 , DB-2-Pro 時, 則使用 不固定封包長度 發送
+        if(isNRF52832)
+        {
+            // 檢查是否重覆發送
 
-        byte[] data = isResponseMode ? p.getNoPacketIndexData() : p.getData();
+            isSendPacketing = true;
+            preTime = System.currentTimeMillis();
+            byte[] data = p.getRawData();
 
-        isSendPacketing = true;
-        sendToBLE_PacketIndex = data[0];//
-        preTime = System.currentTimeMillis();
-        BleFramework.mBluetoothLeService.WriteData(data);
+            int packetIndex = (int)data[0];
+            if(packetIndex == nrf52832_app2ble_packet_index ) //  不重覆發送同 packet index 的 封包
+            {
+                 return false;
+            }
+            nrf52832_app2ble_packet_index = packetIndex;
 
-        String hex = StringTools.bytesToHex(data);
-        Log.d(Tag, "Command , WriteData = " + hex);
-        LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
+            BleFramework.mBluetoothLeService.WriteData(data);
+            String hex = StringTools.bytesToHex(data);
+            Log.d(Tag, "Command , WriteData = " + hex);
+            LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
+        }
+        else
+        {
+            byte[] data = isResponseMode ? p.getNoPacketIndexData() : p.getData();
+
+            isSendPacketing = true;
+            sendToBLE_PacketIndex = data[0];//
+            preTime = System.currentTimeMillis();
+            BleFramework.mBluetoothLeService.WriteData(data);
+
+            String hex = StringTools.bytesToHex(data);
+            Log.d(Tag, "Command , WriteData = " + hex);
+            LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
+        }
+
 
         return true;
     }
@@ -732,8 +804,11 @@ public class HandShake
         byte [] data = p.getData();
         BleFramework.mBluetoothLeService.WriteData(data);
 
+        if(LogFile.GetInstance().bStopSave)
+            return;
+
         String hex = StringTools.bytesToHex(data);
-        Log.d(Tag, "Pooling  , WriteData =  " + hex);
+        //Log.d(Tag, "Pooling  , WriteData =  " + hex);
         LogFile.GetInstance().AddLogAndSave(true,"Pooling  , WriteData =  " + hex);
     }
 
@@ -796,13 +871,26 @@ public class HandShake
     public class BLEPacket {
         byte[] bs_data;
 
+
+        // 取得 原始資料
+        public  byte[] getRawData()
+        {
+            return bs_data;
+        }
+
+        // 取得 資料 , 如果是  response mode , 則會 取得沒有 packe index 部份的資料, 即第二個byte以後的內容(第一個 byte為 C1-packet index)
         public byte[] getData()
         {
+            if(isNRF52832)
+                return bs_data;
+
+
             if(isResponseMode)
                 return getNoPacketIndexData();
             return bs_data;
         }
 
+        // 取得沒有 packe index 部份的資料, 即第二個byte以後的內容(第一個 byte為 C1-packet index)
         public byte[] getNoPacketIndexData() {
             byte[] bb = new byte[bs_data.length - 1];
             System.arraycopy(bs_data, 1,bb, 0,bb.length);
@@ -852,6 +940,20 @@ public class HandShake
         {
             this.bs_data = new byte[20];
             this.bs_data[0] = 0x00;
+        }
+    }
+
+    // C2 , DB-2-Pro 使用的封包
+    public class BLE_NRF52832_Packet extends BLEPacket
+    {
+        public BLE_NRF52832_Packet() {
+        }
+
+        public BLE_NRF52832_Packet(byte [] data)
+        {
+            int cnt = data.length;
+            bs_data = new byte[cnt];
+            System.arraycopy(data, 0, bs_data, 0, cnt);
         }
     }
 

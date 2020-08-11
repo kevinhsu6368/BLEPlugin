@@ -20,12 +20,12 @@
         "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_list_menu_item_checkbox.xml"
     },
     {
-        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_dialog_title_material.xml",
-        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_dialog_title_material.xml"
-    },
-    {
         "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
         "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_dialog_title_material.xml",
+        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_dialog_title_material.xml"
     },
     {
         "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_action.xml",
@@ -80,16 +80,16 @@
         "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_bar_up_container.xml"
     },
     {
-        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
-        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_popup_menu_item_layout.xml"
+        "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
+        "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
     },
     {
         "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
         "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_bar_title_item.xml"
     },
     {
-        "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
-        "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
+        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
+        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
     {
         "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media.xml",
@@ -116,12 +116,12 @@
         "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\select_dialog_item_material.xml"
     },
     {
-        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_media.xml",
-        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\notification_template_media.xml"
-    },
-    {
         "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_expanded_menu_layout.xml",
         "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_media.xml",
+        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\notification_template_media.xml"
     },
     {
         "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
@@ -152,12 +152,12 @@
         "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
-        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
-        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_list_menu_item_layout.xml"
-    },
-    {
         "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
         "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\select_dialog_singlechoice_material.xml"
+    },
+    {
+        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
+        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
         "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",
@@ -168,24 +168,24 @@
         "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\notification_template_big_media.xml"
     },
     {
-        "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
-        "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
-    },
-    {
         "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
         "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_bar_up_container.xml"
+    },
+    {
+        "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
+        "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
     {
         "merged": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
         "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_search_view.xml"
     },
     {
-        "merged": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
-        "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
-    },
-    {
         "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_content_include.xml",
         "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_screen_content_include.xml"
+    },
+    {
+        "merged": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
+        "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
     },
     {
         "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",

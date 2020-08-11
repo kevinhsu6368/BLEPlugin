@@ -87,7 +87,7 @@ public class LogFile
     }
 
     // 暫時關閉寫檔動作, 因為會有嚴重的 lag , 如果要寫未來需再開一條執緒去寫檔試看看
-    boolean bStopSave = true;
+    public boolean bStopSave = true;
     public void SetStopSave(boolean bStop)
     {
         bStopSave = bStop;
@@ -295,8 +295,10 @@ public class LogFile
         try {
             File[] fs = Folder.listFiles();
             List<String> lsFileName = new ArrayList<String>();
-            for (File f : fs) {
-                lsFileName.add(f.getAbsolutePath());
+            for (int i=0;i< fs.length;i++) {
+                File f = fs[i];
+                if(f!=null)
+                    lsFileName.add(f.getAbsolutePath());
             }
             Collections.sort(lsFileName);
 

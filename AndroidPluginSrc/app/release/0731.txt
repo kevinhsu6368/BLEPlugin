@@ -1,0 +1,2050 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package generalplus.com.blespeechplugin;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.PendingIntent.CanceledException;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothAdapter.LeScanCallback;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
+import android.bluetooth.le.ScanSettings.Builder;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Process;
+import android.os.Build.VERSION;
+import android.provider.Settings.Secure;
+import android.provider.Settings.SettingNotFoundException;
+import android.text.TextUtils;
+import android.util.Log;
+import com.kevin.Tool.BatteryTools;
+import com.kevin.Tool.HandShake;
+import com.kevin.Tool.LogFile;
+import com.kevin.Tool.NetTools;
+import com.kevin.Tool.StringTools;
+import com.kevin.Tool.SystemInfo;
+import com.unity3d.player.UnityPlayer;
+import generalplus.com.blespeechplugin.BluetoothLeService.LocalBinder;
+import generalplus.com.blespeechplugin.BluetoothLeService.SDB_BLE_TYPE;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class BleFramework {
+    private Activity _unityActivity;
+    private static volatile BleFramework _instance;
+    public static final String BLEUnityMessageName_OnBleDidInitialize = "OnBleDidInitialize";
+    public static final String BLEUnityMessageName_OnBleDidConnect = "OnBleDidConnect";
+    public static final String BLEUnityMessageName_OnBleDidCompletePeripheralScan = "OnBleDidCompletePeripheralScan";
+    public static final String BLEUnityMessageName_OnBleDidDisconnect = "OnBleDidDisconnect";
+    public static final String BLEUnityMessageName_OnBleDidReceiveData = "OnBleDidReceiveData";
+    private static final long SCAN_PERIOD = 10000L;
+    private static final String TAG = BleFramework.class.getSimpleName();
+    private byte[] _dataRx = new byte[3];
+    public static BluetoothLeService mBluetoothLeService;
+    private Map<UUID, BluetoothGattCharacteristic> _map = new HashMap();
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothLeScanner mScanner;
+    private BluetoothDevice _device;
+    private String _mDeviceAddress;
+    private String _mDeviceName;
+    private boolean bConnectState = false;
+    private boolean searchingDevice = false;
+    private ScanSettings mScannerSetting = null;
+    private ScanSettings mScannerSetting_mode_b = null;
+    private ScanSettings mScannerSetting_mode_c = null;
+    private ArrayList<ScanFilter> mScannerFilters = null;
+    private ArrayList<ScanFilter> mScannerFilters_mode_b = null;
+    private ArrayList<ScanFilter> mScannerFilters_mode_c = null;
+    private ArrayList<String> mOldScanMode_SpecialMobilePhones = null;
+    private final ServiceConnection mServiceConnection;
+    private final BroadcastReceiver mBleStateReceiver;
+    private final BroadcastReceiver mGattUpdateReceiver;
+    private LeScanCallback mLeScanCallback;
+    public Handler mHandler = new Handler();
+    private int RECONNECT_INTERVAL_TIME = 10000;
+    private String mDeviceName = "";
+    private String mDeviceAddress = "";
+    BluetoothDevice gCurBluetoothDevice = null;
+    int MAX_RECONNECT_NUM = 2;
+    int i32ReconnectCounter = 0;
+    Handler connectHandler = new Handler();
+    Runnable runnableReconnect = new Runnable() {
+        public void run() {
+            if (null == BleFramework.this.gCurBluetoothDevice) {
+                HandShake.Instance().Log2File("BleFramework - runnableReconnect : gCurBluetoothDevice = null ");
+            } else {
+                if (!BleFramework.this.GetConnectStat()) {
+                    BleFramework.mBluetoothLeService.cleanAddress();
+
+                    try {
+                        Thread.sleep(30L);
+                    } catch (InterruptedException var2) {
+                        var2.printStackTrace();
+                    }
+
+                    HandShake.Instance().Log2File("mBluetoothLeService.connectDevice(gCurBluetoothDevice)");
+                    BleFramework.mBluetoothLeService.connectDevice(BleFramework.this.gCurBluetoothDevice);
+                }
+
+            }
+        }
+    };
+    private long iScanForPeripherals_Count = 0L;
+    private long pre_ScanForPeripherals = 0L;
+    private String curScanMode = "";
+    private BleFramework.ScanMode scanMode;
+    public boolean bNewScanMode;
+    ScanCallback mScannerCallback;
+    private boolean isInitLogFile;
+    int curPeripheralIndex;
+
+    public synchronized boolean GetSearchingDevice() {
+        return this.searchingDevice;
+    }
+
+    public synchronized void SetSearchingDevice(boolean bSearching) {
+        this.searchingDevice = bSearching;
+        HandShake.Instance().Log2File("SetSearchingDevice ( " + Boolean.toString(bSearching) + " ) ");
+    }
+
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.example.bluetooth.le.ACTION_GATT_CONNECTED");
+        intentFilter.addAction("com.example.bluetooth.le.ACTION_GATT_DISCONNECTED");
+        intentFilter.addAction("com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED");
+        intentFilter.addAction("com.example.bluetooth.le.ACTION_GATT_RSSI");
+        intentFilter.addAction("com.example.bluetooth.le.ACTION_DATA_AVAILABLE");
+        intentFilter.addAction("AUTO_CONNECT");
+        intentFilter.addAction("NEXT_RECONNECT");
+        return intentFilter;
+    }
+
+    private static IntentFilter makeBleStateIntentFilter() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED");
+        return intentFilter;
+    }
+
+    public static BleFramework getInstance(Activity activity) {
+        if (_instance == null) {
+            Class var1 = BleFramework.class;
+            synchronized(BleFramework.class) {
+                if (_instance == null) {
+                    Log.d(TAG, "BleFramework: Creation of _instance");
+                    _instance = new BleFramework(activity);
+                }
+            }
+        }
+
+        return _instance;
+    }
+
+    public static BleFramework getInstance() {
+        return _instance;
+    }
+
+    public synchronized void SetConnectState(boolean bConnected) {
+        this.bConnectState = bConnected;
+        HandShake.Instance().SetConnected(bConnected);
+        HandShake.Instance().Log2File("SetConnectState ( " + Boolean.toString(bConnected) + " ) ");
+    }
+
+    public synchronized boolean GetConnectStat() {
+        return this.bConnectState;
+    }
+
+    public void OnEnableBluetooth() {
+        if (this.mScanner == null) {
+            this.mScanner = this.mBluetoothAdapter.getBluetoothLeScanner();
+        }
+
+    }
+
+    public BleFramework(Activity activity) {
+        this.scanMode = BleFramework.ScanMode.mode_a;
+        this.bNewScanMode = true;
+        this.mScannerCallback = new ScanCallback() {
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... start");
+                BluetoothDevice device = result.getDevice();
+                if (null == device.getName()) {
+                    HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return");
+                } else {
+                    for(int i = 0; i < BleFramework.mBluetoothLeService.listBTDevice.size(); ++i) {
+                        if (((BLEObj)BleFramework.mBluetoothLeService.listBTDevice.get(i)).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress())) {
+                            HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+                            return;
+                        }
+                    }
+
+                    BLEObj obj = new BLEObj();
+                    obj.m_BluetoothDevice = device;
+                    BleFramework.mBluetoothLeService.listBTDevice.add(obj);
+                    String devName = device.getName();
+                    byte[] bs = devName.getBytes();
+                    String hexDevName = HandShake.bytesToHexString(bs);
+                    HandShake.Instance().Log2File(String.format("find dev = %s , Hex = %s", devName, hexDevName));
+                    if (HandShake.Instance().CheckSDBBleDevice(device.getName())) {
+                        HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
+                        BleFramework.this.scanLeDevice(false);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                    }
+
+                    HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... end");
+                }
+            }
+
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+            }
+
+            public void onScanFailed(int errorCode) {
+                super.onScanFailed(errorCode);
+            }
+        };
+        this.isInitLogFile = false;
+        this.curPeripheralIndex = 0;
+        NetTools.Start_CheckNetworkState(activity);
+        this.mServiceConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName componentName, IBinder service) {
+                HandShake.Instance().Log2File("onServiceConnected ( ) ... start ");
+                BleFramework.mBluetoothLeService = ((LocalBinder)service).getService();
+                if (!BleFramework.mBluetoothLeService.initialize()) {
+                    HandShake.Instance().Log2File("onServiceConnected ( ) ... Unable to initialize Bluetooth ");
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Unable to initialize Bluetooth");
+                } else {
+                    HandShake.Instance().Log2File("onServiceConnected ( ) ... Success ");
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
+                }
+
+                HandShake.Instance().Log2File("onServiceConnected ( ) ... end ");
+            }
+
+            public void onServiceDisconnected(ComponentName componentName) {
+                HandShake.Instance().Log2File("onServiceDisconnected ( ) ");
+                BleFramework.mBluetoothLeService = null;
+            }
+        };
+        this.mLeScanCallback = new LeScanCallback() {
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... start");
+                if (null == device.getName()) {
+                    HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return");
+                } else {
+                    for(int i = 0; i < BleFramework.mBluetoothLeService.listBTDevice.size(); ++i) {
+                        if (((BLEObj)BleFramework.mBluetoothLeService.listBTDevice.get(i)).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress())) {
+                            HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+                            return;
+                        }
+                    }
+
+                    BLEObj obj = new BLEObj();
+                    obj.m_BluetoothDevice = device;
+                    BleFramework.mBluetoothLeService.listBTDevice.add(obj);
+                    String devName = device.getName();
+                    byte[] bs = devName.getBytes();
+                    String hexDevName = HandShake.bytesToHexString(bs);
+                    HandShake.Instance().Log2File(String.format("find dev = %s , Hex = %s", devName, hexDevName));
+                    if (HandShake.Instance().CheckSDBBleDevice(device.getName())) {
+                        HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
+                        BleFramework.this.scanLeDevice(false);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                    }
+
+                    HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... end");
+                }
+            }
+        };
+        this.mBleStateReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals("android.bluetooth.adapter.action.STATE_CHANGED")) {
+                    int state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", -2147483648);
+                    switch(state) {
+                    case 10:
+                    case 11:
+                    case 13:
+                    default:
+                        break;
+                    case 12:
+                        BleFramework.this.OnEnableBluetooth();
+                    }
+                }
+
+            }
+        };
+        this.mGattUpdateReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... start");
+                if ("com.example.bluetooth.le.ACTION_GATT_CONNECTED".equals(action)) {
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_CONNECTED");
+                    BleFramework.this.SetConnectState(false);
+                    HandShake.Instance().SetNotifyUnityConnected(false);
+                    HandShake.Instance().OnGetServiceStart();
+                    HandShake.Instance().ResetTimeOut();
+                    BleFramework.this.RECONNECT_INTERVAL_TIME = 10000;
+                } else if ("com.example.bluetooth.le.ACTION_GATT_DISCONNECTED".equals(action)) {
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_DISCONNECTED");
+                    BleFramework.this.SetConnectState(false);
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidDisconnect", "Success");
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_DISCONNECTED ... notify unity : disconnect ");
+                    HandShake.Instance().SetNotifyUnityConnected(false);
+                } else if ("com.example.bluetooth.le.ACTION_GATT_RSSI".equals(action)) {
+                    int rssi = intent.getIntExtra("value", 0);
+                    String sRSSI = String.format("%d", rssi);
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadRSSI", sRSSI);
+                } else if ("com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED".equals(action)) {
+                    BleFramework.this.SetConnectState(true);
+                    HandShake.Instance().OnGetServiceFinished(true);
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_SERVICES_DISCOVERED");
+                    BleFramework.this.connectHandler.removeCallbacks(BleFramework.this.runnableReconnect);
+                    BleFramework.this.i32ReconnectCounter = 0;
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidConnect", "Success");
+                    HandShake.Instance().SetNotifyUnityConnected(true);
+                } else if ("com.example.bluetooth.le.ACTION_DATA_AVAILABLE".equals(action)) {
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_DATA_AVAILABLE");
+                    String data;
+                    if (null != intent.getStringExtra("com.example.bluetooth.le.READ_DATA")) {
+                        data = intent.getStringExtra("com.example.bluetooth.le.READ_DATA");
+                        HandShake.Instance().OnRecvPacket(true, StringTools.HexToBytes(data));
+                        if (HandShake.Instance().GetIsResponseMode()) {
+                            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
+                        }
+                    } else if (null != intent.getStringExtra("com.example.bluetooth.le.WRITE_DATA")) {
+                        data = intent.getStringExtra("com.example.bluetooth.le.WRITE_DATA");
+                        HandShake.Instance().Log2File("WRITE_DATA = " + data);
+                    } else {
+                        HandShake.Instance().Log2File("unknow data");
+                    }
+                } else if ("AUTO_CONNECT".equals(action)) {
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... AUTO_CONNECT");
+                    BleFramework.this.i32ReconnectCounter = 0;
+                    HandShake.Instance().Log2File("connectHandler.removeCallbacks(runnableReconnect)");
+                    BleFramework.this.connectHandler.removeCallbacks(BleFramework.this.runnableReconnect);
+                    HandShake.Instance().Log2File("connectHandler.postDelayed(runnableReconnect  , 10000 = 10 sec)");
+                    BleFramework.this.connectHandler.postDelayed(BleFramework.this.runnableReconnect, 10000L);
+                } else if ("NEXT_RECONNECT".equals(action)) {
+                    HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... NEXT_RECONNECT");
+                    HandShake.Instance().Log2File("connectHandler.removeCallbacks(runnableReconnect)");
+                    BleFramework.this.connectHandler.removeCallbacks(BleFramework.this.runnableReconnect);
+                    if (BleFramework.this.i32ReconnectCounter > BleFramework.this.MAX_RECONNECT_NUM) {
+                        HandShake.Instance().Log2File("if (i32ReconnectCounter > MAX_RECONNECT_NUM = 2) return ");
+                        return;
+                    }
+
+                    HandShake.Instance().Log2File("connectHandler.postDelayed(runnableReconnect, 10000 = 10 sec)");
+                    BleFramework.this.connectHandler.postDelayed(BleFramework.this.runnableReconnect, 10000L);
+                }
+
+                HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... end");
+            }
+        };
+        this._unityActivity = activity;
+    }
+
+    public synchronized void AddScanForPeripheralsCount() {
+        ++this.iScanForPeripherals_Count;
+        HandShake.Instance().Log2File("iScanForPeripherals_Count = " + this.iScanForPeripherals_Count);
+    }
+
+    public synchronized void ResetScanForPeripheralsCount() {
+        this.iScanForPeripherals_Count = 0L;
+        HandShake.Instance().Log2File("iScanForPeripherals_Count = " + this.iScanForPeripherals_Count);
+    }
+
+    public long GetScanForPeripheralsCount() {
+        return this.iScanForPeripherals_Count;
+    }
+
+    public long GetSCAN_PERIOD() {
+        int period = 10000;
+        if (this.iScanForPeripherals_Count == 0L) {
+            return (long)period;
+        } else {
+            return this.iScanForPeripherals_Count == 1L ? (long)period : (long)(period * 2);
+        }
+    }
+
+    public long GetWaitForScan() {
+        long waitForScan = 2000L;
+        if (this.iScanForPeripherals_Count % 4L == 3L) {
+        }
+
+        return waitForScan;
+    }
+
+    public long Get_pre_ScanForPeripherals() {
+        return this.pre_ScanForPeripherals;
+    }
+
+    public void DoStopScan() {
+        if (VERSION.SDK_INT <= 21) {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        } else {
+            if (this.scanMode == BleFramework.ScanMode.mode_a) {
+                int iflag = (int)this.iScanForPeripherals_Count % 9;
+                if (iflag >= 0 && iflag <= 2) {
+                    if (this.mScanner != null) {
+                        this.mScanner.stopScan(this.mScannerCallback);
+                    }
+                } else if (iflag >= 3 && iflag <= 5) {
+                    this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+                } else if (this.mScanner != null) {
+                    this.mScanner.stopScan(this.mScannerCallback);
+                }
+            } else if (this.scanMode == BleFramework.ScanMode.mode_b) {
+                if (this.mScanner != null) {
+                    this.mScanner.stopScan(this.mScannerCallback);
+                }
+            } else if (this.scanMode == BleFramework.ScanMode.mode_c) {
+                if (this.mScanner != null) {
+                    this.mScanner.stopScan(this.mScannerCallback);
+                }
+            } else if (this.scanMode == BleFramework.ScanMode.mode_d) {
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            }
+
+        }
+    }
+
+    public void DoStartScan() {
+        if (VERSION.SDK_INT <= 21) {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        } else {
+            if (this.scanMode == BleFramework.ScanMode.mode_a) {
+                int iflag = (int)this.iScanForPeripherals_Count % 9;
+                if (iflag >= 0 && iflag <= 2) {
+                    this.mScanner.startScan(this.mScannerFilters_mode_b, this.mScannerSetting, this.mScannerCallback);
+                    this.curScanMode = "scan_mode_b";
+                } else if (iflag >= 3 && iflag <= 5) {
+                    this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+                    this.curScanMode = "scan_mode_d";
+                } else {
+                    this.mScanner.startScan(this.mScannerFilters_mode_c, this.mScannerSetting, this.mScannerCallback);
+                    this.curScanMode = "scan_mode_c";
+                }
+            } else if (this.scanMode == BleFramework.ScanMode.mode_b) {
+                this.mScanner.startScan(this.mScannerFilters_mode_b, this.mScannerSetting, this.mScannerCallback);
+                this.curScanMode = "scan_mode_b";
+            } else if (this.scanMode == BleFramework.ScanMode.mode_c) {
+                this.mScanner.startScan(this.mScannerFilters_mode_c, this.mScannerSetting, this.mScannerCallback);
+                this.curScanMode = "scan_mode_c";
+            } else if (this.scanMode == BleFramework.ScanMode.mode_d) {
+                this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+                this.curScanMode = "scan_mode_d";
+            }
+
+        }
+    }
+
+    public synchronized void scanLeDevice(final boolean enable) {
+        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... start");
+        if (enable) {
+            this.CheckOpenBluetooth();
+            this.mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    if (BleFramework.this.GetSearchingDevice()) {
+                        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - start ");
+                        boolean isFindBLE = false;
+
+                        for(int i = 0; i < BleFramework.mBluetoothLeService.listBTDevice.size(); ++i) {
+                            BluetoothDevice device = ((BLEObj)BleFramework.mBluetoothLeService.listBTDevice.get(i)).m_BluetoothDevice;
+                            String devName = device.getName();
+                            byte[] bs = devName.getBytes();
+                            String hexDevName = HandShake.bytesToHexString(bs);
+                            HandShake.Instance().Log2File(String.format("dev - %d = %s , Hex = %s", i + 1, devName, hexDevName));
+                            if (HandShake.Instance().CheckSDBBleDevice(device.getName())) {
+                                isFindBLE = true;
+                                break;
+                            }
+                        }
+
+                        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - mBluetoothAdapter.stopLeScan(mLeScanCallback)  ");
+                        BleFramework.this.DoStopScan();
+                        if (isFindBLE) {
+                            BleFramework.this.SetSearchingDevice(false);
+                            BleFramework.this.ResetScanForPeripheralsCount();
+                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - is scan find C1 , and notify unity ");
+                            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                        } else {
+                            long sleepTick = BleFramework.this.GetWaitForScan();
+                            HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - and no find c1 ,  sleep  : " + sleepTick + " ms");
+                            BleFramework.this.mHandler.postDelayed(new Runnable() {
+                                public void run() {
+                                    if (!BleFramework.this.GetConnectStat()) {
+                                        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - and no find c1 , to re scan : call scanLeDevice(true) ");
+                                        BleFramework.this.SetSearchingDevice(true);
+                                        BleFramework.this.scanLeDevice(true);
+                                    }
+
+                                }
+                            }, sleepTick);
+                        }
+                    }
+
+                }
+            }, 10000L);
+            this.SetSearchingDevice(true);
+            this.AddScanForPeripheralsCount();
+            this.DoStartScan();
+        } else {
+            this.ResetScanForPeripheralsCount();
+            this.SetSearchingDevice(false);
+            this.DoStopScan();
+        }
+
+        HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... end");
+    }
+
+    private void unregisterBleUpdatesReceiver() {
+        Log.d(TAG, "unregisterBleUpdatesReceiver:");
+        this._unityActivity.unregisterReceiver(this.mGattUpdateReceiver);
+        BatteryTools.Instance().Close();
+    }
+
+    private void registerBleUpdatesReceiver() {
+        Log.d(TAG, "registerBleUpdatesReceiver:");
+        if (!this.mBluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "registerBleUpdatesReceiver: WARNING: _mBluetoothAdapter is not enabled!");
+        }
+
+        Log.d(TAG, "registerBleUpdatesReceiver: registerReceiver");
+        this._unityActivity.registerReceiver(this.mGattUpdateReceiver, makeGattUpdateIntentFilter());
+    }
+
+    private void registerBleStateReceiver() {
+        Log.d(TAG, "registerBleStateReceiver:");
+        if (!this.mBluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "registerBleStateReceiver: WARNING: _mBluetoothAdapter is not enabled!");
+        }
+
+        Log.d(TAG, "registerBleStateReceiver: registerReceiver");
+        this._unityActivity.registerReceiver(this.mBleStateReceiver, makeBleStateIntentFilter());
+    }
+
+    private void unregisterBleStateReceiver() {
+        Log.d(TAG, "unregisterBleStateReceiver:");
+        this._unityActivity.unregisterReceiver(this.mBleStateReceiver);
+    }
+
+    private void CheckOpenGPS(Context context) {
+        Intent GPSIntent = new Intent();
+        GPSIntent.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+        GPSIntent.addCategory("android.intent.category.ALTERNATIVE");
+        GPSIntent.setData(Uri.parse("custom:3"));
+
+        try {
+            PendingIntent.getBroadcast(context, 0, GPSIntent, 0).send();
+        } catch (CanceledException var4) {
+            var4.printStackTrace();
+        }
+
+    }
+
+    public boolean isLocationEnabled(Context context) {
+        int locationMode = false;
+        if (VERSION.SDK_INT >= 19) {
+            int locationMode;
+            try {
+                locationMode = Secure.getInt(context.getContentResolver(), "location_mode");
+            } catch (SettingNotFoundException var5) {
+                var5.printStackTrace();
+                return false;
+            }
+
+            String sMode = "";
+            switch(locationMode) {
+            case 1:
+                sMode = "SENSORS_ONLY";
+                break;
+            case 2:
+                sMode = "BATTERY_SAVING";
+                break;
+            case 3:
+                sMode = "HIGH_ACCURACY";
+                break;
+            default:
+                sMode = "OFF";
+            }
+
+            Log.d("[GPS] ", "Get GPS Status ... " + sMode);
+            return locationMode != 0;
+        } else {
+            String locationProviders = Secure.getString(context.getContentResolver(), "location_providers_allowed");
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+    private void CheckOpenBluetooth() {
+        if (!this.mBluetoothAdapter.isEnabled()) {
+            this.mBluetoothAdapter.enable();
+        }
+    }
+
+    public void _InitBLEFramework(String mode) {
+        Log.d(TAG, "_InitBLEFramework( " + mode + " ) ... ");
+        this.SetScanMode(mode);
+        this._InitBLEFramework();
+    }
+
+    @TargetApi(23)
+    public void _InitBLEFramework() {
+        HandShake.Instance().Log2File("_InitBLEFramework ( ) ... start");
+        HandShake.Instance().Start();
+        BatteryTools.Instance().Init(this._unityActivity);
+        SystemInfo.Init(this._unityActivity);
+        if (!this.isInitLogFile) {
+            this.isInitLogFile = true;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String sTime = sdf.format(Calendar.getInstance().getTime());
+            String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
+            LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
+            LogFile.GetInstance().SetStopSave(false);
+            LogFile.GetInstance().Start();
+        }
+
+        System.out.println("Android Executing: _InitBLEFramework");
+        if (!this._unityActivity.getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: missing FEATURE_BLUETOOTH_LE");
+            HandShake.Instance().Log2File("_InitBLEFramework ( ) ... onCreate: fail: missing FEATURE_BLUETOOTH_LE .... end");
+        } else {
+            BluetoothManager mBluetoothManager = (BluetoothManager)this._unityActivity.getSystemService("bluetooth");
+            this.mBluetoothAdapter = mBluetoothManager.getAdapter();
+            if (this.mBluetoothAdapter == null) {
+                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: Context.BLUETOOTH_SERVICE");
+                HandShake.Instance().Log2File("_InitBLEFramework ( ) ... onCreate: fail: _mBluetoothAdapter is null  ..... end");
+            } else {
+                this.mOldScanMode_SpecialMobilePhones = new ArrayList();
+                this.mScanner = this.mBluetoothAdapter.getBluetoothLeScanner();
+                this.mScannerSetting = (new Builder()).setScanMode(2).setCallbackType(1).build();
+                this.mScannerFilters = new ArrayList();
+                ScanFilter filter1 = (new android.bluetooth.le.ScanFilter.Builder()).setDeviceName("C1       ").build();
+                ScanFilter filter2 = (new android.bluetooth.le.ScanFilter.Builder()).setDeviceName("SDB-BT").build();
+                ScanFilter filter3 = (new android.bluetooth.le.ScanFilter.Builder()).setDeviceName("DB-2-Pro").build();
+                ScanFilter filter4 = (new android.bluetooth.le.ScanFilter.Builder()).setDeviceName("DB-2").build();
+                this.mScannerFilters.add(filter1);
+                this.mScannerFilters.add(filter2);
+                this.mScannerFilters.add(filter3);
+                this.mScannerFilters.add(filter4);
+                this.mScannerFilters_mode_b = new ArrayList();
+                this.mScannerFilters_mode_b.add(filter1);
+                this.mScannerFilters_mode_b.add(filter2);
+                this.mScannerFilters_mode_b.add(filter3);
+                this.mScannerFilters_mode_b.add(filter4);
+                this.mScannerFilters_mode_c = new ArrayList();
+                this.CheckOpenBluetooth();
+                HandShake.Instance().Log2File("_InitBLEFramework ( ) ... Check Open Bluetooth ");
+                this.registerBleUpdatesReceiver();
+                this.registerBleStateReceiver();
+                Intent gattServiceIntent = new Intent(this._unityActivity, BluetoothLeService.class);
+                this._unityActivity.bindService(gattServiceIntent, this.mServiceConnection, 1);
+                Log.d(TAG, "onCreate: _mBluetoothAdapter correctly initialized");
+                HandShake.Instance().Log2File("_InitBLEFramework ( ) ... end");
+            }
+        }
+    }
+
+    private synchronized boolean CanScanForPeripherals() {
+        long delta = System.currentTimeMillis() - this.Get_pre_ScanForPeripherals();
+        Log.d("[ScanBle]", ".......... CanScanForPeripherals  Delta -  ms : " + String.valueOf(delta));
+        return delta > this.GetSCAN_PERIOD();
+    }
+
+    public synchronized void _ScanForPeripherals() {
+        HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... start");
+        if (this.GetConnectStat() && !this.CanScanForPeripherals()) {
+            HandShake.Instance().Log2File("_ScanForPeripherals ( ) ... 限定3 秒內不能重新掃描,以免快連線前又被斷線 ,  return 掉不處理");
+        } else {
+            this.connectHandler.removeCallbacks(this.runnableReconnect);
+            mBluetoothLeService.listBTDevice.clear();
+            this.scanLeDevice(true);
+            HandShake.Instance().Log2File("unity  call  :   _ScanForPeripherals ( ) ... end");
+        }
+    }
+
+    public void _GetRSSI() {
+        if (mBluetoothLeService.listBTDevice.size() != 0) {
+            mBluetoothLeService.ReadRSSI();
+        }
+    }
+
+    public String _GetScanMode() {
+        return this.curScanMode;
+    }
+
+    public String _GetUUID() {
+        if (mBluetoothLeService.listBTDevice.size() == 0) {
+            return "";
+        } else {
+            String mac = ((BLEObj)mBluetoothLeService.listBTDevice.get(this.curPeripheralIndex)).m_BluetoothDevice.getAddress();
+            return mac;
+        }
+    }
+
+    public boolean _IsDeviceConnected() {
+        Log.d(TAG, "_IsDeviceConnected");
+        return this.GetConnectStat();
+    }
+
+    public boolean _SearchDevicesDidFinish() {
+        Log.d(TAG, "_SearchDevicesDidFinish");
+        return !this.GetSearchingDevice();
+    }
+
+    public String _GetWifiIP() {
+        return NetTools.GetWifiIP();
+    }
+
+    public String _GetListOfDevices() {
+        String jsonListString;
+        if (mBluetoothLeService.listBTDevice.size() > 0) {
+            Log.d(TAG, "_GetListOfDevices");
+            String[] uuidsArray = new String[mBluetoothLeService.listBTDevice.size()];
+
+            for(int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
+                BluetoothDevice bd = ((BLEObj)mBluetoothLeService.listBTDevice.get(i)).m_BluetoothDevice;
+                uuidsArray[i] = bd.getName();
+            }
+
+            Log.d(TAG, "_GetListOfDevices: Building JSONArray");
+            JSONArray uuidsJSON = new JSONArray(Arrays.asList(uuidsArray));
+            Log.d(TAG, "_GetListOfDevices: Building JSONObject");
+            JSONObject dataUuidsJSON = new JSONObject();
+
+            try {
+                Log.d(TAG, "_GetListOfDevices: Try inserting uuuidsJSON array in the JSONObject");
+                dataUuidsJSON.put("data", uuidsJSON);
+            } catch (JSONException var6) {
+                Log.e(TAG, "_GetListOfDevices: JSONException");
+                LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: JSONException");
+                var6.printStackTrace();
+            }
+
+            jsonListString = dataUuidsJSON.toString();
+            Log.d(TAG, "_GetListOfDevices: sending found devices in JSON: " + jsonListString);
+            LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: sending found devices in JSON: " + jsonListString);
+        } else {
+            jsonListString = "NO DEVICE FOUND";
+            Log.d(TAG, "_GetListOfDevices: no device was found");
+            LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: no device was found");
+        }
+
+        return jsonListString;
+    }
+
+    public boolean _ConnectPeripheralAtIndex(int peripheralIndex) {
+        HandShake.Instance().Log2File("unity  call  :   _ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. start");
+        mBluetoothLeService.disconnect();
+        mBluetoothLeService.cleanAddress();
+
+        try {
+            Thread.sleep(30L);
+        } catch (InterruptedException var3) {
+            var3.printStackTrace();
+        }
+
+        this.mDeviceName = ((BLEObj)mBluetoothLeService.listBTDevice.get(peripheralIndex)).m_BluetoothDevice.getName();
+        this.mDeviceAddress = ((BLEObj)mBluetoothLeService.listBTDevice.get(peripheralIndex)).m_BluetoothDevice.getAddress();
+        this.curPeripheralIndex = peripheralIndex;
+        HandShake.Instance().AllowPolling = true;
+        if (this.mDeviceName.contains("C1")) {
+            mBluetoothLeService.sdb_ble_type = SDB_BLE_TYPE.C1;
+            HandShake.Instance().SetNRF52832(false);
+        } else if (this.mDeviceName.contains("sdb Bt dongle")) {
+            mBluetoothLeService.sdb_ble_type = SDB_BLE_TYPE.USB_DONGLE;
+            HandShake.Instance().SetNRF52832(false);
+        } else if (this.mDeviceName.contains("DB-2-Pro")) {
+            mBluetoothLeService.sdb_ble_type = SDB_BLE_TYPE.DB2_Pro;
+            HandShake.Instance().AllowPolling = false;
+            HandShake.Instance().SetNRF52832(true);
+        } else if (this.mDeviceName.contains("DB-2")) {
+            mBluetoothLeService.sdb_ble_type = SDB_BLE_TYPE.DB2;
+            HandShake.Instance().AllowPolling = false;
+            HandShake.Instance().SetNRF52832(false);
+        } else if (this.mDeviceName.contains("SDB-BT")) {
+            mBluetoothLeService.sdb_ble_type = SDB_BLE_TYPE.SDB_BT;
+            HandShake.Instance().AllowPolling = false;
+            HandShake.Instance().SetNRF52832(true);
+        }
+
+        Log.d(HandShake.Instance().Tag, "Try connect device = " + this.mDeviceName + "( " + this.mDeviceAddress + " )");
+        LogFile.GetInstance().AddLogAndSave(true, "Try connect device = " + this.mDeviceName + "( " + this.mDeviceAddress + " )");
+        this.gCurBluetoothDevice = ((BLEObj)mBluetoothLeService.listBTDevice.get(peripheralIndex)).m_BluetoothDevice;
+        this.i32ReconnectCounter = 0;
+        this.connectHandler.removeCallbacks(this.runnableReconnect);
+        this.connectHandler.postDelayed(this.runnableReconnect, 0L);
+        HandShake.Instance().Log2File("unity  call  :   _ConnectPeripheralAtIndex ( " + peripheralIndex + " ) .. end");
+        return true;
+    }
+
+    public boolean _ConnectPeripheral(String peripheralID) {
+        Log.d(TAG, "_ConnectPeripheral: " + peripheralID);
+        return false;
+    }
+
+    public byte[] _GetData() {
+        Log.d(TAG, "_GetData: ");
+        return this._dataRx;
+    }
+
+    public void _SendData(byte[] data, int size) {
+        HandShake.Instance().Log2File("unity  call  :   _SendData (   ) .. start");
+        HandShake.Instance().PostPacket(data);
+        HandShake.Instance().Log2File("unity  call  :   _SendData (  ) .. end");
+    }
+
+    public void _PostData(byte[] data, int size) {
+        HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
+        HandShake.Instance().PostPacket(data);
+        HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
+    }
+
+    public void _ReportLog() {
+        LogFile.GetInstance().ReportToFTP();
+    }
+
+    public void SetScanMode(String data) {
+        byte var3 = -1;
+        switch(data.hashCode()) {
+        case -1920087865:
+            if (data.equals("scan_mode_a")) {
+                var3 = 0;
+            }
+            break;
+        case -1920087864:
+            if (data.equals("scan_mode_b")) {
+                var3 = 1;
+            }
+            break;
+        case -1920087863:
+            if (data.equals("scan_mode_c")) {
+                var3 = 2;
+            }
+            break;
+        case -1920087862:
+            if (data.equals("scan_mode_d")) {
+                var3 = 3;
+            }
+        }
+
+        switch(var3) {
+        case 0:
+            this.scanMode = BleFramework.ScanMode.mode_a;
+            Log.d(HandShake.Instance().Tag, ".... scan_mode_a");
+            break;
+        case 1:
+            this.scanMode = BleFramework.ScanMode.mode_b;
+            Log.d(HandShake.Instance().Tag, ".... scan_mode_b");
+            break;
+        case 2:
+            this.scanMode = BleFramework.ScanMode.mode_c;
+            Log.d(HandShake.Instance().Tag, ".... scan_mode_c");
+            break;
+        case 3:
+            this.scanMode = BleFramework.ScanMode.mode_d;
+            Log.d(HandShake.Instance().Tag, ".... scan_mode_d");
+        }
+
+    }
+
+    public String TestCommand(String cmd, String data) {
+        String rs = "";
+        if (data.startsWith("oldScanMode4SpecialMobile")) {
+            String[] ls = data.split(",");
+            if (ls.length > 1) {
+                this.mOldScanMode_SpecialMobilePhones.clear();
+
+                for(int i = 1; i < ls.length; ++i) {
+                    this.mOldScanMode_SpecialMobilePhones.add(ls[i]);
+                }
+            }
+        }
+
+        byte var9 = -1;
+        switch(data.hashCode()) {
+        case -1938507067:
+            if (data.equals("VersionCode")) {
+                var9 = 6;
+            }
+            break;
+        case -1920087865:
+            if (data.equals("scan_mode_a")) {
+                var9 = 0;
+            }
+            break;
+        case -1920087864:
+            if (data.equals("scan_mode_b")) {
+                var9 = 1;
+            }
+            break;
+        case -1920087863:
+            if (data.equals("scan_mode_c")) {
+                var9 = 2;
+            }
+            break;
+        case -1920087862:
+            if (data.equals("scan_mode_d")) {
+                var9 = 3;
+            }
+            break;
+        case -1842996874:
+            if (data.equals("isOpenGPS")) {
+                var9 = 5;
+            }
+            break;
+        case -1384554416:
+            if (data.equals("OpenGPSSetting")) {
+                var9 = 7;
+            }
+            break;
+        case -1204960338:
+            if (data.equals("oldScanMode4SpecialMobile")) {
+                var9 = 4;
+            }
+            break;
+        case 1537:
+            if (data.equals("01")) {
+                var9 = 11;
+            }
+            break;
+        case 1538:
+            if (data.equals("02")) {
+                var9 = 12;
+            }
+            break;
+        case 1539:
+            if (data.equals("03")) {
+                var9 = 13;
+            }
+            break;
+        case 1540:
+            if (data.equals("04")) {
+                var9 = 14;
+            }
+            break;
+        case 1541:
+            if (data.equals("05")) {
+                var9 = 15;
+            }
+            break;
+        case 1568:
+            if (data.equals("11")) {
+                var9 = 24;
+            }
+            break;
+        case 1569:
+            if (data.equals("12")) {
+                var9 = 25;
+            }
+            break;
+        case 45851807:
+            if (data.equals("00_00")) {
+                var9 = 9;
+            }
+            break;
+        case 45851808:
+            if (data.equals("00_01")) {
+                var9 = 10;
+            }
+            break;
+        case 47698880:
+            if (data.equals("20_10")) {
+                var9 = 26;
+            }
+            break;
+        case 47699004:
+            if (data.equals("20_50")) {
+                var9 = 27;
+            }
+            break;
+        case 48622375:
+            if (data.equals("30_05")) {
+                var9 = 32;
+            }
+            break;
+        case 48622401:
+            if (data.equals("30_10")) {
+                var9 = 33;
+            }
+            break;
+        case 48622525:
+            if (data.equals("30_50")) {
+                var9 = 34;
+            }
+            break;
+        case 349233155:
+            if (data.equals("ExitAPP")) {
+                var9 = 8;
+            }
+            break;
+        case 1450036177:
+            if (data.equals("10_100")) {
+                var9 = 16;
+            }
+            break;
+        case 1450037138:
+            if (data.equals("10_200")) {
+                var9 = 17;
+            }
+            break;
+        case 1450038099:
+            if (data.equals("10_300")) {
+                var9 = 18;
+            }
+            break;
+        case 1450040021:
+            if (data.equals("10_500")) {
+                var9 = 19;
+            }
+            break;
+        case 1478665328:
+            if (data.equals("20_100")) {
+                var9 = 28;
+            }
+            break;
+        case 1478666289:
+            if (data.equals("20_200")) {
+                var9 = 29;
+            }
+            break;
+        case 1478667250:
+            if (data.equals("20_300")) {
+                var9 = 30;
+            }
+            break;
+        case 1478669172:
+            if (data.equals("20_500")) {
+                var9 = 31;
+            }
+            break;
+        case 1915363729:
+            if (data.equals("10_10000")) {
+                var9 = 23;
+            }
+            break;
+        case 2001448575:
+            if (data.equals("10_1000")) {
+                var9 = 20;
+            }
+            break;
+        case 2001478366:
+            if (data.equals("10_2000")) {
+                var9 = 21;
+            }
+            break;
+        case 2001567739:
+            if (data.equals("10_5000")) {
+                var9 = 22;
+            }
+        }
+
+        switch(var9) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            this.SetScanMode(data);
+        case 4:
+        default:
+            break;
+        case 5:
+            boolean isOpenGPS = this.isLocationEnabled(this._unityActivity);
+            rs = isOpenGPS ? "true" : "false";
+            break;
+        case 6:
+            try {
+                PackageInfo pInfo = this._unityActivity.getPackageManager().getPackageInfo(this._unityActivity.getPackageName(), 0);
+                int versionCode = pInfo.versionCode;
+                rs = String.valueOf(versionCode);
+            } catch (NameNotFoundException var8) {
+                var8.printStackTrace();
+            }
+            break;
+        case 7:
+            this._unityActivity.startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
+            break;
+        case 8:
+            this._unityActivity.finish();
+            Process.killProcess(Process.myPid());
+            System.exit(0);
+            break;
+        case 9:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSimulate(false)");
+            HandShake.Instance().SetSimulate(false);
+            break;
+        case 10:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSimulate(true)");
+            HandShake.Instance().SetSimulate(true);
+            break;
+        case 11:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().Simulator_Recv_BLE_Pooling(true)");
+            HandShake.Instance().Simulator_Recv_BLE_Pooling(true);
+            break;
+        case 12:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().Simulator_Recv_BLE_Pooling(false)");
+            HandShake.Instance().Simulator_Recv_BLE_Pooling(false);
+            break;
+        case 13:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().Simulator_Recv_BLE_Response_Cmd_Index(true)");
+            HandShake.Instance().Simulator_Recv_BLE_ResponseCmdIndex(true);
+            break;
+        case 14:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().Simulator_Recv_BLE_Response_Cmd_Index(false)");
+            HandShake.Instance().Simulator_Recv_BLE_ResponseCmdIndex(false);
+            break;
+        case 15:
+            Log.d(HandShake.Instance().Tag, "BLE - Send_Cmd_Packet");
+            HandShake.Instance().Simulator_Recv_BLE_SendCmdPacket();
+            break;
+        case 16:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(100)");
+            HandShake.Instance().SetSendPoolingIntervalTick(100);
+            break;
+        case 17:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(200)");
+            HandShake.Instance().SetSendPoolingIntervalTick(200);
+            break;
+        case 18:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(300)");
+            HandShake.Instance().SetSendPoolingIntervalTick(300);
+            break;
+        case 19:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(500)");
+            HandShake.Instance().SetSendPoolingIntervalTick(500);
+            break;
+        case 20:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(1000)");
+            HandShake.Instance().SetSendPoolingIntervalTick(1000);
+            break;
+        case 21:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(2000)");
+            HandShake.Instance().SetSendPoolingIntervalTick(2000);
+            break;
+        case 22:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(5000)");
+            HandShake.Instance().SetSendPoolingIntervalTick(5000);
+            break;
+        case 23:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetSendPoolingIntervalTick(10000)");
+            HandShake.Instance().SetSendPoolingIntervalTick(10000);
+            break;
+        case 24:
+            Log.d(cmd, "HandShake.Instance().SetResponseMode(true)");
+            HandShake.Instance().SetResponseMode(true);
+            break;
+        case 25:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().SetResponseMode(false)");
+            HandShake.Instance().SetResponseMode(false);
+            break;
+        case 26:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(10)");
+            HandShake.Instance().setSendCmdIntervalTick(10);
+            break;
+        case 27:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(50)");
+            HandShake.Instance().setSendCmdIntervalTick(50);
+            break;
+        case 28:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(100)");
+            HandShake.Instance().setSendCmdIntervalTick(100);
+            break;
+        case 29:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(200)");
+            HandShake.Instance().setSendCmdIntervalTick(200);
+            break;
+        case 30:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(300)");
+            HandShake.Instance().setSendCmdIntervalTick(300);
+            break;
+        case 31:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setSendCmdIntervalTick(500)");
+            HandShake.Instance().setSendCmdIntervalTick(500);
+            break;
+        case 32:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setReSendPacket_count_To_Disconnect(5)");
+            HandShake.Instance().setReSendPacket_count_To_Disconnect(5);
+        case 33:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setReSendPacket_count_To_Disconnect(10)");
+            HandShake.Instance().setReSendPacket_count_To_Disconnect(10);
+        case 34:
+            Log.d(HandShake.Instance().Tag, "HandShake.Instance().setReSendPacket_count_To_Disconnect(50)");
+            HandShake.Instance().setReSendPacket_count_To_Disconnect(50);
+        }
+
+        return rs;
+    }
+
+    public String Log(String tag, String msg) {
+        String rs = "";
+        if (tag != null && !tag.isEmpty()) {
+            if (tag.equals("TestCommand")) {
+                rs = this.TestCommand(tag, msg);
+            } else {
+                Log.d(tag, msg);
+            }
+        } else {
+            Log.d(TAG, msg);
+        }
+
+        return rs;
+    }
+
+    public static enum ScanMode {
+        mode_a,
+        mode_b,
+        mode_c,
+        mode_d;
+
+        private ScanMode() {
+        }
+    }
+}
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package generalplus.com.blespeechplugin;
+
+import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothAdapter.LeScanCallback;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
+import com.kevin.Tool.HandShake;
+import com.kevin.Tool.LogFile;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class BluetoothLeService extends Service {
+    private static final String TAG = BluetoothLeService.class.getSimpleName();
+    private BluetoothManager mBluetoothManager;
+    private BluetoothAdapter mBluetoothAdapter;
+    private String m_strOldAddress = null;
+    private BluetoothGatt mBluetoothGatt;
+    private int mConnectionState = 0;
+    public boolean m_bAck = false;
+    private String m_strVersion = "";
+    private static final int STATE_DISCONNECTED = 0;
+    private static final int STATE_CONNECTING = 1;
+    private static final int STATE_CONNECTED = 2;
+    boolean Write_Characteristic_Status = false;
+    public static final String ACTION_GATT_RSSI = "com.example.bluetooth.le.ACTION_GATT_RSSI";
+    public static final String ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
+    public static final String ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
+    public static final String ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
+    public static final String ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
+    public static final String EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA";
+    public static final String READ_DATA = "com.example.bluetooth.le.READ_DATA";
+    public static final String WRITE_DATA = "com.example.bluetooth.le.WRITE_DATA";
+    public static final String AUTO_CONNECT = "AUTO_CONNECT";
+    public static final String GET_VERSION = "GET_VERSION";
+    public static final String GET_ACK = "GET_ACK";
+    public static final String NEXT_RECONNECT = "NEXT_RECONNECT";
+    public static final UUID UUID_HEART_RATE_MEASUREMENT;
+    public static final UUID UUID_FFF0_CHARACTERISTIC;
+    public static final UUID UUID_FFF1_CHARACTERISTIC;
+    public static final UUID UUID_FFF2_CHARACTERISTIC;
+    public static final UUID UUID_FFF4_CHARACTERISTIC;
+    public static final UUID UUID_FFF5_CHARACTERISTIC;
+    public BluetoothLeService.SDB_BLE_TYPE sdb_ble_type;
+    public Handler mHandler;
+    private static final long SCAN_PERIOD = 20000L;
+    private BluetoothGattCharacteristic mNotifyCharacteristic;
+    public ArrayList<BLEObj> listBTDevice;
+    private String m_strAckType;
+    private boolean m_bActiveDiscoonnect;
+    private int m_iIntervalTime;
+    private final BluetoothGattCallback mGattCallback;
+    private final IBinder mBinder;
+    private long iScanForPeripherals_Count;
+    private long pre_ScanForPeripherals;
+    private LeScanCallback mLeScanCallback;
+
+    public BluetoothLeService() {
+        this.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.C1;
+        this.mHandler = new Handler();
+        this.listBTDevice = new ArrayList();
+        this.m_strAckType = "";
+        this.m_bActiveDiscoonnect = false;
+        this.m_iIntervalTime = -1;
+        this.mGattCallback = new BluetoothGattCallback() {
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  start");
+                Log.e(BluetoothLeService.TAG, "onConnectionStateChange received: " + status + " newState = " + newState);
+                String intentAction;
+                switch(status) {
+                case 0:
+                    if (newState == 2) {
+                        intentAction = "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
+                        BluetoothLeService.this.broadcastUpdate(intentAction);
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_CONNECTED");
+                        boolean bGetService = gatt.discoverServices();
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  discoverServices( )  : " + bGetService + "   .... end");
+                        return;
+                    }
+
+                    if (newState == 0) {
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... newState == BluetoothProfile.STATE_DISCONNECTED ... start");
+                        intentAction = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
+                        BluetoothLeService.this.mConnectionState = 0;
+                        BluetoothLeService.this.broadcastUpdate(intentAction);
+                        HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... newState == BluetoothProfile.STATE_DISCONNECTED ... end");
+                        return;
+                    }
+                    break;
+                case 1:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN L2C FAILURE");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ... 0x01: GATT CONN L2C FAILURE");
+                    break;
+                case 8:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN TIMEOUT");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x08: GATT CONN TIMEOUT");
+                    break;
+                case 19:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN TERMINATE PEER USER");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x13: GATT CONN TERMINATE PEER USER ");
+                    break;
+                case 22:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN TERMINATE LOCAL HOST");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...   0x16: GATT CONN TERMINATE LOCAL HOST");
+                    break;
+                case 34:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN LMP TIMEOUT");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x22: GATT CONN LMP TIMEOUT");
+                    break;
+                case 62:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN FAIL ESTABLISH");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x3E: GATT CONN FAIL ESTABLISH");
+                    break;
+                case 133:
+                    Log.e(BluetoothLeService.TAG, "GATT ERROR");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x0085: GATT ERROR ");
+                    break;
+                case 256:
+                    Log.e(BluetoothLeService.TAG, "GATT CONN CANCEL ");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  0x0100: GATT CONN CANCEL ");
+                    break;
+                default:
+                    Log.e(BluetoothLeService.TAG, "UNKNOWN (" + status + ")");
+                    HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  UNKNOWN (" + status + ")");
+                }
+
+                intentAction = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
+                BluetoothLeService.this.mConnectionState = 0;
+                Log.e(BluetoothLeService.TAG, "Disconnected from GATT server.");
+                BluetoothLeService.this.broadcastUpdate(intentAction);
+                HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_DISCONNECTED");
+
+                try {
+                    Thread.sleep(100L);
+                } catch (InterruptedException var6) {
+                    var6.printStackTrace();
+                }
+
+            }
+
+            private void doReConnect() {
+                HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  start ");
+                String intentAction = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
+                BluetoothLeService.this.mConnectionState = 0;
+                Log.e(BluetoothLeService.TAG, "Disconnected from GATT server.");
+                BluetoothLeService.this.broadcastUpdate(intentAction);
+                HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  broadcastUpdate ...  ACTION_GATT_DISCONNECTED  .... end");
+                if (null != BluetoothLeService.this.m_strOldAddress) {
+                    for(int i = 0; i < BluetoothLeService.this.listBTDevice.size(); ++i) {
+                        if (((BLEObj)BluetoothLeService.this.listBTDevice.get(i)).m_BluetoothDevice.getAddress().equalsIgnoreCase(BluetoothLeService.this.m_strOldAddress)) {
+                            Log.e(BluetoothLeService.TAG, "Auto connecting.");
+                            intentAction = "AUTO_CONNECT";
+                            BluetoothLeService.this.broadcastUpdate(intentAction);
+                            HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  broadcastUpdate ...  AUTO_CONNECT  .... end");
+                            return;
+                        }
+                    }
+                } else {
+                    Log.e(BluetoothLeService.TAG, "Not Auto connecting.");
+                }
+
+                HandShake.Instance().Log2File("BluetoothLeService.doReConnect( ) ...  end ");
+            }
+
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... start ");
+                if (status == 0) {
+                    Log.e("Minwen", "Service discovered " + status);
+                    BluetoothGattService Service = gatt.getService(BluetoothLeService.UUID_FFF0_CHARACTERISTIC);
+                    if (Service == null) {
+                        Log.e(BluetoothLeService.TAG, "service not found!");
+                        HandShake.Instance().OnGetServiceFinished(false);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... service not found!  ...  end ");
+                        return;
+                    }
+
+                    BluetoothGattCharacteristic characteristic = Service.getCharacteristic(BluetoothLeService.this.getUuid_WriteCharacteristic());
+                    if (characteristic == null) {
+                        Log.e(BluetoothLeService.TAG, "char not found!");
+                        HandShake.Instance().OnGetServiceFinished(false);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... char not found!  ...  end ");
+                        return;
+                    }
+
+                    int i = characteristic.getProperties();
+                    String intentAction = "GET_ACK";
+                    if (4 == i) {
+                        BluetoothLeService.this.m_bAck = false;
+                        HandShake.Instance().SetResponseMode(false);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... no Response Mode ");
+                    } else if (8 == i) {
+                        BluetoothLeService.this.m_bAck = true;
+                        HandShake.Instance().SetResponseMode(true);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  Response Mode ");
+                    } else {
+                        BluetoothLeService.this.m_bAck = true;
+                        BluetoothLeService.this.m_strAckType = "error ack:" + i;
+                        HandShake.Instance().SetResponseMode(true);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  Response Mode ( error ack:) ");
+                    }
+
+                    try {
+                        Thread.sleep(500L);
+                    } catch (InterruptedException var7) {
+                        var7.printStackTrace();
+                    }
+
+                    if (BluetoothLeService.this.ReadData(gatt)) {
+                        for(i = 0; i < BluetoothLeService.this.listBTDevice.size(); ++i) {
+                            if (gatt.getDevice() == ((BLEObj)BluetoothLeService.this.listBTDevice.get(i)).m_BluetoothDevice) {
+                                BLEObj obj = (BLEObj)BluetoothLeService.this.listBTDevice.get(i);
+                                BluetoothLeService.this.mBluetoothGatt = gatt;
+                                BluetoothLeService.this.m_strOldAddress = obj.m_BluetoothDevice.getAddress();
+                                BluetoothLeService.this.broadcastUpdate("com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED");
+                                BluetoothLeService.this.mConnectionState = 2;
+                                HandShake.Instance().SetConnected(true);
+                                HandShake.Instance().OnGetServiceFinished(true);
+                                HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... end ");
+                                return;
+                            }
+                        }
+                    } else {
+                        HandShake.Instance().OnGetServiceFinished(false);
+                        Log.e(BluetoothLeService.TAG, "ReadData failed.");
+                    }
+                } else {
+                    HandShake.Instance().OnGetServiceFinished(false);
+                    Log.e(BluetoothLeService.TAG, "onServicesDiscovered received: " + status);
+                }
+
+                HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... end ");
+            }
+
+            public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                if (status == 0) {
+                    BluetoothLeService.this.broadcastUpdate("com.example.bluetooth.le.ACTION_DATA_AVAILABLE", characteristic);
+                    HandShake.Instance().OnRecvPacket(true, characteristic.getValue());
+                } else {
+                    HandShake.Instance().OnRecvPacket(false, characteristic.getValue());
+                }
+
+            }
+
+            public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                if (status == 0) {
+                    if (!LogFile.GetInstance().bStopSave) {
+                        Log.e(BluetoothLeService.TAG, "InWrite");
+                    }
+
+                    BluetoothLeService.this.broadcastUpdate("com.example.bluetooth.le.ACTION_DATA_AVAILABLE", characteristic);
+                    HandShake.Instance().OnWritePacket(true);
+                } else {
+                    HandShake.Instance().OnWritePacket(false);
+                    Log.e(BluetoothLeService.TAG, "InWrite fail");
+                }
+
+            }
+
+            public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            }
+
+            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                BluetoothLeService.this.broadcastUpdate("com.example.bluetooth.le.ACTION_DATA_AVAILABLE", characteristic);
+            }
+
+            public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+                super.onReadRemoteRssi(gatt, rssi, status);
+                if (status == 0) {
+                    BluetoothLeService.this.broadcastUpdate("com.example.bluetooth.le.ACTION_GATT_RSSI", rssi);
+                }
+
+            }
+        };
+        this.mBinder = new BluetoothLeService.LocalBinder();
+        this.iScanForPeripherals_Count = 0L;
+        this.pre_ScanForPeripherals = 0L;
+        this.mLeScanCallback = new LeScanCallback() {
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                if (null != device.getName()) {
+                    for(int i = 0; i < BluetoothLeService.this.listBTDevice.size(); ++i) {
+                        if (((BLEObj)BluetoothLeService.this.listBTDevice.get(i)).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress())) {
+                            return;
+                        }
+                    }
+
+                    BLEObj obj = new BLEObj();
+                    obj.m_BluetoothDevice = device;
+                    BluetoothLeService.this.listBTDevice.add(obj);
+                    Bundle mUpdateDeviceBundle = new Bundle();
+                    mUpdateDeviceBundle.putInt("count", rssi);
+                    Message msg = new Message();
+                    msg.setData(mUpdateDeviceBundle);
+                }
+            }
+        };
+    }
+
+    public UUID getUuid_ReadCharacteristic() {
+        return this.sdb_ble_type == BluetoothLeService.SDB_BLE_TYPE.DB2 ? UUID_FFF4_CHARACTERISTIC : UUID_FFF1_CHARACTERISTIC;
+    }
+
+    public UUID getUuid_WriteCharacteristic() {
+        return this.sdb_ble_type == BluetoothLeService.SDB_BLE_TYPE.DB2 ? UUID_FFF5_CHARACTERISTIC : UUID_FFF2_CHARACTERISTIC;
+    }
+
+    private void broadcastUpdate(String action) {
+        Intent intent = new Intent(action);
+        this.sendBroadcast(intent);
+
+        try {
+            Thread.sleep(10L);
+        } catch (InterruptedException var4) {
+            var4.printStackTrace();
+        }
+
+    }
+
+    private void broadcastUpdate(String action, int value) {
+        Intent intent = new Intent(action);
+        intent.putExtra("value", value);
+        this.sendBroadcast(intent);
+
+        try {
+            Thread.sleep(10L);
+        } catch (InterruptedException var5) {
+            var5.printStackTrace();
+        }
+
+    }
+
+    private void broadcastUpdate(String action, BluetoothGattCharacteristic characteristic) {
+        Intent intent = new Intent(action);
+        String strOutput = "";
+        byte[] data = characteristic.getValue();
+        if (data != null && data.length > 0) {
+            StringBuilder stringBuilder = new StringBuilder(data.length);
+            byte[] var7 = data;
+            int var8 = data.length;
+
+            for(int var9 = 0; var9 < var8; ++var9) {
+                byte byteChar = var7[var9];
+                stringBuilder.append(String.format("%02X ", byteChar));
+            }
+
+            strOutput = stringBuilder.toString();
+        }
+
+        if (this.getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
+            intent.putExtra("com.example.bluetooth.le.READ_DATA", strOutput);
+        }
+
+        if (this.getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
+            intent.putExtra("com.example.bluetooth.le.WRITE_DATA", strOutput);
+        }
+
+        this.sendBroadcast(intent);
+    }
+
+    public IBinder onBind(Intent intent) {
+        return this.mBinder;
+    }
+
+    public boolean onUnbind(Intent intent) {
+        this.close();
+        return super.onUnbind(intent);
+    }
+
+    public boolean initialize() {
+        HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... start ");
+        if (this.mBluetoothManager == null) {
+            this.mBluetoothManager = (BluetoothManager)this.getSystemService("bluetooth");
+            if (this.mBluetoothManager == null) {
+                HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... Unable to obtain a BluetoothManager ******* ... end ");
+                return false;
+            }
+        }
+
+        this.mBluetoothAdapter = this.mBluetoothManager.getAdapter();
+        if (this.mBluetoothAdapter == null) {
+            HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ... Unable to obtain a BluetoothAdapter *******  ... end");
+            return false;
+        } else {
+            HandShake.Instance().Log2File("BluetoothLeService.initialize( ) ...  success  ... end ");
+            return true;
+        }
+    }
+
+    public void cleanAddress() {
+        this.m_strOldAddress = null;
+    }
+
+    public synchronized void disconnect() {
+        HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... start");
+        HandShake.Instance().SetConnected(false);
+        if (this.mBluetoothAdapter != null && this.mBluetoothGatt != null) {
+            Log.e(TAG, "Try Disconnecting");
+            this.StopReadData();
+            this.mBluetoothGatt.disconnect();
+            HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... mBluetoothGatt.disconnect()");
+            this.mNotifyCharacteristic = null;
+            HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... end");
+        } else {
+            HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... disconnect fail mBluetoothGatt not initialized  and return ... end");
+        }
+    }
+
+    public synchronized void ActiveDisconnect() {
+        HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... start");
+        if (this.mBluetoothAdapter != null && this.mBluetoothGatt != null) {
+            this.m_bActiveDiscoonnect = true;
+            Log.e(TAG, "Try Disconnecting");
+            this.StopReadData();
+            this.mBluetoothGatt.disconnect();
+            this.mNotifyCharacteristic = null;
+            HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... end");
+        } else {
+            HandShake.Instance().Log2File("BluetoothLeService.ActiveDisconnect( ) ... disconnect fail mBluetoothGatt not initialized  and return ... end");
+        }
+    }
+
+    public synchronized void close() {
+        HandShake.Instance().Log2File("BluetoothLeService.close( ) ... start");
+        if (this.mBluetoothGatt != null) {
+            this.disconnect();
+
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException var2) {
+                var2.printStackTrace();
+            }
+
+            this.mBluetoothGatt.close();
+            this.mBluetoothGatt = null;
+            HandShake.Instance().Log2File("BluetoothLeService.close( ) ... end");
+        }
+    }
+
+    public void readCharacteristic(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic) {
+        if (this.mBluetoothAdapter != null && bluetoothGatt != null) {
+            bluetoothGatt.readCharacteristic(characteristic);
+        } else {
+            Log.w(TAG, "readCharacteristic BluetoothAdapter not initialized");
+        }
+    }
+
+    public BluetoothGattCharacteristic writeCharacteristic(BluetoothGattCharacteristic characteristic, byte[] byData) {
+        if (this.mBluetoothGatt == null) {
+            Log.w(TAG, "BluetoothGatt not initialized");
+            return null;
+        } else {
+            BluetoothGattService Service = this.mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+            if (Service == null) {
+                Log.e(TAG, "service not found!");
+                return null;
+            } else {
+                BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(this.getUuid_WriteCharacteristic());
+                if (characteristic1 == null) {
+                    Log.e(TAG, "char not found!");
+                    return null;
+                } else if (this.getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
+                    characteristic1.setValue(byData);
+                    this.m_bAck = HandShake.Instance().GetIsResponseMode();
+                    if (this.m_bAck) {
+                        characteristic1.setWriteType(2);
+                    } else {
+                        characteristic1.setWriteType(1);
+                    }
+
+                    this.Write_Characteristic_Status = this.mBluetoothGatt.writeCharacteristic(characteristic1);
+
+                    try {
+                        Thread.sleep(30L);
+                    } catch (InterruptedException var6) {
+                        var6.printStackTrace();
+                    }
+
+                    return characteristic1;
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    public BluetoothGattCharacteristic writeReadCharacteristic(BluetoothGattCharacteristic characteristic, byte[] byData) {
+        if (this.mBluetoothGatt == null) {
+            Log.w(TAG, "BluetoothGatt not initialized");
+            return null;
+        } else {
+            BluetoothGattService Service = this.mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+            if (Service == null) {
+                Log.e(TAG, "service not found!");
+                return null;
+            } else {
+                BluetoothGattCharacteristic characteristic1 = Service.getCharacteristic(this.getUuid_WriteCharacteristic());
+                if (characteristic1 == null) {
+                    Log.e(TAG, "char not found!");
+                    return null;
+                } else if (this.getUuid_WriteCharacteristic().equals(characteristic.getUuid())) {
+                    characteristic1.setValue(byData);
+                    this.m_bAck = HandShake.Instance().GetIsResponseMode();
+                    if (this.m_bAck) {
+                        characteristic1.setWriteType(2);
+                    } else {
+                        characteristic1.setWriteType(1);
+                    }
+
+                    this.Write_Characteristic_Status = this.mBluetoothGatt.writeCharacteristic(characteristic1);
+
+                    try {
+                        Thread.sleep(30L);
+                    } catch (InterruptedException var6) {
+                        var6.printStackTrace();
+                    }
+
+                    BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(this.getUuid_ReadCharacteristic());
+                    if (Response_characteristic1 == null) {
+                        Log.e(TAG, "char not found!");
+                        return null;
+                    } else {
+                        return characteristic1;
+                    }
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    public void setCharacteristicNotification(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic, boolean enabled) {
+        if (this.mBluetoothAdapter != null && bluetoothGatt != null) {
+            bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+            BluetoothGattDescriptor descriptor;
+            if (this.getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
+                descriptor = characteristic.getDescriptor(UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                bluetoothGatt.writeDescriptor(descriptor);
+            }
+
+            if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
+                descriptor = characteristic.getDescriptor(UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                bluetoothGatt.writeDescriptor(descriptor);
+            }
+
+        } else {
+            Log.w(TAG, "setCharacteristicNotification BluetoothAdapter not initialized");
+        }
+    }
+
+    public List<BluetoothGattService> getSupportedGattServices() {
+        return this.mBluetoothGatt == null ? null : this.mBluetoothGatt.getServices();
+    }
+
+    public void setWriteStatus(boolean status) {
+        this.Write_Characteristic_Status = status;
+    }
+
+    public boolean getWriteStatus() {
+        return this.Write_Characteristic_Status;
+    }
+
+    public boolean WriteData(byte[] byVRCommand) {
+        if (this != null && this.mBluetoothGatt != null) {
+            BluetoothGattService Service = this.mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+            if (Service == null) {
+                return false;
+            } else {
+                BluetoothGattCharacteristic characteristic = Service.getCharacteristic(this.getUuid_WriteCharacteristic());
+                if (characteristic == null) {
+                    return false;
+                } else {
+                    this.writeCharacteristic(characteristic, byVRCommand);
+
+                    try {
+                        Thread.sleep(10L);
+                    } catch (InterruptedException var5) {
+                        var5.printStackTrace();
+                    }
+
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean WriteReadData(byte[] byVRCommand) {
+        if (this != null && this.mBluetoothGatt != null) {
+            BluetoothGattService Service = this.mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+            if (Service == null) {
+                return false;
+            } else {
+                BluetoothGattCharacteristic characteristic = Service.getCharacteristic(this.getUuid_WriteCharacteristic());
+                if (characteristic == null) {
+                    return false;
+                } else {
+                    this.writeReadCharacteristic(characteristic, byVRCommand);
+
+                    try {
+                        Thread.sleep(10L);
+                    } catch (InterruptedException var5) {
+                        var5.printStackTrace();
+                    }
+
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean ReadRSSI() {
+        return this.mBluetoothGatt.readRemoteRssi();
+    }
+
+    public boolean ReadData(BluetoothGatt bluetoothGatt) {
+        BluetoothGattService Service = bluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+        if (Service == null) {
+            return false;
+        } else {
+            BluetoothGattCharacteristic characteristic = Service.getCharacteristic(this.getUuid_ReadCharacteristic());
+            if (characteristic == null) {
+                return false;
+            } else {
+                int charaProp = characteristic.getProperties();
+                if ((charaProp | 2) > 0) {
+                    if (this.mNotifyCharacteristic != null) {
+                        this.setCharacteristicNotification(bluetoothGatt, this.mNotifyCharacteristic, false);
+                        this.mNotifyCharacteristic = null;
+                    }
+
+                    this.readCharacteristic(bluetoothGatt, characteristic);
+                }
+
+                if ((charaProp | 16) > 0) {
+                    this.mNotifyCharacteristic = characteristic;
+
+                    try {
+                        Thread.sleep(1000L);
+                    } catch (InterruptedException var6) {
+                        var6.printStackTrace();
+                    }
+
+                    this.setCharacteristicNotification(bluetoothGatt, characteristic, true);
+                }
+
+                return true;
+            }
+        }
+    }
+
+    public boolean StopReadData() {
+        BluetoothGattService Service = this.mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
+        if (Service == null) {
+            return false;
+        } else {
+            BluetoothGattCharacteristic characteristic = Service.getCharacteristic(this.getUuid_ReadCharacteristic());
+            if (characteristic == null) {
+                return false;
+            } else {
+                int charaProp = characteristic.getProperties();
+                if ((charaProp | 2) > 0) {
+                    if (this.mNotifyCharacteristic != null) {
+                        this.setCharacteristicNotification(this.mBluetoothGatt, this.mNotifyCharacteristic, false);
+                        this.mNotifyCharacteristic = null;
+                    }
+
+                    this.readCharacteristic(this.mBluetoothGatt, characteristic);
+                }
+
+                if ((charaProp | 16) > 0) {
+                    this.mNotifyCharacteristic = characteristic;
+                    this.setCharacteristicNotification(this.mBluetoothGatt, characteristic, true);
+                }
+
+                this.setCharacteristicNotification(this.mBluetoothGatt, characteristic, false);
+                return true;
+            }
+        }
+    }
+
+    public synchronized void AddScanForPeripheralsCount() {
+        ++this.iScanForPeripherals_Count;
+    }
+
+    public synchronized void ResetScanForPeripheralsCount() {
+        this.iScanForPeripherals_Count = 0L;
+    }
+
+    public long GetScanForPeripheralsCount() {
+        return this.iScanForPeripherals_Count;
+    }
+
+    public long GetSCAN_PERIOD() {
+        int period = 15000;
+        if (this.iScanForPeripherals_Count == 0L) {
+            return (long)period;
+        } else {
+            return this.iScanForPeripherals_Count == 1L ? (long)period : (long)(period * 2);
+        }
+    }
+
+    public long Get_pre_ScanForPeripherals() {
+        return this.pre_ScanForPeripherals;
+    }
+
+    private synchronized boolean CanScanForPeripherals() {
+        long delta = System.currentTimeMillis() - this.pre_ScanForPeripherals;
+        return delta > this.GetSCAN_PERIOD();
+    }
+
+    public synchronized void scanLeDevice(boolean enable) {
+        if (enable) {
+            this.mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    Log.e(BluetoothLeService.TAG, "scanLeDevice stopLeScan");
+                    BluetoothLeService.this.mBluetoothAdapter.stopLeScan(BluetoothLeService.this.mLeScanCallback);
+                }
+            }, this.GetSCAN_PERIOD());
+            Log.e(TAG, "scanLeDevice startLeScan");
+            this.pre_ScanForPeripherals = System.currentTimeMillis();
+            this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+        } else {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        }
+
+    }
+
+    public void ClearBTDeviceList() {
+        this.listBTDevice.clear();
+    }
+
+    public ArrayList<BLEObj> GetBTDeviceList() {
+        return this.listBTDevice;
+    }
+
+    public boolean connectDevice(BluetoothDevice device) {
+        Log.e(TAG, "Before connecting device");
+        this.close();
+
+        try {
+            Thread.sleep(1000L);
+        } catch (InterruptedException var3) {
+            var3.printStackTrace();
+        }
+
+        this.mBluetoothGatt = device.connectGatt(this, false, this.mGattCallback);
+        if (this.mBluetoothGatt == null) {
+            Log.e(TAG, "BluetoothGatt not found!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public String getVersion() {
+        return this.m_strVersion;
+    }
+
+    public String getAckString() {
+        return this.m_strAckType;
+    }
+
+    public void setIntervalTime(int iIntervalTime) {
+        this.m_iIntervalTime = iIntervalTime;
+    }
+
+    static {
+        UUID_HEART_RATE_MEASUREMENT = UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
+        UUID_FFF0_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF0_CHARACTERISTIC);
+        UUID_FFF1_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF1_CHARACTERISTIC);
+        UUID_FFF2_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF2_CHARACTERISTIC);
+        UUID_FFF4_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF4_CHARACTERISTIC);
+        UUID_FFF5_CHARACTERISTIC = UUID.fromString(SampleGattAttributes.FFF5_CHARACTERISTIC);
+    }
+
+    public class LocalBinder extends Binder {
+        public LocalBinder() {
+        }
+
+        public BluetoothLeService getService() {
+            return BluetoothLeService.this;
+        }
+    }
+
+    static enum SDB_BLE_TYPE {
+        C1,
+        USB_DONGLE,
+        DB2,
+        SDB_BT,
+        DB2_Pro;
+
+        private SDB_BLE_TYPE() {
+        }
+    }
+}

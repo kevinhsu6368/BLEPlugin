@@ -1,5 +1,6 @@
 package generalplus.com.blespeechplugin;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
@@ -85,8 +86,13 @@ public class BleFramework{
     private boolean bConnectState = false;
     private boolean searchingDevice = false;
     private ScanSettings mScannerSetting = null;
+    private ScanSettings mScannerSetting_mode_b = null;
+    private ScanSettings mScannerSetting_mode_c = null;
     private ArrayList<ScanFilter> mScannerFilters = null;
+    private ArrayList<ScanFilter> mScannerFilters_mode_b = null;
+    private ArrayList<ScanFilter> mScannerFilters_mode_c = null;
 
+    private ArrayList<String> mOldScanMode_SpecialMobilePhones = null;
     public synchronized boolean GetSearchingDevice()
     {
         return searchingDevice;
@@ -99,6 +105,7 @@ public class BleFramework{
     }
 
     private final ServiceConnection mServiceConnection;
+    private final BroadcastReceiver mBleStateReceiver;
 	private final BroadcastReceiver mGattUpdateReceiver;
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
 	public Handler mHandler = new Handler();
@@ -122,6 +129,12 @@ public class BleFramework{
         intentFilter.addAction(ACTION_DATA_AVAILABLE);
         intentFilter.addAction(AUTO_CONNECT);
         intentFilter.addAction(NEXT_RECONNECT);
+        return intentFilter;
+    }
+
+    private static IntentFilter makeBleStateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         return intentFilter;
     }
 
@@ -199,6 +212,22 @@ public class BleFramework{
         bConnectState = bConnected;
         HandShake.Instance().SetConnected(bConnected);
         HandShake.Instance().Log2File("SetConnectState ( " + Boolean.toString(bConnected) + " ) ");
+
+        if(bConnected)
+        {
+
+
+            if(mBluetoothLeService.setMTU(244))
+            {
+                Log.d(TAG,"setMTU = 244 ... ok");
+            }
+            else
+            {
+                Log.d(TAG,"setMTU = 244 ... fail");
+            }
+
+
+        }
     }
 
     public  synchronized boolean GetConnectStat()
@@ -206,7 +235,11 @@ public class BleFramework{
         return bConnectState;
     }
 
-
+    public void OnEnableBluetooth()
+    {
+        if (this.mScanner == null)
+            this.mScanner = this.mBluetoothAdapter.getBluetoothLeScanner();
+    }
 
     public BleFramework(Activity activity)
     {
@@ -290,6 +323,27 @@ public class BleFramework{
             }
         };
 
+        this.mBleStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                            BluetoothAdapter.ERROR);
+                    switch (state) {
+                        case BluetoothAdapter.STATE_OFF:
+                            break;
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            break;
+                        case BluetoothAdapter.STATE_ON:
+                            OnEnableBluetooth();
+                            break;
+                        case BluetoothAdapter.STATE_TURNING_ON:
+                            break;
+                    }
+                }
+            }
+        };
 
 
 
@@ -338,11 +392,15 @@ public class BleFramework{
                     i32ReconnectCounter = 0;
                     //LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_SERVICES_DISCOVERED");
                     //Log.d(TAG, "Service discovered! Registering GattService ACTION_GATT_SERVICES_DISCOVERED");
-                    //BleFramework.this.getGattService(BleFramework.this._mBluetoothLeService.getSupportedGattService());
+                    //getGattService(BleFramework.this._mBluetoothLeService.getSupportedGattService());
                     //Log.d(TAG, "Send BLEUnityMessageName_OnBleDidConnect success signal to Unity");
                     UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidConnect", "Success");
 
                     HandShake.Instance().SetNotifyUnityConnected(true);
+
+                    // ============ [kevin.hsu] 2020.07.31. add SDB-BT 的機型在連線後,取得主服務後,開啟 接收特微符的通知功能. (ps. IOS 也要做相同處理 )
+                    BleFramework.getInstance().EnableCharReadNotify(true);
+
                 }
                 else if (ACTION_DATA_AVAILABLE.equals(action))
                 {
@@ -441,7 +499,7 @@ public class BleFramework{
         long waitForScan = 2*1000;
         if(iScanForPeripherals_Count % 4 == 3) // 每掃到第4次 , 下一次 delay 30 秒 , 否則 delay 2  秒
         {
-            return 30*1000 ;
+            // return 30*1000 ;
         }
 
         return waitForScan;
@@ -455,28 +513,228 @@ public class BleFramework{
 
     public void DoStopScan()
     {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+
+        // android sdk 版本小等於 21 時, 只能使用舊式掃描API
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
+        {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            return;
+        }
+
+        // android sdk 版本大等於 21 時
+        if(this.scanMode == ScanMode.mode_a)
+        {
+            int iflag = (int)this.iScanForPeripherals_Count%9;
+            if (iflag>=0 && iflag <=2) //  0,1,2   跑 mode-b
+            {
+                if( this.mScanner != null)
+                    this.mScanner.stopScan(this.mScannerCallback);
+            }
+            else if (iflag>=3 && iflag <=5) // 3,4,5   跑 mode-d ( old api )
+            {
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            }
+            else // 6,7,8   跑 mode-c
+            {
+                if( this.mScanner != null)
+                    this.mScanner.stopScan(this.mScannerCallback);
+            }
+        }
+        else if(this.scanMode == ScanMode.mode_b) // new api
+        {
+            if( this.mScanner != null)
+                this.mScanner.stopScan(this.mScannerCallback);
+        }
+        else if(this.scanMode == ScanMode.mode_c)  // new api
+        {
+            if( this.mScanner != null)
+                this.mScanner.stopScan(this.mScannerCallback);
+        }
+        else if(this.scanMode == ScanMode.mode_d)  // old api
+        {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        }
+
+        /*
+        if(!this.bNewScanMode)
+        {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        }
+        else
         {
             if( this.mScanner == null)
                 return;
             this.mScanner.stopScan(this.mScannerCallback);
+        }
+
+        //this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+        //this.mScanner.stopScan(this.mScannerCallback);
+
+        /*
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if( this.mScanner == null)
+                return;
+
+            if(this.mBluetoothAdapter.isOffloadedFilteringSupported())
+                this.mScanner.stopScan(this.mScannerCallback);
+            else
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
         }
         else {
             if(this.mBluetoothAdapter == null)
                 return ;
             this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
         }
+        */
     }
 
+    // 掃描模式
+    public enum ScanMode
+    {
+        /* 自動模式 (default ):
+                             (1) . 判段-OldScanAPI手機清單是否有本手機型號 ? Yes -- > 使用 Mode-D
+                             (2) . No --> 使用 Mode-B 掃描
+                                   .       --> Moed-B 掃描逾時 30 秒 未找到設備
+                             (3) . No --> 使用 Mode-D 掃描
+                                   .       --> Moed-D 掃描逾時 30 秒 未找到設備
+                             (4) . No  --> 使用 Mode-D 掃描
+                                   .       --> Moed-D 掃描逾時 30 秒 未找到設備
+                             (5). 回到  (2)
+        * */
+        mode_a,
+        /* 新 掃描 API + (名稱 / UUID ) 過濾功能      , 設定 : 積極掃描 */
+        mode_b,
+        /* 新 掃描 API + (沒有 )                過濾功能   , 設定 : 積極掃描 */
+        mode_c,
+        /* 舊 掃描 API */
+        mode_d
+    }
+
+    private String curScanMode = "";
+    // 預設
+    private  ScanMode scanMode = ScanMode.mode_a;
+
+    public boolean bNewScanMode = true;
     public void DoStartScan()
     {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.mScanner.startScan(this.mScannerFilters, this.mScannerSetting, this.mScannerCallback);
-            //this.mScanner.startScan(this.mScannerCallback);
+        // kevin.hsu . 調整如下
+
+
+        // android sdk 版本小等於 21 時, 只能使用舊式掃描API
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
+        {
+            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            return;
         }
-        else {
+
+
+        // android sdk 版本大 於 21 時, 使用以下
+        // 1. Mode A : 自動模式  :
+        //                     (1) . 判段-OldScanAPI手機清單是否有本手機型號 ? Yes -- > 使用 Mode-D
+        //                     (2) . No --> 使用 Mode-B 掃描
+        //                           .       --> Moed-B 掃描逾時 30 秒 未找到設備 , 每10秒計數1次 : 1 , 2 , 3 ,  --> 當 4 時 ,  改為 Mode-D
+        //                     (3) . No --> 使用 Mode-D 掃描
+        //                           .       --> Moed-D 掃描逾時 30 秒 未找到設備 , 每10秒計數1次 : 4 , 5 , 6 ,  --> 當 7 時 ,  改為 Mode-C
+        //                     (4) . No  --> 使用 Mode-C 掃描
+        //                           .       --> Moed-C 掃描逾時 30 秒 未找到設備 , 每10秒計數1次 : 7 , 8 , 9 ,  --> 當 10 時 ,  改為 Mode-D
+        //                     (5). 回到  (2)
+        // 2. Mode B : 新 掃描 API + (名稱 / UUID ) 過濾功能      , 設定 : 積極掃描
+        // 3. Mode B : 新 掃描 API + (沒有 )                過濾功能   , 設定 : 積極掃描
+        // 4. Mode B : 舊 掃描 API
+        if(this.scanMode == ScanMode.mode_a)
+        {
+            int iflag = (int)this.iScanForPeripherals_Count%9;
+
+            if (iflag>=0 && iflag <=2) //  0,1,2             ----> mode - b.
+            {
+                this.mScanner.startScan(this.mScannerFilters_mode_b, this.mScannerSetting, this.mScannerCallback);
+                curScanMode = "scan_mode_b";
+            }
+            else if (iflag>=3 && iflag <=5) // 3,4,5     ----> mode - d
+            {
+                this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+                curScanMode = "scan_mode_d";
+            }
+            else // 6,7,8                                                          ----> mode - c
+            {
+                this.mScanner.startScan(this.mScannerFilters_mode_c, this.mScannerSetting, this.mScannerCallback);
+                curScanMode = "scan_mode_c";
+            }
+        }
+        else if(this.scanMode == ScanMode.mode_b)
+        {
+            this.mScanner.startScan(this.mScannerFilters_mode_b, this.mScannerSetting, this.mScannerCallback);
+            curScanMode = "scan_mode_b";
+        }
+        else if(this.scanMode == ScanMode.mode_c)
+        {
+            this.mScanner.startScan(this.mScannerFilters_mode_c, this.mScannerSetting, this.mScannerCallback);
+            curScanMode = "scan_mode_c";
+        }
+        else if(this.scanMode == ScanMode.mode_d)
+        {
+            this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+            curScanMode = "scan_mode_d";
+        }
+
+
+
+
+        //this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+
+        /*
+        if(this.mOldScanMode_SpecialMobilePhones.contains(Build.MODEL) || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            bNewScanMode = false;
+        }
+
+        if(!bNewScanMode)
+        {
             this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
         }
+        else
+        {
+            if(this.mScanner == null)
+            {
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    this._unityActivity.startActivityForResult(enableBtIntent, 0);//REQUEST_ENABLE_BT);
+                }
+                return;
+            }
+            this.mScanner.startScan(this.mScannerFilters, this.mScannerSetting, this.mScannerCallback);
+        }
+*/
+        /*
+             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            {
+                if(this.mScanner == null)
+                {
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        this._unityActivity.startActivityForR       esult(enableBtIntent, 0);//REQUEST_ENABLE_BT);
+                    }
+                    return;
+                }
+
+                if(iScanForPeripherals_Count > 3)
+                {
+                    this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+                }
+                else
+                {
+                    if(this.mBluetoothAdapter.isOffloadedFilteringSupported())
+                        this.mScanner.startScan(this.mScannerFilters, this.mScannerSetting, this.mScannerCallback);
+                    else
+                        this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+                }
+
+            }
+            else {
+                this.mBluetoothAdapter.startLeScan(this.mLeScanCallback);
+            }
+            */
     }
 /*
     private synchronized boolean CanScanForPeripherals()
@@ -663,6 +921,24 @@ public class BleFramework{
         this._unityActivity.registerReceiver(this.mGattUpdateReceiver, BleFramework.makeGattUpdateIntentFilter());
     }
 
+    private void registerBleStateReceiver()
+    {
+        Log.d(TAG, "registerBleStateReceiver:");
+        if (!this.mBluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "registerBleStateReceiver: WARNING: _mBluetoothAdapter is not enabled!");
+        }
+        Log.d(TAG, "registerBleStateReceiver: registerReceiver");
+
+        // BluetoothAdapter.ACTION_STATE_CHANGED
+        this._unityActivity.registerReceiver(this.mBleStateReceiver, BleFramework.makeBleStateIntentFilter());
+    }
+
+    private void unregisterBleStateReceiver() {
+        Log.d(TAG, "unregisterBleStateReceiver:");
+        this._unityActivity.unregisterReceiver(this.mBleStateReceiver);
+
+    }
+
     private boolean isInitLogFile = false;
 
 	private void CheckOpenGPS(Context context)
@@ -731,7 +1007,41 @@ public class BleFramework{
         this.mBluetoothAdapter.enable();
     }
 
-	public void _InitBLEFramework() {
+
+    // 初始化 - 帶掃描資料 (for android )
+    public void _InitBLEFramework(String mode) {
+
+        Log.d(TAG, "_InitBLEFramework( "+ mode + " ) ... ");
+
+        SetScanMode(mode);
+
+            /*
+            // 取得  old api  掃描模式
+            String oldScanAPI_MobilePhones = json.getString("oldScanAPI_MobilePhones");
+            String [] lsMobilePhones = oldScanAPI_MobilePhones.split(",");
+            this.mOldScanMode_SpecialMobilePhones = new ArrayList<String>();
+            for(int i=0;i<lsMobilePhones.length;i++)
+            {
+                String str = lsMobilePhones[i];
+                if(str == null || str.isEmpty())
+                    continue;
+                this.mOldScanMode_SpecialMobilePhones.add(str);
+                Log.d(TAG,"...  add old scan api for mobile  = " + mode);
+            }
+            */
+
+
+        //} catch (JSONException e) {
+        //    e.printStackTrace();
+        //}
+
+
+        _InitBLEFramework();
+
+    }
+
+	@TargetApi(Build.VERSION_CODES.M)
+    public void _InitBLEFramework() {
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... start");
         HandShake.Instance().Start();
@@ -747,7 +1057,7 @@ public class BleFramework{
             String sTime = sdf.format(Calendar.getInstance().getTime());
             String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
             LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
-            LogFile.GetInstance().SetStopSave(true);
+            LogFile.GetInstance().SetStopSave(false);
             LogFile.GetInstance().Start();
 
             // report log to ftp
@@ -775,21 +1085,45 @@ public class BleFramework{
             return;
         }
 
+        this.mOldScanMode_SpecialMobilePhones = new ArrayList<String>();
+        //this.mOldScanMode_SpecialMobilePhones.add("Redmi Note 8");
+        //this.mOldScanMode_SpecialMobilePhones.add("Redmi Note 8T");
+
         this.mScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
         mScannerSetting = new ScanSettings.Builder()
                 //退到后台时设置扫描模式为低功耗
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY) //.SCAN_MODE_LOW_POWER)
+                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .build();
+
 
         mScannerFilters = new ArrayList<ScanFilter>();
 
         ScanFilter filter1 = new ScanFilter.Builder().setDeviceName("C1       ").build();
-        ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("DB-2").build();
+        ScanFilter filter0 = new ScanFilter.Builder().setDeviceName("C2       ").build();
+        ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("SDB-BT").build();
+        ScanFilter filter3 = new ScanFilter.Builder().setDeviceName("DB-2-Pro").build();
+        ScanFilter filter4 = new ScanFilter.Builder().setDeviceName("DB-2").build();
+        //ScanFilter filter3 = new ScanFilter.Builder().setServiceUuid(new ParcelUuid(UUID.nameUUIDFromBytes(new byte[]{0x0D,0x18}))).build();
+        //ScanFilter filter4 = new ScanFilter.Builder().setServiceUuid(new ParcelUuid(UUID.nameUUIDFromBytes(new byte[]{0x18,0x0D}))).build();
 
-        mScannerFilters.add(filter2);
+        mScannerFilters.add(filter0);
         mScannerFilters.add(filter1);
-        //mScannerFilters.add(filter2);
+        mScannerFilters.add(filter2);
+        mScannerFilters.add(filter3);
+        mScannerFilters.add(filter4);
+
+        // for mode-b : 有 filter - name/uuid
+        mScannerFilters_mode_b = new ArrayList<ScanFilter>();
+        mScannerFilters_mode_b.add(filter0);
+        mScannerFilters_mode_b.add(filter1);
+        mScannerFilters_mode_b.add(filter2);
+        mScannerFilters_mode_b.add(filter3);
+        mScannerFilters_mode_b.add(filter4);
+
+        // for mode-c : 空的 filter
+        mScannerFilters_mode_c = new ArrayList<ScanFilter>();
 
         // 開啟 GPS 功能
         //this.CheckOpenGPS((Context)this._unityActivity);
@@ -799,6 +1133,7 @@ public class BleFramework{
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... Check Open Bluetooth ");
 
 		this.registerBleUpdatesReceiver();
+		this.registerBleStateReceiver();
 		Intent gattServiceIntent = new Intent((Context)this._unityActivity, (Class)BluetoothLeService.class);
 		this._unityActivity.bindService(gattServiceIntent, this.mServiceConnection, Context.BIND_AUTO_CREATE);
 
@@ -854,7 +1189,15 @@ public class BleFramework{
 
     public  void _GetRSSI()
     {
+        if(mBluetoothLeService.listBTDevice.size()==0)
+            return  ;
+
         mBluetoothLeService.ReadRSSI();
+    }
+
+    public String _GetScanMode()
+    {
+        return this.curScanMode;
     }
 
     public  String _GetUUID()
@@ -931,8 +1274,8 @@ public class BleFramework{
         //LogFile.GetInstance().AddLogAndSave(true,"_ConnectPeripheralAtIndex: " + peripheralIndex);
 
 
-	    mBluetoothLeService.disconnect();
-	    mBluetoothLeService.cleanAddress();
+	    //mBluetoothLeService.disconnect();
+	    //mBluetoothLeService.cleanAddress();
 
 	    try {
 		    Thread.sleep(30);
@@ -945,19 +1288,42 @@ public class BleFramework{
 	    mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
 
         curPeripheralIndex = peripheralIndex;
-        HandShake.Instance().AllowPolling = true; // 預設會做 pooling  的動作
+        //HandShake.Instance().AllowPolling = true; // 預設會做 pooling  的動作
         if(mDeviceName.contains("C1"))
         {
             mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.C1;
+            HandShake.Instance().SetNRF52832(false);
+            HandShake.Instance().AllowPolling = true;
         }
         else if(mDeviceName.contains("sdb Bt dongle"))
         {
             mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.USB_DONGLE;
+            HandShake.Instance().SetNRF52832(false);
+            HandShake.Instance().AllowPolling = true;
+        }
+        else if(mDeviceName.contains("DB-2-Pro"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.DB2_Pro;
+            HandShake.Instance().AllowPolling = false; // 不做 pooling  的動作
+            HandShake.Instance().SetNRF52832(true);
         }
         else if(mDeviceName.contains("DB-2"))
         {
             mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.DB2;
             HandShake.Instance().AllowPolling = false; // 不做 pooling  的動作
+            HandShake.Instance().SetNRF52832(false);
+        }
+        else if(mDeviceName.contains("SDB-BT"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.SDB_BT;
+            HandShake.Instance().AllowPolling = false; // 不做 pooling  的動作
+            HandShake.Instance().SetNRF52832(true);
+        }
+        else if(mDeviceName.contains("C2"))
+        {
+            mBluetoothLeService.sdb_ble_type = BluetoothLeService.SDB_BLE_TYPE.SDB_BT;
+            HandShake.Instance().AllowPolling = false; // 不做 pooling  的動作
+            HandShake.Instance().SetNRF52832(true);
         }
 
         Log.d(HandShake.Instance().Tag, "Try connect device = " + mDeviceName + "( " + mDeviceAddress + " )");
@@ -1009,11 +1375,72 @@ public class BleFramework{
         LogFile.GetInstance().ReportToFTP();
     }
 
+    public void SetScanMode(String data)
+    {
+        switch (data)
+        {
+            case "scan_mode_a":
+            {
+                this.scanMode = ScanMode.mode_a;
+                Log.d(HandShake.Instance().Tag,".... scan_mode_a");
+                break;
+            }
+            case "scan_mode_b":
+            {
+                this.scanMode = ScanMode.mode_b;
+                Log.d(HandShake.Instance().Tag,".... scan_mode_b");
+                break;
+            }
+            case "scan_mode_c":
+            {
+                this.scanMode = ScanMode.mode_c;
+                Log.d(HandShake.Instance().Tag,".... scan_mode_c");
+                break;
+            }
+            case "scan_mode_d":
+            {
+                this.scanMode = ScanMode.mode_d;
+                Log.d(HandShake.Instance().Tag,".... scan_mode_d");
+                break;
+            }
+        }
+    }
+
     public String TestCommand(String cmd,String data)
     {
         String rs = "";
+
+        // ----  帶資料特殊指令
+
+        if(data.startsWith("oldScanMode4SpecialMobile")) // oldScanMode4SpecialMobile,mobilePhone1,mobilePhone2,mobilePhone3,...
+        {
+            String [] ls = data.split(",");
+            if (ls.length >1 )
+            {
+                mOldScanMode_SpecialMobilePhones.clear();
+                for(int i=1;i<ls.length;i++)
+                {
+                    mOldScanMode_SpecialMobilePhones.add(ls[i]);
+                }
+            }
+        }
+
+
+        // 指令列表
         switch (data)
         {
+            case "scan_mode_a":
+            case "scan_mode_b":
+            case "scan_mode_c":
+            case "scan_mode_d":
+            {
+                SetScanMode(data);
+                break;
+            }
+            case "oldScanMode4SpecialMobile":
+            {
+                break;
+            }
             case "isOpenGPS":
             {
                 boolean isOpenGPS = this.isLocationEnabled(this._unityActivity);
@@ -1022,7 +1449,6 @@ public class BleFramework{
             break;
             case "VersionCode":
             {
-
                 try
                 {
                     PackageInfo pInfo = this._unityActivity.getPackageManager().getPackageInfo(this._unityActivity.getPackageName(), 0);
@@ -1154,6 +1580,12 @@ public class BleFramework{
         return rs;
     }
 
+    public void EnableCharReadNotify(boolean bEnable)
+    {
+        if(!mBluetoothLeService.isNotifySuccess)
+            mBluetoothLeService.EnableCharReadNotify(bEnable);
+       // mBluetoothLeService.setCharacteristicNotification();
+    }
 
     //  給 Unity 下 Log  到 Android 這邊顯示
     public String Log(String tag,String msg)

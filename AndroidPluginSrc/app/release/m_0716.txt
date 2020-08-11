@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.jinweisport.sdbtest" xmlns:tools="http://schemas.android.com/tools" android:versionCode="9" android:versionName="2.0.0717" android:installLocation="auto">
+  <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
+  <!-- <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" /> -->
+  <!-- 允許應用找到與之連接的藍牙設備-->
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <!-- 允許應用去連接藍牙設備 -->
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <!-- 允許應用訪問範圍(如WIFI)性的定位-->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!-- 允許應用寫（非讀）用戶的外部存儲器-->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <!-- 能夠啟動照相機設備的請求 -->
+  <uses-permission android:name="android.permission.CAMERA" />
+  <!-- 允許應用訪問網絡上的信息 -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <!-- 允許應用打開網絡套接口 -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!-- 允許應用去統計電源信息 -->
+  <uses-permission android:name="android.permission.BATTERY_STATS" tools:ignore="ProtectedPermissions" />
+  <!-- 允許應用訪問關羽Wi-Fi網絡的信息-->
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <!-- 允許應用改變Wi-Fi的連接狀態 -->
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+  <!-- 允許應用訪問精確(如GPS)性的定位-->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <!-- 允許應訪問額外的提供定位的指令-->
+  <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+  <!-- 允許應用發出一個與intent相連的消息-->
+  <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+  <!-- 允許應用發出一個收到短信的消息
+  <uses-permission android:name="android.permission.BROADCAST_SMS" />-->
+  <!-- 允許應用Microphone-->
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <!-- 允許應用ExternalStorageRead-->
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+  <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+  <uses-feature android:name="android.software.leanback" android:required="false" />
+  <application android:requestLegacyExternalStorage="true" android:networkSecurityConfig="@xml/network_security_config" android:theme="@style/UnityThemeSelector" android:label="@string/app_name" android:clearTaskOnLaunch="false" android:isGame="true" android:banner="@drawable/app_banner" android:roundIcon="@mipmap/app_icon_round" android:icon="@mipmap/app_icon">
+    <!-- Unity在Android 6.0及以上版本彈出許可權申請視窗 -->
+    <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
+    <activity android:name="sdb.zlab.com.nativeactivity.CustomMainActivity" android:label="@string/app_name" android:screenOrientation="landscape" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density" android:hardwareAccelerated="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+      </intent-filter>
+      <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+      <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="false" />
+    </activity>
+    <service android:name="generalplus.com.blespeechplugin.BluetoothLeService" android:enabled="true" />
+    <activity android:label="@string/app_name" android:screenOrientation="landscape" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density" android:hardwareAccelerated="false" android:name="com.jinweisport.sdbtest.UnityPlayerActivity">
+    </activity>
+    <activity android:name="com.unity3d.player.UnityPlayerNativeActivity" android:label="@string/app_name" android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+      <meta-data android:name="android.app.lib_name" android:value="unity" />
+      <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+    </activity>
+    <activity android:name="sdb.zlab.com.nativeactivity.GalleryActivity" />
+    <activity android:name="sdb.zlab.com.nativeactivity.CameraActivity" />
+    <activity android:name="com.facebook.unity.FBUnityLoginActivity" android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+    <activity android:name="com.facebook.unity.FBUnityDialogsActivity" android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+    <activity android:name="com.facebook.unity.FBUnityAppLinkActivity" android:exported="true" />
+    <activity android:name="com.facebook.unity.FBUnityDeepLinkingActivity" android:exported="true" />
+    <activity android:name="com.facebook.unity.FBUnityGameRequestActivity" />
+    <activity android:name="com.facebook.unity.FBUnityCreateGameGroupActivity" />
+    <activity android:name="com.facebook.unity.FBUnityJoinGameGroupActivity" />
+    <activity android:name="com.facebook.unity.AppInviteDialogActivity" />
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb1487365358107028" />
+    <provider android:name="com.facebook.FacebookContentProvider" android:authorities="com.facebook.app.FacebookContentProvider1487365358107028" android:exported="true" />
+    <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled" android:value="true" />
+    <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled" android:value="true" />
+    <meta-data android:name="unity.build-id" android:value="1a0e5ba0-59dc-4e0b-88fb-e65bf5b357f1" />
+    <meta-data android:name="unity.splash-mode" android:value="0" />
+    <meta-data android:name="unity.splash-enable" android:value="True" />
+  </application>
+  <uses-feature android:glEsVersion="0x00020000" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+  <uses-feature android:name="android.hardware.location" android:required="false" />
+  <uses-feature android:name="android.hardware.camera" android:required="false" />
+  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+  <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+  <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
+  <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+  <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
+  <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
+</manifest>

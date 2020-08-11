@@ -17,7 +17,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="329"
+            line="383"
             column="36"/>
     </issue>
 
@@ -37,7 +37,7 @@ If you want the methods to just perform ASCII replacement, for example to conver
         errorLine2="                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="517"
+            line="775"
             column="60"/>
     </issue>
 
@@ -102,31 +102,6 @@ If you want the methods to just perform ASCII replacement, for example to conver
     </issue>
 
     <issue
-        id="NewApi"
-        severity="Error"
-        message="Call requires API level 23 (current min is 21): `android.app.Fragment#requestPermissions`"
-        category="Correctness"
-        priority="6"
-        summary="Calling new methods on older versions"
-        explanation="This check scans through all the Android API calls in the application and warns about any calls that are not available on *all* versions targeted by this application (according to its minimum SDK attribute in the manifest).
-
-If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.
-
-If your code is *deliberately* accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.
-
-If you are deliberately setting `android:` attributes in style definitions, make sure you place this in a `values-vNN` folder in order to avoid running into runtime conflicts on certain devices where manufacturers have added custom attributes whose ids conflict with the new ones on later platforms.
-
-Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate that the element will only be inflated in an adequate context."
-        errorLine1="     requestPermissions(permissionsToRequest, PERMISSIONS_REQUEST_CODE);"
-        errorLine2="     ~~~~~~~~~~~~~~~~~~"
-        quickfix="studio,adt">
-        <location
-            file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\PermissionGranter.java"
-            line="66"
-            column="6"/>
-    </issue>
-
-    <issue
         id="OldTargetApi"
         severity="Warning"
         message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details."
@@ -138,7 +113,7 @@ Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate
 To fix this issue, set the `targetSdkVersion` to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
         url="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
         urls="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
-        errorLine1="  targetSdkVersion 22"
+        errorLine1="  targetSdkVersion 23"
         errorLine2="  ~~~~~~~~~~~~~~~~~~~"
         quickfix="studio">
         <location
@@ -183,7 +158,7 @@ Therefore, you should either use the form of the SimpleDateFormat constructor wh
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BLEPlugin\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="746"
+            line="1056"
             column="36"/>
     </issue>
 
