@@ -29,7 +29,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.kevin.Tool.BatteryTools;
+import com.kevin.Tool.BatteryTools;//.BatteryTools;
 import com.kevin.Tool.FTPTools;
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
@@ -213,6 +213,7 @@ public class BleFramework{
         HandShake.Instance().SetConnected(bConnected);
         HandShake.Instance().Log2File("SetConnectState ( " + Boolean.toString(bConnected) + " ) ");
 
+        /*
         if(bConnected)
         {
 
@@ -228,6 +229,8 @@ public class BleFramework{
 
 
         }
+
+         */
     }
 
     public  synchronized boolean GetConnectStat()
@@ -357,12 +360,12 @@ public class BleFramework{
                 if (ACTION_GATT_CONNECTED.equals(action))
                 {
                     HandShake.Instance().Log2File("mGattUpdateReceiver.onReceive( ) ... ACTION_GATT_CONNECTED");
-                    SetConnectState(false);
+                    SetConnectState(false); // kevin.hsu.2020/08/18 預設為 false , 當連接成功時, 不變更 state 為 false , 而在之後取得服務後 , 才設定為連線成功並通知 unity 已連線成功
                     HandShake.Instance().SetNotifyUnityConnected(false);
                     HandShake.Instance().OnGetServiceStart();
                     HandShake.Instance().ResetTimeOut();
 	                //bConnectState = true;
-                    RECONNECT_INTERVAL_TIME = 10000;
+                    RECONNECT_INTERVAL_TIME = 15000;
                     //LogFile.GetInstance().AddLogAndSave(true,"ACTION_GATT_CONNECTED");
                     //Log.d(TAG, ("Connection estabilished with: " + BleFramework.this._mDeviceAddress));
                 }
@@ -399,7 +402,8 @@ public class BleFramework{
                     HandShake.Instance().SetNotifyUnityConnected(true);
 
                     // ============ [kevin.hsu] 2020.07.31. add SDB-BT 的機型在連線後,取得主服務後,開啟 接收特微符的通知功能. (ps. IOS 也要做相同處理 )
-                    BleFramework.getInstance().EnableCharReadNotify(true);
+                    // 不能找到服務,就馬上丟通知 , 否則藍牙晶片會錯亂
+                    // BleFramework.getInstance().EnableCharReadNotify(true);
 
                 }
                 else if (ACTION_DATA_AVAILABLE.equals(action))
@@ -416,6 +420,8 @@ public class BleFramework{
                         //HandShake.Instance().Log2File("READ_DATA = " + StringTools.HexToBytes(data));
                         //LogFile.GetInstance().AddLogAndSave(true, "READ_DATA = " + data);
                         //UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
+                        if(data.length() < 4)
+                            return;
                         if(HandShake.Instance().GetIsResponseMode()) // no response mode
                             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", data);
                     }
@@ -519,6 +525,18 @@ public class BleFramework{
         {
             this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
             return;
+        }
+        else
+        {
+            if ( true )
+            {
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+                if( this.mScanner != null)
+                    this.mScanner.stopScan(this.mScannerCallback);
+
+                return;
+            }
+
         }
 
         // android sdk 版本大等於 21 時
@@ -628,6 +646,7 @@ public class BleFramework{
             return;
         }
 
+        HandShake.Instance().OnStartScan();
 
         // android sdk 版本大 於 21 時, 使用以下
         // 1. Mode A : 自動模式  :
@@ -898,11 +917,13 @@ public class BleFramework{
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
+            HandShake.Instance().Log2File("mScanCallback.onBatchScanResults( ) ... count = " + (results == null ? 0 : results.size()));
         }
 
         @Override
         public void onScanFailed(int errorCode) {
             super.onScanFailed(errorCode);
+            HandShake.Instance().Log2File("mScanCallback.onScanFailed( ) ... err = " + errorCode);
         }
     };
 
@@ -997,6 +1018,10 @@ public class BleFramework{
 
     }
 
+    public boolean setMTU(int len)
+    {
+        return mBluetoothLeService.setMTU(len);
+    }
 
     private void CheckOpenBluetooth()
     {
@@ -1053,12 +1078,12 @@ public class BleFramework{
         if(isInitLogFile==false)
         {
             isInitLogFile = true;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String sTime = sdf.format(Calendar.getInstance().getTime());
-            String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
-            LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
-            LogFile.GetInstance().SetStopSave(false);
-            LogFile.GetInstance().Start();
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            //String sTime = sdf.format(Calendar.getInstance().getTime());
+            //String shortFileName = SystemInfo.GetPhoneModle() + "_BLE_Log_" + sTime + ".txt";
+            //LogFile.GetInstance().SetFileName("BLE_Test2", shortFileName);
+            LogFile.GetInstance().SetStopSave(true);
+            //LogFile.GetInstance().Start();
 
             // report log to ftp
 

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidPluginSrc.iml" filepath="$PROJECT_DIR$/AndroidPluginSrc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidPluginSrc.iml" filepath="$PROJECT_DIR$/AndroidPluginSrc.iml" group="AndroidPluginSrc" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="AndroidPluginSrc/app" />
     </modules>
   </component>
 </project>

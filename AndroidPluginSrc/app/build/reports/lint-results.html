@@ -1,0 +1,1951 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lint Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+ <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.blue-indigo.min.css" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+<script defer src="https://code.getmdl.io/1.2.0/material.min.js"></script>
+<style>
+section.section--center {
+    max-width: 860px;
+}
+.mdl-card__supporting-text + .mdl-card__actions {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+main > .mdl-layout__tab-panel {
+  padding: 8px;
+  padding-top: 48px;
+}
+
+.mdl-card__actions {
+    margin: 0;
+    padding: 4px 40px;
+    color: inherit;
+}
+.mdl-card > * {
+    height: auto;
+}
+.mdl-card__actions a {
+    color: #00BCD4;
+    margin: 0;
+}
+.error-icon {
+    color: #bb7777;
+    vertical-align: bottom;
+}
+.warning-icon {
+    vertical-align: bottom;
+}
+.mdl-layout__content section:not(:last-of-type) {
+  position: relative;
+  margin-bottom: 48px;
+}
+
+.mdl-card .mdl-card__supporting-text {
+  margin: 40px;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  padding: 0;
+  color: inherit;
+  width: calc(100% - 80px);
+}
+div.mdl-layout__drawer-button .material-icons {
+    line-height: 48px;
+}
+.mdl-card .mdl-card__supporting-text {
+    margin-top: 0px;
+}
+.chips {
+    float: right;
+    vertical-align: middle;
+}
+pre.errorlines {
+    background-color: white;
+    font-family: monospace;
+    border: 1px solid #e0e0e0;
+    line-height: 0.9rem;
+    font-size: 0.9rem;    padding: 1px 0px 1px; 1px;
+    overflow: scroll;
+}
+.prefix {
+    color: #660e7a;
+    font-weight: bold;
+}
+.attribute {
+    color: #0000ff;
+    font-weight: bold;
+}
+.value {
+    color: #008000;
+    font-weight: bold;
+}
+.tag {
+    color: #000080;
+    font-weight: bold;
+}
+.comment {
+    color: #808080;
+    font-style: italic;
+}
+.javadoc {
+    color: #808080;
+    font-style: italic;
+}
+.annotation {
+    color: #808000;
+}
+.string {
+    color: #008000;
+    font-weight: bold;
+}
+.number {
+    color: #0000ff;
+}
+.keyword {
+    color: #000080;
+    font-weight: bold;
+}
+.caretline {
+    background-color: #fffae3;
+}
+.lineno {
+    color: #999999;
+    background-color: #f0f0f0;
+}
+.error {
+    display: inline-block;
+    position:relative;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AwCFR4T/3uLMgAAADxJREFUCNdNyLERQEAABMCjL4lQwIzcjErpguAL+C9AvgKJDbeD/PRpLdm35Hm+MU+cB+tCKaJW4L4YBy+CAiLJrFs9mgAAAABJRU5ErkJggg==) bottom repeat-x;
+}
+.warning {
+    text-decoration: none;
+    background-color: #f6ebbc;
+}
+.overview {
+    padding: 10pt;
+    width: 100%;
+    overflow: auto;
+    border-collapse:collapse;
+}
+.overview tr {
+    border-bottom: solid 1px #eeeeee;
+}
+.categoryColumn a {
+     text-decoration: none;
+     color: inherit;
+}
+.countColumn {
+    text-align: right;
+    padding-right: 20px;
+    width: 50px;
+}
+.issueColumn {
+   padding-left: 16px;
+}
+.categoryColumn {
+   position: relative;
+   left: -50px;
+   padding-top: 20px;
+   padding-bottom: 5px;
+}
+</style>
+<script language="javascript" type="text/javascript"> 
+<!--
+function reveal(id) {
+if (document.getElementById) {
+document.getElementById(id).style.display = 'block';
+document.getElementById(id+'Link').style.display = 'none';
+}
+}
+function hideid(id) {
+if (document.getElementById) {
+document.getElementById(id).style.display = 'none';
+}
+}
+//--> 
+</script>
+</head>
+<body class="mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Lint Report: 50 errors and 25 warnings</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+Check performed at Thu Apr 21 17:57:29 CST 2022      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Issue Types</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="#overview"><i class="material-icons">dashboard</i>Overview</a>
+      <a class="mdl-navigation__link" href="#MissingPermission"><i class="material-icons error-icon">error</i>Missing Permissions (46)</a>
+      <a class="mdl-navigation__link" href="#GradleCompatible"><i class="material-icons error-icon">error</i>Incompatible Gradle Versions (1)</a>
+      <a class="mdl-navigation__link" href="#DefaultLocale"><i class="material-icons warning-icon">warning</i>Implied default locale in case conversion (4)</a>
+      <a class="mdl-navigation__link" href="#OldTargetApi"><i class="material-icons warning-icon">warning</i>Target SDK attribute is not targeting latest version (1)</a>
+      <a class="mdl-navigation__link" href="#SimpleDateFormat"><i class="material-icons warning-icon">warning</i>Implied locale in date format (8)</a>
+      <a class="mdl-navigation__link" href="#ValidFragment"><i class="material-icons error-icon">error</i>Fragment not instantiatable (1)</a>
+      <a class="mdl-navigation__link" href="#WifiManagerPotentialLeak"><i class="material-icons warning-icon">warning</i>WifiManager Potential Leak (1)</a>
+      <a class="mdl-navigation__link" href="#LongLogTag"><i class="material-icons error-icon">error</i>Too Long Log Tags (1)</a>
+      <a class="mdl-navigation__link" href="#ManifestOrder"><i class="material-icons warning-icon">warning</i>Incorrect order of elements in manifest (1)</a>
+      <a class="mdl-navigation__link" href="#ProtectedPermissions"><i class="material-icons error-icon">error</i>Using system app permission (1)</a>
+      <a class="mdl-navigation__link" href="#TrustAllX509TrustManager"><i class="material-icons warning-icon">warning</i>Insecure TLS/SSL trust manager (2)</a>
+      <a class="mdl-navigation__link" href="#ObsoleteSdkInt"><i class="material-icons warning-icon">warning</i>Obsolete SDK_INT Version Check (4)</a>
+      <a class="mdl-navigation__link" href="#StaticFieldLeak"><i class="material-icons warning-icon">warning</i>Static Field Leaks (4)</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="mdl-layout__tab-panel is-active">
+<a name="overview"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="OverviewCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Overview</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<table class="overview">
+<tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
+</td></tr>
+<tr>
+<td class="countColumn">46</td><td class="issueColumn"><i class="material-icons error-icon">error</i>
+<a href="#MissingPermission">MissingPermission</a>: Missing Permissions</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons error-icon">error</i>
+<a href="#GradleCompatible">GradleCompatible</a>: Incompatible Gradle Versions</td></tr>
+<tr>
+<td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#DefaultLocale">DefaultLocale</a>: Implied default locale in case conversion</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#OldTargetApi">OldTargetApi</a>: Target SDK attribute is not targeting latest version</td></tr>
+<tr>
+<td class="countColumn">8</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#SimpleDateFormat">SimpleDateFormat</a>: Implied locale in date format</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons error-icon">error</i>
+<a href="#ValidFragment">ValidFragment</a>: Fragment not instantiatable</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#WifiManagerPotentialLeak">WifiManagerPotentialLeak</a>: WifiManager Potential Leak</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons error-icon">error</i>
+<a href="#LongLogTag">LongLogTag</a>: Too Long Log Tags</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#ManifestOrder">ManifestOrder</a>: Incorrect order of elements in manifest</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons error-icon">error</i>
+<a href="#ProtectedPermissions">ProtectedPermissions</a>: Using system app permission</td></tr>
+<tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Security">Security</a>
+</td></tr>
+<tr>
+<td class="countColumn">2</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#TrustAllX509TrustManager">TrustAllX509TrustManager</a>: Insecure TLS/SSL trust manager</td></tr>
+<tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Performance">Performance</a>
+</td></tr>
+<tr>
+<td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#ObsoleteSdkInt">ObsoleteSdkInt</a>: Obsolete SDK_INT Version Check</td></tr>
+<tr>
+<td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#StaticFieldLeak">StaticFieldLeak</a>: Static Field Leaks</td></tr>
+<tr><td></td><td class="categoryColumn"><a href="#MissingIssues">Disabled Checks (32)</a>
+</td></tr></table>
+<br/>              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="OverviewCardLink" onclick="hideid('OverviewCard');">
+Dismiss</button>            </div>
+            </div>
+          </section>
+<a name="Correctness"></a>
+<a name="MissingPermission"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="MissingPermissionCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Missing Permissions</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:289</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  286 </span>  <span class="keyword">public</span> <span class="keyword">void</span> onLeScan(<span class="keyword">final</span> BluetoothDevice device, <span class="keyword">int</span> rssi, <span class="keyword">byte</span>[] scanRecord)
+<span class="lineno">  287 </span>  {
+<span class="lineno">  288 </span>      HandShake.Instance().Log2File(<span class="string">"mLeScanCallback.onLeScan( ) ... start"</span>);
+<span class="caretline"><span class="lineno">  289 </span>      <span class="keyword">if</span> (<span class="keyword">null</span> == <span class="error">device.getName()</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  290 </span>
+<span class="lineno">  291 </span>          HandShake.Instance().Log2File(<span class="string">"mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return"</span>);
+<span class="lineno">  292 </span>          <span class="keyword">return</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:298</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  295 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); i++) {
+<span class="lineno">  296 </span>      <span class="keyword">if</span> (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
+<span class="lineno">  297 </span>      {
+<span class="caretline"><span class="lineno">  298 </span>          HandShake.Instance().<span class="error">Log2File(<span class="string">"mLeScanCallback.onLeScan( ) ...  repeat device ( "</span> + device.getName()</span> + <span class="string">" ) ...  so ... return"</span>);</span>
+<span class="lineno">  299 </span>          <span class="keyword">return</span>;
+<span class="lineno">  300 </span>      }
+<span class="lineno">  301 </span>  }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:307</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  304 </span>  obj.m_BluetoothDevice = device;
+<span class="lineno">  305 </span>  mBluetoothLeService.listBTDevice.add(obj);
+<span class="lineno">  306 </span>
+<span class="caretline"><span class="lineno">  307 </span>  String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  308 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  309 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  310 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"find dev = %s , Hex = %s"</span>,devName,hexDevName));
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:314</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  311 </span><span class="lineno">  312 </span>
+<span class="lineno">  313 </span>  <span class="comment">// 如果找到 C1 就結束掃描</span>
+<span class="caretline"><span class="lineno">  314 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>)) <span class="comment">// device.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
+<span class="lineno">  315 </span>  {
+<span class="lineno">  316 </span>      <span class="comment">//Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);</span>
+<span class="lineno">  317 </span>      HandShake.Instance().Log2File(<span class="string">"mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)"</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:526</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  523 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="lineno">  524 </span>        <span class="keyword">if</span>(Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP)
+<span class="lineno">  525 </span>        {
+<span class="caretline"><span class="lineno">  526 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  527 </span>            <span class="keyword">return</span>;
+<span class="lineno">  528 </span>        }
+<span class="lineno">  529 </span>        <span class="keyword">else</span></pre>
+
+<button class="mdl-button mdl-js-button mdl-button--primary" id="MissingPermissionDivLink" onclick="reveal('MissingPermissionDiv');" />+ 41 More Occurrences...</button>
+<div id="MissingPermissionDiv" style="display: none">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:533</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  530 </span>        {
+<span class="lineno">  531 </span>            <span class="keyword">if</span> ( <span class="keyword">true</span> )
+<span class="lineno">  532 </span>            {
+<span class="caretline"><span class="lineno">  533 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  534 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="lineno">  535 </span>                    <span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:535</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  532 </span>            {
+<span class="lineno">  533 </span>                <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
+<span class="lineno">  534 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="caretline"><span class="lineno">  535 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  536 </span>
+<span class="lineno">  537 </span>                <span class="keyword">return</span>;
+<span class="lineno">  538 </span>            }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:549</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  546 </span>            <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2   跑 mode-b</span>
+<span class="lineno">  547 </span>            {
+<span class="lineno">  548 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="caretline"><span class="lineno">  549 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  550 </span>            }
+<span class="lineno">  551 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
+<span class="lineno">  552 </span>            {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:553</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  550 </span>            }
+<span class="lineno">  551 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
+<span class="lineno">  552 </span>            {
+<span class="caretline"><span class="lineno">  553 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  554 </span>            }
+<span class="lineno">  555 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
+<span class="lineno">  556 </span>            {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:558</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  555 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
+<span class="lineno">  556 </span>            {
+<span class="lineno">  557 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="caretline"><span class="lineno">  558 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  559 </span>            }
+<span class="lineno">  560 </span>        }
+<span class="lineno">  561 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:564</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  561 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span>
+<span class="lineno">  562 </span>        {
+<span class="lineno">  563 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="caretline"><span class="lineno">  564 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  565 </span>        }
+<span class="lineno">  566 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
+<span class="lineno">  567 </span>        {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:569</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  566 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
+<span class="lineno">  567 </span>        {
+<span class="lineno">  568 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
+<span class="caretline"><span class="lineno">  569 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  570 </span>        }
+<span class="lineno">  571 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
+<span class="lineno">  572 </span>        {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:573</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  570 </span>        }
+<span class="lineno">  571 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
+<span class="lineno">  572 </span>        {
+<span class="caretline"><span class="lineno">  573 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  574 </span>        }
+<span class="lineno">  575 </span>
+<span class="lineno">  576 </span>        <span class="comment">/*
+</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:645</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  642 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="lineno">  643 </span>        <span class="keyword">if</span>(Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP)
+<span class="lineno">  644 </span>        {
+<span class="caretline"><span class="lineno">  645 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  646 </span>            <span class="keyword">return</span>;
+<span class="lineno">  647 </span>        }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:670</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  667 </span>
+<span class="lineno">  668 </span>  <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2             ----> mode - b.</span>
+<span class="lineno">  669 </span>  {
+<span class="caretline"><span class="lineno">  670 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  671 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
+<span class="lineno">  672 </span>  }
+<span class="lineno">  673 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:675</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  672 </span>  }
+<span class="lineno">  673 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span>
+<span class="lineno">  674 </span>  {
+<span class="caretline"><span class="lineno">  675 </span>      <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  676 </span>      curScanMode = <span class="string">"scan_mode_d"</span>;
+<span class="lineno">  677 </span>  }
+<span class="lineno">  678 </span>  <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:680</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  677 </span>      }
+<span class="lineno">  678 </span>      <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span>
+<span class="lineno">  679 </span>      {
+<span class="caretline"><span class="lineno">  680 </span>          <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  681 </span>          curScanMode = <span class="string">"scan_mode_c"</span>;
+<span class="lineno">  682 </span>      }
+<span class="lineno">  683 </span>  }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:686</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  683 </span>  }
+<span class="lineno">  684 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b)
+<span class="lineno">  685 </span>  {
+<span class="caretline"><span class="lineno">  686 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  687 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
+<span class="lineno">  688 </span>  }
+<span class="lineno">  689 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:691</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  688 </span>  }
+<span class="lineno">  689 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
+<span class="lineno">  690 </span>  {
+<span class="caretline"><span class="lineno">  691 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  692 </span>      curScanMode = <span class="string">"scan_mode_c"</span>;
+<span class="lineno">  693 </span>  }
+<span class="lineno">  694 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:696</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  693 </span>        }
+<span class="lineno">  694 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
+<span class="lineno">  695 </span>        {
+<span class="caretline"><span class="lineno">  696 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  697 </span>            curScanMode = <span class="string">"scan_mode_d"</span>;
+<span class="lineno">  698 </span>        }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:791</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  788 </span>  <span class="keyword">boolean</span> isFindBLE = <span class="keyword">false</span>;
+<span class="lineno">  789 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
+<span class="lineno">  790 </span>      BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+<span class="caretline"><span class="lineno">  791 </span>      String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  792 </span>      <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  793 </span>      String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  794 </span>      HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:795</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  792 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  793 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  794 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
+<span class="caretline"><span class="lineno">  795 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
+<span class="lineno">  796 </span>  {
+<span class="lineno">  797 </span>      isFindBLE = <span class="keyword">true</span>;
+<span class="lineno">  798 </span>      <span class="keyword">break</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:877</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  874 </span>
+<span class="lineno">  875 </span>  HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... start"</span>);
+<span class="lineno">  876 </span>  BluetoothDevice device = result.getDevice();
+<span class="caretline"><span class="lineno">  877 </span>  <span class="keyword">if</span> (<span class="keyword">null</span> == <span class="error">device.getName()</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  878 </span>
+<span class="lineno">  879 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return"</span>);
+<span class="lineno">  880 </span>      <span class="keyword">return</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:886</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  883 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); i++) {
+<span class="lineno">  884 </span>      <span class="keyword">if</span> (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
+<span class="lineno">  885 </span>      {
+<span class="caretline"><span class="lineno">  886 </span>          HandShake.Instance().<span class="error">Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  repeat device ( "</span> + device.getName()</span> + <span class="string">" ) ...  so ... return"</span>);</span>
+<span class="lineno">  887 </span>          <span class="keyword">return</span>;
+<span class="lineno">  888 </span>      }
+<span class="lineno">  889 </span>  }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:895</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  892 </span>  obj.m_BluetoothDevice = device;
+<span class="lineno">  893 </span>  mBluetoothLeService.listBTDevice.add(obj);
+<span class="lineno">  894 </span>
+<span class="caretline"><span class="lineno">  895 </span>  String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  896 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  897 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  898 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"find dev = %s , Hex = %s"</span>,devName,hexDevName));
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:902</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  899 </span><span class="lineno">  900 </span>
+<span class="lineno">  901 </span>  <span class="comment">// 如果找到 C1 就結束掃描</span>
+<span class="caretline"><span class="lineno">  902 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>)) <span class="comment">// device.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
+<span class="lineno">  903 </span>  {
+<span class="lineno">  904 </span>      <span class="comment">//Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);</span>
+<span class="lineno">  905 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)"</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1032</span>: <span class="message">Missing permissions required by BluetoothAdapter.enable: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1029 </span>            <span class="keyword">return</span>;
+<span class="lineno"> 1030 </span>
+<span class="lineno"> 1031 </span>        <span class="comment">// 未開啟 --> 自動開啟</span>
+<span class="caretline"><span class="lineno"> 1032 </span>        <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.enable()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1033 </span>    }
+<span class="lineno"> 1034 </span>
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1261</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1258 </span>   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
+<span class="lineno"> 1259 </span>       BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+<span class="lineno"> 1260 </span>       <span class="comment">//uuidsArray[i] = bd.getAddress();</span>
+<span class="caretline"><span class="lineno"> 1261 </span>       uuidsArray[i] = <span class="error">bd.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1262 </span>   }
+<span class="lineno"> 1263 </span>   Log.d(TAG, <span class="string">"_GetListOfDevices: Building JSONArray"</span>);
+<span class="lineno"> 1264 </span>   JSONArray uuidsJSON = <span class="keyword">new</span> JSONArray(Arrays.asList(uuidsArray));
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1312</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1309 </span>    e.printStackTrace();
+<span class="lineno"> 1310 </span>  }
+<span class="lineno"> 1311 </span><span class="caretline"><span class="lineno"> 1312 </span>  mDeviceName = <span class="error">mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName()</span>;</span>
+<span class="lineno"> 1313 </span>  mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
+<span class="lineno"> 1314 </span>
+<span class="lineno"> 1315 </span>  curPeripheralIndex = peripheralIndex;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:194</span>: <span class="message">Missing permissions required by BluetoothGatt.discoverServices: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  191 </span>  <span class="comment">//Log.e(TAG, "Attempting to start service discovery:" +</span>
+<span class="lineno">  192 </span>  <span class="comment">//        gatt.discoverServices());</span>
+<span class="lineno">  193 </span>
+<span class="caretline"><span class="lineno">  194 </span>  <span class="keyword">boolean</span> bGetService = <span class="error">gatt.discoverServices()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  195 </span>  HandShake.Instance().Log2File(<span class="string">"BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  discoverServices( )  : "</span> + bGetService + <span class="string">"   .... end"</span>);
+<span class="lineno">  196 </span>
+<span class="lineno">  197 </span>  <span class="keyword">return</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:603</span>: <span class="message">Missing permissions required by BluetoothGatt.requestMtu: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  600 </span>        <span class="keyword">if</span>(len > <span class="number">244</span> )
+<span class="lineno">  601 </span>            len = <span class="number">244</span>;
+<span class="lineno">  602 </span>        Log.d(<span class="string">"BLE"</span> ,  <span class="string">"設定 BLE-MTU = "</span> + len);
+<span class="caretline"><span class="lineno">  603 </span>        <span class="keyword">return</span> <span class="error"><span class="keyword">this</span>.mBluetoothGatt.requestMtu(len)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  604 </span>    }
+<span class="lineno">  605 </span>
+<span class="lineno">  606 </span>    <span class="keyword">public</span> <span class="keyword">void</span> cleanAddress() {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:631</span>: <span class="message">Missing permissions required by BluetoothGatt.disconnect: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  628 </span>  Log.e(TAG, <span class="string">"Try Disconnecting"</span>);
+<span class="lineno">  629 </span>
+<span class="lineno">  630 </span>  StopReadData();
+<span class="caretline"><span class="lineno">  631 </span>  <span class="error">mBluetoothGatt.disconnect()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  632 </span>  HandShake.Instance().Log2File(<span class="string">"BluetoothLeService.disconnect( ) ... mBluetoothGatt.disconnect()"</span>);
+<span class="lineno">  633 </span>  mNotifyCharacteristic = <span class="keyword">null</span>;
+<span class="lineno">  634 </span>  HandShake.Instance().Log2File(<span class="string">"BluetoothLeService.disconnect( ) ... end"</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:648</span>: <span class="message">Missing permissions required by BluetoothGatt.disconnect: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  645 </span>        m_bActiveDiscoonnect = <span class="keyword">true</span>;
+<span class="lineno">  646 </span>        Log.e(TAG, <span class="string">"Try Disconnecting"</span>);
+<span class="lineno">  647 </span>        StopReadData();
+<span class="caretline"><span class="lineno">  648 </span>        <span class="error">mBluetoothGatt.disconnect()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  649 </span>        mNotifyCharacteristic = <span class="keyword">null</span>;
+<span class="lineno">  650 </span>        HandShake.Instance().Log2File(<span class="string">"BluetoothLeService.ActiveDisconnect( ) ... end"</span>);
+<span class="lineno">  651 </span>    }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:671</span>: <span class="message">Missing permissions required by BluetoothGatt.close: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  668 </span>        } <span class="keyword">catch</span> (InterruptedException e) {
+<span class="lineno">  669 </span>            e.printStackTrace();
+<span class="lineno">  670 </span>        }
+<span class="caretline"><span class="lineno">  671 </span>        <span class="error">mBluetoothGatt.close()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  672 </span>        mBluetoothGatt = <span class="keyword">null</span>;
+<span class="lineno">  673 </span>
+<span class="lineno">  674 </span>        HandShake.Instance().Log2File(<span class="string">"BluetoothLeService.close( ) ... end"</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:689</span>: <span class="message">Missing permissions required by BluetoothGatt.readCharacteristic: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  686 </span>            Log.w(TAG, <span class="string">"readCharacteristic BluetoothAdapter not initialized"</span>);
+<span class="lineno">  687 </span>            <span class="keyword">return</span>;
+<span class="lineno">  688 </span>        }
+<span class="caretline"><span class="lineno">  689 </span>        <span class="error">bluetoothGatt.readCharacteristic(characteristic)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  690 </span>    }
+<span class="lineno">  691 </span>
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:739</span>: <span class="message">Missing permissions required by BluetoothGatt.writeCharacteristic: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  736 </span>   <span class="comment">// [kevin.hsu/2020/08/04] 全部強制使用 Write_No_Response</span>
+<span class="lineno">  737 </span>   <span class="comment">//characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);</span>
+<span class="lineno">  738 </span>
+<span class="caretline"><span class="lineno">  739 </span>   Write_Characteristic_Status = <span class="error">mBluetoothGatt.writeCharacteristic(characteristic1)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  740 </span><span class="lineno">  741 </span>
+<span class="lineno">  742 </span>   <span class="comment">//Log.e("minwen", "Write_Characteristic_Status " + Write_Characteristic_Status);</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:802</span>: <span class="message">Missing permissions required by BluetoothGatt.writeCharacteristic: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  799 </span>  } <span class="keyword">else</span> {
+<span class="lineno">  800 </span>      characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+<span class="lineno">  801 </span>  }
+<span class="caretline"><span class="lineno">  802 </span>  Write_Characteristic_Status = <span class="error">mBluetoothGatt.writeCharacteristic(characteristic1)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  803 </span>
+<span class="lineno">  804 </span>  <span class="keyword">try</span> {
+<span class="lineno">  805 </span>      Thread.sleep(<span class="number">30</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:842</span>: <span class="message">Missing permissions required by BluetoothGatt.setCharacteristicNotification: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  839 </span>       <span class="keyword">return</span>;
+<span class="lineno">  840 </span>   }
+<span class="lineno">  841 </span>
+<span class="caretline"><span class="lineno">  842 </span>   <span class="keyword">boolean</span> bNotify = <span class="error">bluetoothGatt.setCharacteristicNotification(characteristic, enabled)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  843 </span>
+<span class="lineno">  844 </span>   <span class="comment">// Enable Notification for FFF1, added by Ryan        </span>
+<span class="lineno">  845 </span>   <span class="keyword">if</span> (getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:850</span>: <span class="message">Missing permissions required by BluetoothGatt.writeDescriptor: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  847 </span>              UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+<span class="lineno">  848 </span>     <span class="comment">// descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);</span>
+<span class="lineno">  849 </span>      descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+<span class="caretline"><span class="lineno">  850 </span>      isNotifySuccess = <span class="error">bluetoothGatt.writeDescriptor(descriptor)</span>; <span class="comment">//  設定 "BLE - 通知 " 成功 ?</span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  851 </span>  }
+<span class="lineno">  852 </span>
+<span class="lineno">  853 </span>  <span class="comment">// This is specific to Heart Rate Measurement.</span></pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:858</span>: <span class="message">Missing permissions required by BluetoothGatt.writeDescriptor: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  855 </span>            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+<span class="lineno">  856 </span>                    UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+<span class="lineno">  857 </span>            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+<span class="caretline"><span class="lineno">  858 </span>            <span class="error">bluetoothGatt.writeDescriptor(descriptor)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  859 </span>        }
+<span class="lineno">  860 </span>    }
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:942</span>: <span class="message">Missing permissions required by BluetoothGatt.readRemoteRssi: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  939 </span><span class="comment">        */</span>
+<span class="lineno">  940 </span>    <span class="keyword">public</span>  <span class="keyword">boolean</span> ReadRSSI()
+<span class="lineno">  941 </span>    {
+<span class="caretline"><span class="lineno">  942 </span>        <span class="keyword">return</span> <span class="error">mBluetoothGatt.readRemoteRssi()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  943 </span>    }
+<span class="lineno">  944 </span>
+<span class="lineno">  945 </span>    <span class="keyword">public</span> <span class="keyword">boolean</span> ReadData(BluetoothGatt bluetoothGatt) {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:1067</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno"> 1064 </span>                <span class="annotation">@Override</span>
+<span class="lineno"> 1065 </span>                <span class="keyword">public</span> <span class="keyword">void</span> run() {
+<span class="lineno"> 1066 </span>                    Log.e(TAG, <span class="string">"scanLeDevice stopLeScan"</span>);
+<span class="caretline"><span class="lineno"> 1067 </span>                    <span class="error">mBluetoothAdapter.stopLeScan(mLeScanCallback)</span>;                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1068 </span>                }
+<span class="lineno"> 1069 </span>            }, GetSCAN_PERIOD());
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:1073</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno"> 1070 </span>
+<span class="lineno"> 1071 </span>            Log.e(TAG, <span class="string">"scanLeDevice startLeScan"</span>);
+<span class="lineno"> 1072 </span>            pre_ScanForPeripherals = System.currentTimeMillis();
+<span class="caretline"><span class="lineno"> 1073 </span>            <span class="error">mBluetoothAdapter.startLeScan(mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1074 </span>
+<span class="lineno"> 1075 </span>
+<span class="lineno"> 1076 </span>        } <span class="keyword">else</span> {
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:1077</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno"> 1074 </span>
+<span class="lineno"> 1075 </span>
+<span class="lineno"> 1076 </span>        } <span class="keyword">else</span> {
+<span class="caretline"><span class="lineno"> 1077 </span>            <span class="error">mBluetoothAdapter.stopLeScan(mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1078 </span>        }
+<span class="lineno"> 1079 </span>    }    
+<span class="lineno"> 1080 </span>    
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:1089</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1086 </span>                        <span class="keyword">byte</span>[] scanRecord) {
+<span class="lineno"> 1087 </span>                    <span class="comment">// TODO Auto-generated method stub    </span>
+<span class="lineno"> 1088 </span>                    <span class="comment">// Add Device</span>
+<span class="caretline"><span class="lineno"> 1089 </span>                    <span class="keyword">if</span> (<span class="keyword">null</span> == <span class="error">device.getName()</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1090 </span>                        <span class="keyword">return</span>;
+<span class="lineno"> 1091 </span>                    }
+<span class="lineno"> 1092 </span>                    
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:1148</span>: <span class="message">Missing permissions required by BluetoothDevice.connectGatt: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1145 </span>  }
+<span class="lineno"> 1146 </span>
+<span class="lineno"> 1147 </span>        <span class="comment">//mBluetoothGatt = device.connectGatt(this, false, mGattCallback);</span>
+<span class="caretline"><span class="lineno"> 1148 </span>  mBluetoothGatt = <span class="error">device.connectGatt(<span class="keyword">this</span>, <span class="keyword">false</span>, mGattCallback , BluetoothDevice.TRANSPORT_LE )</span>;</span>
+<span class="lineno"> 1149 </span>  <span class="keyword">if</span> (mBluetoothGatt == <span class="keyword">null</span>) {
+<span class="lineno"> 1150 </span>      Log.e(TAG, <span class="string">"BluetoothGatt not found!"</span>);
+<span class="lineno"> 1151 </span>      <span class="keyword">return</span> <span class="keyword">false</span>;
+</pre>
+
+</div>
+</div>
+<div class="metadata"><div class="explanation" id="explanationMissingPermission" style="display: none;">
+This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.<br/>
+<br/>
+Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "MissingPermission" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">MissingPermission</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Error</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 9/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationMissingPermissionLink" onclick="reveal('explanationMissingPermission');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="MissingPermissionCardLink" onclick="hideid('MissingPermissionCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="GradleCompatible"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="GradleCompatibleCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Incompatible Gradle Versions</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:31</span>: <span class="message">Version 28 (intended for Android Pie and below) is the last version of the legacy support library, so we recommend that you migrate to AndroidX libraries when using Android Q and moving forward. The IDE can help with this: Refactor > Migrate to AndroidX...</span><br /><pre class="errorlines">
+<span class="lineno"> 28 </span>dependencies {
+<span class="lineno"> 29 </span>    api fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
+<span class="lineno"> 30 </span>    testImplementation <span class="string">'junit:junit:4.13.2'</span>
+<span class="caretline"><span class="lineno"> 31 </span>    <span class="error">api <span class="string">'com.android.support:appcompat-v7:28.0.0'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 32 </span>    api files(<span class="string">'libs/classes.jar'</span>)
+<span class="lineno"> 33 </span>    <span class="comment">//api files('libs/commons-net-3.6.jar')</span>
+<span class="lineno"> 34 </span>}
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationGradleCompatible" style="display: none;">
+There are some combinations of libraries, or tools and libraries, that are incompatible, or can lead to bugs. One such incompatibility is compiling with a version of the Android support libraries that is not the latest version (or in particular, a version lower than your <code>targetSdkVersion</code>).<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "GradleCompatible" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">GradleCompatible</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Fatal</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 8/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationGradleCompatibleLink" onclick="reveal('explanationGradleCompatible');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="GradleCompatibleCardLink" onclick="hideid('GradleCompatibleCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="DefaultLocale"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="DefaultLocaleCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Implied default locale in case conversion</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:386</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno">  383 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(ACTION_GATT_RSSI.equals(action))
+<span class="lineno">  384 </span>  {
+<span class="lineno">  385 </span>      <span class="keyword">int</span> rssi = intent.getIntExtra(<span class="string">"value"</span>,<span class="number">0</span>);
+<span class="caretline"><span class="lineno">  386 </span>      String sRSSI = <span class="warning">String.format(<span class="string">"%d"</span>,rssi)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  387 </span>      UnityPlayer.UnitySendMessage(<span class="string">"BLEControllerEventHandler"</span>, <span class="string">"OnBleDidReadRSSI"</span>, sRSSI);
+<span class="lineno">  388 </span>  }
+<span class="lineno">  389 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (ACTION_GATT_SERVICES_DISCOVERED.equals(action))
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:794</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno">  791 </span>  String devName = device.getName();
+<span class="lineno">  792 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  793 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="caretline"><span class="lineno">  794 </span>  HandShake.Instance().Log2File( <span class="warning">String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName)</span>);</span>
+<span class="lineno">  795 </span>  <span class="keyword">if</span>(HandShake.Instance().CheckSDBBleDevice(device.getName()))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span>
+<span class="lineno">  796 </span>  {
+<span class="lineno">  797 </span>      isFindBLE = <span class="keyword">true</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:99</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno">  96 </span>        WifiManager wifi_service = (WifiManager)context.getSystemService(WIFI_SERVICE);
+<span class="lineno">  97 </span>        WifiInfo wifiInfo = wifi_service.getConnectionInfo();
+<span class="lineno">  98 </span>        <span class="keyword">int</span> ipAddress = wifiInfo.getIpAddress();
+<span class="caretline"><span class="lineno">  99 </span>        String ip = <span class="warning">String.format(<span class="string">"%d.%d.%d.%d"</span>,(ipAddress &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">8</span> &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">16</span> &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">24</span> &amp; <span class="number">0xff</span>))</span>;</span>
+<span class="lineno"> 100 </span>        <span class="keyword">return</span> ip;
+<span class="lineno"> 101 </span>    }
+<span class="lineno"> 102 </span>}
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/OS400FTPEntryParser.java</a>:338</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>toUpperCase(Locale)</code> instead. For strings meant to be internal use <code>Locale.ROOT</code>, otherwise <code>Locale.getDefault()</code>.</span><br /><pre class="errorlines">
+<span class="lineno"> 335 </span>                <span class="comment">// file.</span>
+<span class="lineno"> 336 </span>                <span class="comment">// Save files are a special type of files which are used</span>
+<span class="lineno"> 337 </span>                <span class="comment">// to save objects, e.g. for backups.</span>
+<span class="caretline"><span class="lineno"> 338 </span>                <span class="keyword">if</span> (name != <span class="keyword">null</span> &amp;&amp; name.<span class="warning">toUpperCase</span>().endsWith(<span class="string">".SAVF"</span>))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 339 </span>                {
+<span class="lineno"> 340 </span>                    mustScanForPathSeparator = <span class="keyword">false</span>;
+<span class="lineno"> 341 </span>                    type = FTPFile.FILE_TYPE;
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationDefaultLocale" style="display: none;">
+Calling <code>String#toLowerCase()</code> or <code>#toUpperCase()</code> <b>without specifying an explicit locale</b> is a common source of bugs. The reason for that is that those methods will use the current locale on the user's device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for <code>i</code> is <b>not</b> <code>I</code>.<br/>
+<br/>
+If you want the methods to just perform ASCII replacement, for example to convert an enum name, call <code>String#toUpperCase(Locale.US)</code> instead. If you really want to use the current locale, call <code>String#toUpperCase(Locale.getDefault())</code> instead.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/reference/java/util/Locale.html#default_locale">http://developer.android.com/reference/java/util/Locale.html#default_locale</a>
+</div>To suppress this error, use the issue id "DefaultLocale" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">DefaultLocale</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationDefaultLocaleLink" onclick="reveal('explanationDefaultLocale');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="DefaultLocaleCardLink" onclick="hideid('DefaultLocaleCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="OldTargetApi"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="OldTargetApiCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Target SDK attribute is not targeting latest version</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:15</span>: <span class="message">Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.</span><br /><pre class="errorlines">
+<span class="lineno"> 12 </span>    }
+<span class="lineno"> 13 </span>    defaultConfig {
+<span class="lineno"> 14 </span>        minSdkVersion <span class="number">23</span>
+<span class="caretline"><span class="lineno"> 15 </span>        <span class="warning">targetSdkVersion <span class="number">29</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 16 </span>    }
+<span class="lineno"> 17 </span>    buildTypes {
+<span class="lineno"> 18 </span>        release {
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationOldTargetApi" style="display: none;">
+When your application runs on a version of Android that is more recent than your <code>targetSdkVersion</code> specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the <code>targetSdkVersion</code> is less than 14, your app may get an option button in the UI.<br/>
+<br/>
+To fix this issue, set the <code>targetSdkVersion</code> to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: <a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a> as well as follow this guide:<br/>
+<a href="https://developer.android.com/distribute/best-practices/develop/target-sdk.html">https://developer.android.com/distribute/best-practices/develop/target-sdk.html</a><br/><div class="moreinfo">More info: <ul><li><a href="https://developer.android.com/distribute/best-practices/develop/target-sdk.html">https://developer.android.com/distribute/best-practices/develop/target-sdk.html</a>
+<li><a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a>
+</ul></div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "OldTargetApi" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">OldTargetApi</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationOldTargetApiLink" onclick="reveal('explanationOldTargetApi');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="OldTargetApiCardLink" onclick="hideid('OldTargetApiCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="SimpleDateFormat"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="SimpleDateFormatCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Implied locale in date format</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:214</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 211 </span>  <span class="comment">// e.g. if today is Jan 1 2001 and the short date is Feb 29</span>
+<span class="lineno"> 212 </span>  String year = Integer.toString(now.get(Calendar.YEAR));
+<span class="lineno"> 213 </span>  String timeStampStrPlusYear = timestampStr + <span class="string">" "</span> + year;
+<span class="caretline"><span class="lineno"> 214 </span>  SimpleDateFormat hackFormatter = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(recentDateFormat.toPattern() + <span class="string">" yyyy"</span>,</span></span>
+<span class="lineno"> 215 </span>          recentDateFormat.getDateFormatSymbols());
+<span class="lineno"> 216 </span>  hackFormatter.setLenient(<span class="keyword">false</span>);
+<span class="lineno"> 217 </span>  hackFormatter.setTimeZone(recentDateFormat.getTimeZone());
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:271</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 268 </span>    <span class="keyword">private</span> <span class="keyword">void</span> setDefaultDateFormat(String format, DateFormatSymbols dfs) {
+<span class="lineno"> 269 </span>        <span class="keyword">if</span> (format != <span class="keyword">null</span>) {
+<span class="lineno"> 270 </span>            <span class="keyword">if</span> (dfs != <span class="keyword">null</span>) {
+<span class="caretline"><span class="lineno"> 271 </span>                <span class="keyword">this</span>.defaultDateFormat = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(format, dfs)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 272 </span>            } <span class="keyword">else</span> {
+<span class="lineno"> 273 </span>                <span class="keyword">this</span>.defaultDateFormat = <span class="keyword">new</span> SimpleDateFormat(format);
+<span class="lineno"> 274 </span>            }
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:273</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 270 </span>            <span class="keyword">if</span> (dfs != <span class="keyword">null</span>) {
+<span class="lineno"> 271 </span>                <span class="keyword">this</span>.defaultDateFormat = <span class="keyword">new</span> SimpleDateFormat(format, dfs);
+<span class="lineno"> 272 </span>            } <span class="keyword">else</span> {
+<span class="caretline"><span class="lineno"> 273 </span>                <span class="keyword">this</span>.defaultDateFormat = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(format)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 274 </span>            }
+<span class="lineno"> 275 </span>            <span class="keyword">this</span>.defaultDateFormat.setLenient(<span class="keyword">false</span>);
+<span class="lineno"> 276 </span>        } <span class="keyword">else</span> {
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:300</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 297 </span>    <span class="keyword">private</span> <span class="keyword">void</span> setRecentDateFormat(String format, DateFormatSymbols dfs) {
+<span class="lineno"> 298 </span>        <span class="keyword">if</span> (format != <span class="keyword">null</span>) {
+<span class="lineno"> 299 </span>            <span class="keyword">if</span> (dfs != <span class="keyword">null</span>) {
+<span class="caretline"><span class="lineno"> 300 </span>                <span class="keyword">this</span>.recentDateFormat = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(format, dfs)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 301 </span>            } <span class="keyword">else</span> {
+<span class="lineno"> 302 </span>                <span class="keyword">this</span>.recentDateFormat = <span class="keyword">new</span> SimpleDateFormat(format);
+<span class="lineno"> 303 </span>            }
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java">../../src/main/java/org/apache/commons/net/ftp/parser/FTPTimestampParserImpl.java</a>:302</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 299 </span>            <span class="keyword">if</span> (dfs != <span class="keyword">null</span>) {
+<span class="lineno"> 300 </span>                <span class="keyword">this</span>.recentDateFormat = <span class="keyword">new</span> SimpleDateFormat(format, dfs);
+<span class="lineno"> 301 </span>            } <span class="keyword">else</span> {
+<span class="caretline"><span class="lineno"> 302 </span>                <span class="keyword">this</span>.recentDateFormat = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(format)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 303 </span>            }
+<span class="lineno"> 304 </span>            <span class="keyword">this</span>.recentDateFormat.setLenient(<span class="keyword">false</span>);
+<span class="lineno"> 305 </span>        } <span class="keyword">else</span> {
+</pre>
+
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/LogFile.java">../../src/main/java/com/kevin/Tool/LogFile.java</a>:105</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 102 </span>        String str = <span class="string">""</span>;
+<span class="lineno"> 103 </span>        <span class="keyword">if</span>(bLogTime)
+<span class="lineno"> 104 </span>        {
+<span class="caretline"><span class="lineno"> 105 </span>            SimpleDateFormat sdf = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(<span class="string">"HH:mm:ss`SSS"</span>)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 106 </span>            String sTime = sdf.format(Calendar.getInstance().getTime());
+<span class="lineno"> 107 </span>            <span class="comment">//String fileName = "BLE_Log_" + sTime;</span>
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java</a>:195</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 192 </span>        <span class="keyword">final</span> SimpleDateFormat sdf;
+<span class="lineno"> 193 </span>        <span class="keyword">final</span> <span class="keyword">boolean</span> hasMillis;
+<span class="lineno"> 194 </span>        <span class="keyword">if</span> (timestamp.contains(<span class="string">"."</span>)){
+<span class="caretline"><span class="lineno"> 195 </span>            sdf = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMddHHmmss.SSS"</span>)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 196 </span>            hasMillis = <span class="keyword">true</span>;
+<span class="lineno"> 197 </span>        } <span class="keyword">else</span> {
+<span class="lineno"> 198 </span>            sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMddHHmmss"</span>);
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java">../../src/main/java/org/apache/commons/net/ftp/parser/MLSxEntryParser.java</a>:198</span>: <span class="message">To get local formatting use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code>, or use <code>new SimpleDateFormat(String template, Locale locale)</code> with for example <code>Locale.US</code> for ASCII dates.</span><br /><pre class="errorlines">
+<span class="lineno"> 195 </span>            sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMddHHmmss.SSS"</span>);
+<span class="lineno"> 196 </span>            hasMillis = <span class="keyword">true</span>;
+<span class="lineno"> 197 </span>        } <span class="keyword">else</span> {
+<span class="caretline"><span class="lineno"> 198 </span>            sdf = <span class="warning"><span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMddHHmmss"</span>)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 199 </span>            hasMillis = <span class="keyword">false</span>;
+<span class="lineno"> 200 </span>        }
+<span class="lineno"> 201 </span>        TimeZone GMT = TimeZone.getTimeZone(<span class="string">"GMT"</span>);
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationSimpleDateFormat" style="display: none;">
+Almost all callers should use <code>getDateInstance()</code>, <code>getDateTimeInstance()</code>, or <code>getTimeInstance()</code> to get a ready-made instance of SimpleDateFormat suitable for the user's locale. The main reason you'd create an instance this class directly is because you need to format/parse a specific machine-readable format, in which case you almost certainly want to explicitly ask for US to ensure that you get ASCII digits (rather than, say, Arabic digits).<br/>
+<br/>
+Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/reference/java/text/SimpleDateFormat.html">http://developer.android.com/reference/java/text/SimpleDateFormat.html</a>
+</div>To suppress this error, use the issue id "SimpleDateFormat" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">SimpleDateFormat</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationSimpleDateFormatLink" onclick="reveal('explanationSimpleDateFormat');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="SimpleDateFormatCardLink" onclick="hideid('SimpleDateFormatCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="ValidFragment"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="ValidFragmentCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Fragment not instantiatable</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:58</span>: <span class="message">Fragments should be static such that they can be re-instantiated by the system, and anonymous classes are not static</span><br /><pre class="errorlines">
+<span class="lineno">  55 </span>            }
+<span class="lineno">  56 </span>
+<span class="lineno">  57 </span>            <span class="keyword">final</span> FragmentManager fragmentManager = currentActivity.getFragmentManager();
+<span class="caretline"><span class="lineno">  58 </span>            <span class="keyword">final</span> Fragment request = <span class="keyword">new</span> <span class="error">Fragment</span>() {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  59 </span>
+<span class="lineno">  60 </span>                <span class="annotation">@Override</span> <span class="keyword">public</span> <span class="keyword">void</span> onStart()
+<span class="lineno">  61 </span>                {
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationValidFragment" style="display: none;">
+From the Fragment documentation:<br/>
+<b>Every</b> fragment must have an empty constructor, so it can be instantiated when restoring its activity's state. It is strongly recommended that subclasses do not have other constructors with parameters, since these constructors will not be called when the fragment is re-instantiated; instead, arguments can be supplied by the caller with <code>setArguments(Bundle)</code> and later retrieved by the Fragment with <code>getArguments()</code>.<br/>
+<br/>
+Note that this is no longer true when you are using <code>androidx.fragment.app.Fragment</code>; with the <code>FragmentFactory</code> you can supply any arguments you want (as of version androidx version 1.1).<br/><div class="moreinfo">More info: <a href="http://developer.android.com/reference/android/app/Fragment.html#Fragment()">http://developer.android.com/reference/android/app/Fragment.html#Fragment()</a>
+</div>To suppress this error, use the issue id "ValidFragment" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">ValidFragment</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Error</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationValidFragmentLink" onclick="reveal('explanationValidFragment');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="ValidFragmentCardLink" onclick="hideid('ValidFragmentCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="WifiManagerPotentialLeak"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="WifiManagerPotentialLeakCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">WifiManager Potential Leak</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:96</span>: <span class="message">The WIFI_SERVICE must be looked up on the Application context or memory will leak on devices &lt; Android N. Try changing <code>context</code> to <code>context.getApplicationContext()</code></span><br /><pre class="errorlines">
+<span class="lineno">  93 </span>
+<span class="lineno">  94 </span>  <span class="keyword">public</span> <span class="keyword">static</span> String GetWifiIP()
+<span class="lineno">  95 </span>  {
+<span class="caretline"><span class="lineno">  96 </span>      WifiManager wifi_service = (WifiManager)<span class="warning">context.getSystemService(WIFI_SERVICE)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  97 </span>      WifiInfo wifiInfo = wifi_service.getConnectionInfo();
+<span class="lineno">  98 </span>      <span class="keyword">int</span> ipAddress = wifiInfo.getIpAddress();
+<span class="lineno">  99 </span>      String ip = String.format(<span class="string">"%d.%d.%d.%d"</span>,(ipAddress &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">8</span> &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">16</span> &amp; <span class="number">0xff</span>),(ipAddress >> <span class="number">24</span> &amp; <span class="number">0xff</span>));
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationWifiManagerPotentialLeak" style="display: none;">
+On versions prior to Android N (24), initializing the <code>WifiManager</code> via <code>Context#getSystemService</code> can cause a memory leak if the context is not the application context.<br/>
+<br/>
+In many cases, it's not obvious from the code where the <code>Context</code> is coming from (e.g. it might be a parameter to a method, or a field initialized from various method calls). It's possible that the context being passed in is the application context, but to be on the safe side, you should consider changing <code>context.getSystemService(...)</code> to <code>context.getApplicationContext().getSystemService(...)</code>.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "WifiManagerPotentialLeak" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">WifiManagerPotentialLeak</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationWifiManagerPotentialLeakLink" onclick="reveal('explanationWifiManagerPotentialLeak');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="WifiManagerPotentialLeakCardLink" onclick="hideid('WifiManagerPotentialLeakCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="LongLogTag"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="LongLogTagCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Too Long Log Tags</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:104</span>: <span class="message">The logging tag can be at most 23 characters, was 25 ([NoodlePermissionGranter])</span><br /><pre class="errorlines">
+<span class="lineno"> 101 </span>        }
+<span class="lineno"> 102 </span>        <span class="keyword">catch</span>(Exception error)
+<span class="lineno"> 103 </span>        {
+<span class="caretline"><span class="lineno"> 104 </span>            Log.w(<span class="error"><span class="string">"[NoodlePermissionGranter]"</span></span>, String.format(<span class="string">"Unable to request permission: %s"</span>, error.getMessage()));</span>
+<span class="lineno"> 105 </span>            UnityPlayer.UnitySendMessage(UNITY_CALLBACK_GAMEOBJECT_NAME, UNITY_CALLBACK_METHOD_NAME, PERMISSION_DENIED);
+<span class="lineno"> 106 </span>        }
+<span class="lineno"> 107 </span>    }
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationLongLogTag" style="display: none;">
+Log tags are only allowed to be at most 23 tag characters long.<br/>To suppress this error, use the issue id "LongLogTag" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">LongLogTag</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Error</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 5/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationLongLogTagLink" onclick="reveal('explanationLongLogTag');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="LongLogTagCardLink" onclick="hideid('LongLogTagCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="ManifestOrder"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="ManifestOrderCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Incorrect order of elements in manifest</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:13</span>: <span class="message"><code>&lt;uses-feature></code> tag appears after <code>&lt;application></code> tag</span><br /><pre class="errorlines">
+<span class="lineno"> 10 </span>
+<span class="lineno"> 11 </span>    <span class="tag">&lt;/application></span>
+<span class="lineno"> 12 </span>
+<span class="caretline"><span class="lineno"> 13 </span>    <span class="tag">&lt;</span><span class="warning"><span class="tag">uses-feature</span></span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.hardware.bluetooth_le"</span> <span class="prefix">android:</span><span class="attribute">required</span>=<span class="value">"true"</span>/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 14 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.BLUETOOTH"</span>/>
+<span class="lineno"> 15 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.BLUETOOTH_ADMIN"</span>/>
+<span class="lineno"> 16 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.ACCESS_COARSE_LOCATION"</span> />
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationManifestOrder" style="display: none;">
+The &lt;application> tag should appear after the elements which declare which version you need, which features you need, which libraries you need, and so on. In the past there have been subtle bugs (such as themes not getting applied correctly) when the <code>&lt;application></code> tag appears before some of these other elements, so it's best to order your manifest in the logical dependency order.<br/>To suppress this error, use the issue id "ManifestOrder" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">ManifestOrder</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 5/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationManifestOrderLink" onclick="reveal('explanationManifestOrder');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="ManifestOrderCardLink" onclick="hideid('ManifestOrderCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="ProtectedPermissions"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="ProtectedPermissionsCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Using system app permission</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:20</span>: <span class="message">Permission is only granted to system apps</span><br /><pre class="errorlines">
+<span class="lineno"> 17 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.ACCESS_FINE_LOCATION"</span> />
+<span class="lineno"> 18 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.ACCESS_BACKGROUND_LOCATION"</span> />
+<span class="lineno"> 19 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.ACCESS_NETWORK_STATE"</span>/>
+<span class="caretline"><span class="lineno"> 20 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="error"><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.BATTERY_STATS"</span></span>/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 21 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.ACCESS_WIFI_STATE"</span>/>
+<span class="lineno"> 22 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.CHANGE_WIFI_STATE"</span> />
+<span class="lineno"> 23 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.WRITE_EXTERNAL_STORAGE"</span> />
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationProtectedPermissions" style="display: none;">
+Permissions with the protection level signature, privileged or signatureOrSystem are only granted to system apps. If an app is a regular non-system app, it will never be able to use these permissions.<br/>To suppress this error, use the issue id "ProtectedPermissions" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">ProtectedPermissions</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Correctness</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Error</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 5/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationProtectedPermissionsLink" onclick="reveal('explanationProtectedPermissions');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="ProtectedPermissionsCardLink" onclick="hideid('ProtectedPermissionsCard');">
+Dismiss</button>            </div>
+            </div>
+          </section>
+<a name="Security"></a>
+<a name="TrustAllX509TrustManager"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="TrustAllX509TrustManagerCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Insecure TLS/SSL trust manager</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/ftp/FTPSTrustManager.java">../../src/main/java/org/apache/commons/net/ftp/FTPSTrustManager.java</a>:41</span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br /><pre class="errorlines">
+<span class="lineno"> 38 </span><span class="javadoc">     * No-op
+</span><span class="lineno"> 39 </span><span class="javadoc">     */</span>
+<span class="lineno"> 40 </span>    <span class="annotation">@Override</span>
+<span class="caretline"><span class="lineno"> 41 </span>    <span class="keyword">public</span> <span class="keyword">void</span> <span class="warning">checkClientTrusted</span>(X509Certificate[] certificates, String authType)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 42 </span>    {
+<span class="lineno"> 43 </span>        <span class="keyword">return</span>;
+<span class="lineno"> 44 </span>    }
+</pre>
+
+<span class="location"><a href="../../src/main/java/org/apache/commons/net/util/TrustManagerUtils.java">../../src/main/java/org/apache/commons/net/util/TrustManagerUtils.java</a>:49</span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br /><pre class="errorlines">
+<span class="lineno">  46 </span><span class="javadoc">         * Never generates a CertificateException.
+</span><span class="lineno">  47 </span><span class="javadoc">         */</span>
+<span class="lineno">  48 </span>        <span class="annotation">@Override</span>
+<span class="caretline"><span class="lineno">  49 </span>        <span class="keyword">public</span> <span class="keyword">void</span> <span class="warning">checkClientTrusted</span>(X509Certificate[] certificates, String authType)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  50 </span>        {
+<span class="lineno">  51 </span>            <span class="keyword">return</span>;
+<span class="lineno">  52 </span>        }
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationTrustAllX509TrustManager" style="display: none;">
+This check looks for X509TrustManager implementations whose <code>checkServerTrusted</code> or <code>checkClientTrusted</code> methods do nothing (thus trusting any certificate chain) which could result in insecure network traffic caused by trusting arbitrary TLS/SSL certificates presented by peers.<br/>To suppress this error, use the issue id "TrustAllX509TrustManager" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">TrustAllX509TrustManager</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Security</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationTrustAllX509TrustManagerLink" onclick="reveal('explanationTrustAllX509TrustManager');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="TrustAllX509TrustManagerCardLink" onclick="hideid('TrustAllX509TrustManagerCard');">
+Dismiss</button>            </div>
+            </div>
+          </section>
+<a name="Performance"></a>
+<a name="ObsoleteSdkInt"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="ObsoleteSdkIntCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Obsolete SDK_INT Version Check</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:524</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
+<span class="lineno">  521 </span>    {
+<span class="lineno">  522 </span>
+<span class="lineno">  523 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="caretline"><span class="lineno">  524 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  525 </span>        {
+<span class="lineno">  526 </span>            <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
+<span class="lineno">  527 </span>            <span class="keyword">return</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:643</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
+<span class="lineno">  640 </span>
+<span class="lineno">  641 </span>
+<span class="lineno">  642 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="caretline"><span class="lineno">  643 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  644 </span>        {
+<span class="lineno">  645 </span>            <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
+<span class="lineno">  646 </span>            <span class="keyword">return</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:984</span>: <span class="message">Unnecessary; SDK_INT is always >= 23</span><br /><pre class="errorlines">
+<span class="lineno">  981 </span>  <span class="keyword">int</span> locationMode = <span class="number">0</span>;
+<span class="lineno">  982 </span>  String locationProviders;
+<span class="lineno">  983 </span>
+<span class="caretline"><span class="lineno">  984 </span>  <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  985 </span>      <span class="keyword">try</span> {
+<span class="lineno">  986 </span>          locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:41</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
+<span class="lineno">  38 </span>        <span class="comment">// permission enum must match ordering in NoodlePermissionGranter.cs</span>
+<span class="lineno">  39 </span>        <span class="keyword">final</span> Activity act = currentActivity;
+<span class="lineno">  40 </span>        Log.i(<span class="string">"NoodlePermissionGranter"</span>,<span class="string">"grantPermission "</span> + permissionEnum) ;
+<span class="caretline"><span class="lineno">  41 </span>        <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT &lt; <span class="number">23</span></span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  42 </span>            Log.i(<span class="string">"NoodlePermissionGranter"</span>,<span class="string">"Build.VERSION.SDK_INT &lt; 23 ("</span> + Build.VERSION.SDK_INT+<span class="string">")"</span>);
+<span class="lineno">  43 </span>            UnityPlayer.UnitySendMessage(UNITY_CALLBACK_GAMEOBJECT_NAME, UNITY_CALLBACK_METHOD_NAME, PERMISSION_GRANTED);
+<span class="lineno">  44 </span>            <span class="keyword">return</span>;
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationObsoleteSdkInt" style="display: none;">
+This check flags version checks that are not necessary, because the <code>minSdkVersion</code> (or surrounding known API level) is already at least as high as the version checked for.<br/>
+<br/>
+Similarly, it also looks for resources in <code>-vNN</code> folders, such as <code>values-v14</code> where the version qualifier is less than or equal to the <code>minSdkVersion</code>, where the contents should be merged into the best folder.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "ObsoleteSdkInt" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">ObsoleteSdkInt</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Performance</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationObsoleteSdkIntLink" onclick="reveal('explanationObsoleteSdkInt');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="ObsoleteSdkIntCardLink" onclick="hideid('ObsoleteSdkIntCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="StaticFieldLeak"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="StaticFieldLeakCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Static Field Leaks</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/BatteryTools.java">../../src/main/java/com/kevin/Tool/BatteryTools.java</a>:23</span>: <span class="message">Do not place Android context classes in static fields (static reference to <code>BatteryTools</code> which has field <code>con</code> pointing to <code>Context</code>); this is a memory leak</span><br /><pre class="errorlines">
+<span class="lineno"> 20 </span>
+<span class="lineno"> 21 </span>    }
+<span class="lineno"> 22 </span>
+<span class="caretline"><span class="lineno"> 23 </span>    <span class="warning"><span class="keyword">static</span></span> BatteryTools mgr = <span class="keyword">new</span> BatteryTools();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 24 </span>    <span class="keyword">public</span> <span class="keyword">static</span> BatteryTools Instance()
+<span class="lineno"> 25 </span>    {
+<span class="lineno"> 26 </span>        <span class="keyword">return</span> mgr;
+</pre>
+
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:69</span>: <span class="message">Do not place Android context classes in static fields (static reference to <code>BleFramework</code> which has field <code>_unityActivity</code> pointing to <code>Activity</code>); this is a memory leak</span><br /><pre class="errorlines">
+<span class="lineno">   66 </span><span class="keyword">public</span> <span class="keyword">class</span> BleFramework{
+<span class="lineno">   67 </span>
+<span class="lineno">   68 </span>    <span class="keyword">private</span> Activity _unityActivity;
+<span class="caretline"><span class="lineno">   69 </span>    <span class="keyword">private</span> <span class="warning"><span class="keyword">static</span></span> <span class="keyword">volatile</span> BleFramework _instance;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">   70 </span>    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BLEUnityMessageName_OnBleDidInitialize = <span class="string">"OnBleDidInitialize"</span>;
+<span class="lineno">   71 </span>    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BLEUnityMessageName_OnBleDidConnect = <span class="string">"OnBleDidConnect"</span>;
+<span class="lineno">   72 </span>    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BLEUnityMessageName_OnBleDidCompletePeripheralScan = <span class="string">"OnBleDidCompletePeripheralScan"</span>;
+</pre>
+
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:21</span>: <span class="message">Do not place Android context classes in static fields; this is a memory leak</span><br /><pre class="errorlines">
+<span class="lineno">  18 </span>
+<span class="lineno">  19 </span><span class="keyword">public</span> <span class="keyword">class</span> NetTools
+<span class="lineno">  20 </span>{
+<span class="caretline"><span class="lineno">  21 </span>    <span class="warning"><span class="keyword">static</span></span> Context context = <span class="keyword">null</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  22 </span>    <span class="keyword">private</span> NetTools()
+<span class="lineno">  23 </span>    {
+</pre>
+
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/SystemInfo.java">../../src/main/java/com/kevin/Tool/SystemInfo.java</a>:18</span>: <span class="message">Do not place Android context classes in static fields; this is a memory leak</span><br /><pre class="errorlines">
+<span class="lineno"> 15 </span>    {
+<span class="lineno"> 16 </span>        con = c;
+<span class="lineno"> 17 </span>    }
+<span class="caretline"><span class="lineno"> 18 </span>    <span class="keyword">public</span> <span class="warning"><span class="keyword">static</span></span> Context con;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 19 </span>
+<span class="lineno"> 20 </span>    <span class="keyword">public</span> <span class="keyword">static</span> String GetPhoneModle()
+<span class="lineno"> 21 </span>    {
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationStaticFieldLeak" style="display: none;">
+A static field will leak contexts.<br/>
+<br/>
+Non-static inner classes have an implicit reference to their outer class. If that outer class is for example a <code>Fragment</code> or <code>Activity</code>, then this reference means that the long-running handler/loader/task will hold a reference to the activity which prevents it from getting garbage collected.<br/>
+<br/>
+Similarly, direct field references to activities and fragments from these longer running instances can cause leaks.<br/>
+<br/>
+ViewModel classes should never point to Views or non-application Contexts.<br/>To suppress this error, use the issue id "StaticFieldLeak" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">StaticFieldLeak</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Performance</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 6/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationStaticFieldLeakLink" onclick="reveal('explanationStaticFieldLeak');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="StaticFieldLeakCardLink" onclick="hideid('StaticFieldLeakCard');">
+Dismiss</button>            </div>
+            </div>
+          </section>
+<a name="MissingIssues"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="MissingIssuesCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Disabled Checks</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+One or more issues were not run by lint, either 
+because the check is not enabled by default, or because 
+it was disabled with a command line flag or via one or 
+more <code>lint.xml</code> configuration files in the project directories.
+<div id="SuppressedIssues" style="display: none;"><br/><br/><div class="issue">
+<div class="id">AppLinksAutoVerifyError<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Ensures that app links are correctly set and associated with website.<br/><div class="moreinfo">More info: <a href="https://g.co/appindexing/applinks">https://g.co/appindexing/applinks</a>
+</div>To suppress this error, use the issue id "AppLinksAutoVerifyError" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">AppLinksAutoVerifyWarning<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Ensures that app links are correctly set and associated with website.<br/><div class="moreinfo">More info: <a href="https://g.co/appindexing/applinks">https://g.co/appindexing/applinks</a>
+</div>To suppress this error, use the issue id "AppLinksAutoVerifyWarning" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">BackButton<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+According to the Android Design Guide,<br/>
+<br/>
+"Other platforms use an explicit back button with label to allow the user to navigate up the application's hierarchy. Instead, Android uses the main action bar's app icon for hierarchical navigation and the navigation bar's back button for temporal navigation."<br/>
+This check is not very sophisticated (it just looks for buttons with the label "Back"), so it is disabled by default to not trigger on common scenarios like pairs of Back/Next buttons to paginate through screens.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/design/patterns/pure-android.html">http://developer.android.com/design/patterns/pure-android.html</a>
+</div>To suppress this error, use the issue id "BackButton" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">ConvertToWebp<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The WebP format is typically more compact than PNG and JPEG. As of Android 4.2.1 it supports transparency and lossless conversion as well. Note that there is a quickfix in the IDE which lets you perform conversion.<br/>
+<br/>
+Launcher icons must be in the PNG format.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "ConvertToWebp" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">DalvikOverride<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The Dalvik virtual machine will treat a package private method in one class as overriding a package private method in its super class, even if they are in separate packages.<br/>
+<br/>
+If you really did intend for this method to override the other, make the method <code>protected</code> instead.<br/>
+<br/>
+If you did <b>not</b> intend the override, consider making the method private, or changing its name or signature.<br/>
+<br/>
+Note that this check is disabled be default, because ART (the successor to Dalvik) no longer has this behavior.<br/>To suppress this error, use the issue id "DalvikOverride" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">DuplicateStrings<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Duplicate strings can make applications larger unnecessarily.<br/>
+<br/>
+This lint check looks for duplicate strings, including differences for strings where the only difference is in capitalization. Title casing and all uppercase can all be adjusted in the layout or in code.<br/><div class="moreinfo">More info: <a href="https://developer.android.com/reference/android/widget/TextView.html#attr_android:inputType">https://developer.android.com/reference/android/widget/TextView.html#attr_android:inputType</a>
+</div>To suppress this error, use the issue id "DuplicateStrings" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">EasterEgg<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+An "easter egg" is code deliberately hidden in the code, both from potential users and even from other developers. This lint check looks for code which looks like it may be hidden from sight.<br/>To suppress this error, use the issue id "EasterEgg" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">FieldGetter<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Accessing a field within the class that defines a getter for that field is at least 3 times faster than calling the getter. For simple getters that do nothing other than return the field, you might want to just reference the local field directly instead.<br/>
+<br/>
+<b>NOTE</b>: As of Android 2.3 (Gingerbread), this optimization is performed automatically by Dalvik, so there is no need to change your code; this is only relevant if you are targeting older versions of Android.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/guide/practices/design/performance.html#internal_get_set">http://developer.android.com/guide/practices/design/performance.html#internal_get_set</a>
+</div>To suppress this error, use the issue id "FieldGetter" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">GoogleAppIndexingApiWarning<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Adds URLs to get your app into the Google index, to get installs and traffic to your app from Google Search.<br/><div class="moreinfo">More info: <a href="https://g.co/AppIndexing/AndroidStudio">https://g.co/AppIndexing/AndroidStudio</a>
+</div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "GoogleAppIndexingApiWarning" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">IconExpectedSize<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+There are predefined sizes (for each density) for launcher icons. You should follow these conventions to make sure your icons fit in with the overall look of the platform.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/design/style/iconography.html">http://developer.android.com/design/style/iconography.html</a>
+</div>To suppress this error, use the issue id "IconExpectedSize" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">ImplicitSamInstance<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Kotlin's support for SAM (single accessor method) interfaces lets you pass a lambda to the interface. This will create a new instance on the fly even though there is no explicit constructor call. If you pass one of these lambdas or method references into a method which (for example) stores or compares the object identity, unexpected results may happen.<br/>To suppress this error, use the issue id "ImplicitSamInstance" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">KotlinPropertyAccess<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+For a method to be represented as a property in Kotlin, strict &#8220;bean&#8221;-style prefixing must be used.<br/>
+<br/>
+Accessor methods require a &#8216;get&#8217; prefix or for boolean-returning methods an &#8216;is&#8217; prefix can be used.<br/><div class="moreinfo">More info: <a href="https://android.github.io/kotlin-guides/interop.html#property-prefixes">https://android.github.io/kotlin-guides/interop.html#property-prefixes</a>
+</div>To suppress this error, use the issue id "KotlinPropertyAccess" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">LambdaLast<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+To improve calling this code from Kotlin,<br/>
+parameter types eligible for SAM conversion should be last.<br/><div class="moreinfo">More info: <a href="https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last">https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last</a>
+</div>To suppress this error, use the issue id "LambdaLast" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">LogConditional<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The BuildConfig class (available in Tools 17) provides a constant, "DEBUG", which indicates whether the code is being built in release mode or in debug mode. In release mode, you typically want to strip out all the logging calls. Since the compiler will automatically remove all code which is inside a "if (false)" check, surrounding your logging calls with a check for BuildConfig.DEBUG is a good idea.<br/>
+<br/>
+If you <b>really</b> intend for the logging to be present in release mode, you can suppress this warning with a @SuppressLint annotation for the intentional logging calls.<br/>To suppress this error, use the issue id "LogConditional" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">MangledCRLF<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+On Windows, line endings are typically recorded as carriage return plus newline: \r\n.<br/>
+<br/>
+This detector looks for invalid line endings with repeated carriage return characters (without newlines). Previous versions of the ADT plugin could accidentally introduce these into the file, and when editing the file, the editor could produce confusing visual artifacts.<br/><div class="moreinfo">More info: <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=375421">https://bugs.eclipse.org/bugs/show_bug.cgi?id=375421</a>
+</div>To suppress this error, use the issue id "MangledCRLF" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">MinSdkTooLow<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The value of the <code>minSdkVersion</code> property is too low and can be incremented without noticeably reducing the number of supported devices.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "MinSdkTooLow" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">MissingRegistered<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+If a class is referenced in the manifest or in a layout file, it must also exist in the project (or in one of the libraries included by the project. This check helps uncover typos in registration names, or attempts to rename or move classes without updating the manifest file properly.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/guide/topics/manifest/manifest-intro.html">http://developer.android.com/guide/topics/manifest/manifest-intro.html</a>
+</div>To suppress this error, use the issue id "MissingRegistered" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">NegativeMargin<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Margin values should be positive. Negative values are generally a sign that you are making assumptions about views surrounding the current one, or may be tempted to turn off child clipping to allow a view to escape its parent. Turning off child clipping to do this not only leads to poor graphical performance, it also results in wrong touch event handling since touch events are based strictly on a chain of parent-rect hit tests. Finally, making assumptions about the size of strings can lead to localization problems.<br/>To suppress this error, use the issue id "NegativeMargin" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">NewerVersionAvailable<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+This detector checks with a central repository to see if there are newer versions available for the dependencies used by this project. This is similar to the <code>GradleDependency</code> check, which checks for newer versions available in the Android SDK tools and libraries, but this works with any MavenCentral dependency, and connects to the library every time, which makes it more flexible but also <b>much</b> slower.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "NewerVersionAvailable" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">NoHardKeywords<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Do not use Kotlin&#8217;s hard keywords as the name of methods or fields.<br/>
+These require the use of backticks to escape when calling from Kotlin.<br/>
+Soft keywords, modifier keywords, and special identifiers are allowed.<br/>
+<br/>
+For example, Mockito&#8217;s <code>when</code> function requires backticks when used from Kotlin:<br/>
+<br/>
+    val callable = Mockito.mock(Callable::class.java)<br/>
+    Mockito.`when`(callable.call()).thenReturn(/* &#8230; */)<br/><div class="moreinfo">More info: <a href="https://android.github.io/kotlin-guides/interop.html#no-hard-keywords">https://android.github.io/kotlin-guides/interop.html#no-hard-keywords</a>
+</div>To suppress this error, use the issue id "NoHardKeywords" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">PermissionImpliesUnsupportedChromeOsHardware<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The <code>&lt;uses-permission></code> element should not require a permission that implies an unsupported Chrome OS hardware feature. Google Play assumes that certain hardware related permissions indicate that the underlying hardware features are required by default. To fix the issue, consider declaring the corresponding uses-feature element with <code>required="false"</code> attribute.<br/><div class="moreinfo">More info: <a href="https://developer.android.com/topic/arc/manifest.html#implied-features">https://developer.android.com/topic/arc/manifest.html#implied-features</a>
+</div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "PermissionImpliesUnsupportedChromeOsHardware" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">Registered<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Activities, services and content providers should be registered in the <code>AndroidManifest.xml</code> file using <code>&lt;activity></code>, <code>&lt;service></code> and <code>&lt;provider></code> tags.<br/>
+<br/>
+If your activity is simply a parent class intended to be subclassed by other "real" activities, make it an abstract class.<br/><div class="moreinfo">More info: <a href="http://developer.android.com/guide/topics/manifest/manifest-intro.html">http://developer.android.com/guide/topics/manifest/manifest-intro.html</a>
+</div>To suppress this error, use the issue id "Registered" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">RequiredSize<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+All views must specify an explicit <code>layout_width</code> and <code>layout_height</code> attribute. There is a runtime check for this, so if you fail to specify a size, an exception is thrown at runtime.<br/>
+<br/>
+It's possible to specify these widths via styles as well. GridLayout, as a special case, does not require you to specify a size.<br/>To suppress this error, use the issue id "RequiredSize" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">SelectableText<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+If a <code>&lt;TextView></code> is used to display data, the user might want to copy that data and paste it elsewhere. To allow this, the <code>&lt;TextView></code> should specify <code>android:textIsSelectable="true"</code>.<br/>
+<br/>
+This lint check looks for TextViews which are likely to be displaying data: views whose text is set dynamically. This value will be ignored on platforms older than API 11, so it is okay to set it regardless of your <code>minSdkVersion</code>.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "SelectableText" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">StopShip<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Using the comment <code>// STOPSHIP</code> can be used to flag code that is incomplete but checked in. This comment marker can be used to indicate that the code should not be shipped until the issue is addressed, and lint will look for these.  In Gradle projects, this is only checked for non-debug (release) builds.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "StopShip" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">SyntheticAccessor<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+A private inner class which is accessed from the outer class will force the compiler to insert a synthetic accessor; this means that you are causing extra overhead. This is not important in small projects, but is important for large apps running up against the 64K method handle limit, and especially for <b>libraries</b> where you want to make sure your library is as small as possible for the cases where your library is used in an app running up against the 64K limit.<br/>To suppress this error, use the issue id "SyntheticAccessor" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">TypographyQuotes<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Straight single quotes and double quotes, when used as a pair, can be replaced by "curvy quotes" (or directional quotes). This can make the text more readable.<br/>
+<br/>
+Note that you should never use grave accents and apostrophes to quote, `like this'.<br/>
+<br/>
+(Also note that you should not use curvy quotes for code fragments.)<br/><div class="moreinfo">More info: <a href="http://en.wikipedia.org/wiki/Quotation_mark">http://en.wikipedia.org/wiki/Quotation_mark</a>
+</div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "TypographyQuotes" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UnknownNullness<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+To improve referencing this code from Kotlin, consider adding<br/>
+explicit nullness information here with either <code>@NonNull</code> or <code>@Nullable</code>.<br/>
+<br/>
+You can set the environment variable<br/>
+    <code>ANDROID_LINT_NULLNESS_IGNORE_DEPRECATED=true</code><br/>
+if you want lint to ignore classes and members that have been annotated with<br/>
+<code>@Deprecated</code>.<br/><div class="moreinfo">More info: <a href="https://android.github.io/kotlin-guides/interop.html#nullability-annotations">https://android.github.io/kotlin-guides/interop.html#nullability-annotations</a>
+</div>To suppress this error, use the issue id "UnknownNullness" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UnpackedNativeCode<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+This app loads native libraries using <code>System.loadLibrary()</code>.<br/>
+<br/>
+Consider adding <code>android:extractNativeLibs="false"</code> to the <code>&lt;application></code> tag in AndroidManifest.xml. Starting with Android 6.0, this will make installation faster, the app will take up less space on the device and updates will have smaller download sizes.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "UnpackedNativeCode" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UnsupportedChromeOsHardware<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+The <code>&lt;uses-feature></code> element should not require this unsupported Chrome OS hardware feature. Any uses-feature not explicitly marked with <code>required="false"</code> is necessary on the device to be installed on. Ensure that any features that might prevent it from being installed on a Chrome OS device are reviewed and marked as not required in the manifest.<br/><div class="moreinfo">More info: <a href="https://developer.android.com/topic/arc/manifest.html#incompat-entries">https://developer.android.com/topic/arc/manifest.html#incompat-entries</a>
+</div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "UnsupportedChromeOsHardware" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UnusedIds<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+This resource id definition appears not to be needed since it is not referenced from anywhere. Having id definitions, even if unused, is not necessarily a bad idea since they make working on layouts and menus easier, so there is not a strong reason to delete these.<br/>
+<br/>
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.<br/>
+<br/>
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "UnusedIds" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">WrongThreadInterprocedural<div class="issueSeparator"></div>
+</div>
+<div class="metadata">Disabled By: Default<br/>
+<div class="explanation">
+Searches for interprocedural call paths that violate thread annotations in the program. Tracks the flow of instantiated types and lambda expressions to increase accuracy across method boundaries.<br/><div class="moreinfo">More info: <a href="https://developer.android.com/guide/components/processes-and-threads.html#Threads">https://developer.android.com/guide/components/processes-and-threads.html#Threads</a>
+</div>To suppress this error, use the issue id "WrongThreadInterprocedural" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+</div>              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="SuppressedIssuesLink" onclick="reveal('SuppressedIssues');">
+List Missing Issues</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="MissingIssuesCardLink" onclick="hideid('MissingIssuesCard');">
+Dismiss</button>            </div>
+            </div>
+          </section>
+<a name="SuppressInfo"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="SuppressCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Suppressing Warnings and Errors</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+Lint errors can be suppressed in a variety of ways:<br/>
+<br/>
+1. With a <code>@SuppressLint</code> annotation in the Java code<br/>
+2. With a <code>tools:ignore</code> attribute in the XML file<br/>
+3. With a //noinspection comment in the source code<br/>
+4. With ignore flags specified in the <code>build.gradle</code> file, as explained below<br/>
+5. With a <code>lint.xml</code> configuration file in the project<br/>
+6. With a <code>lint.xml</code> configuration file passed to lint via the --config flag<br/>
+7. With the --ignore flag passed to lint.<br/>
+<br/>
+To suppress a lint warning with an annotation, add a <code>@SuppressLint("id")</code> annotation on the class, method or variable declaration closest to the warning instance you want to disable. The id can be one or more issue id's, such as <code>"UnusedResources"</code> or <code>{"UnusedResources","UnusedIds"}</code>, or it can be <code>"all"</code> to suppress all lint warnings in the given scope.<br/>
+<br/>
+To suppress a lint warning with a comment, add a <code>//noinspection id</code> comment on the line before the statement with the error.<br/>
+<br/>
+To suppress a lint warning in an XML file, add a <code>tools:ignore="id"</code> attribute on the element containing the error, or one of its surrounding elements. You also need to define the namespace for the tools prefix on the root element in your document, next to the <code>xmlns:android</code> declaration:<br/>
+<code>xmlns:tools="http://schemas.android.com/tools"</code><br/>
+<br/>
+To suppress a lint warning in a <code>build.gradle</code> file, add a section like this:<br/>
+<br/>
+android {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;lintOptions {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disable 'TypographyFractions','TypographyQuotes'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+}<br/>
+<br/>
+Here we specify a comma separated list of issue id's after the disable command. You can also use <code>warning</code> or <code>error</code> instead of <code>disable</code> to change the severity of issues.<br/>
+<br/>
+To suppress lint warnings with a configuration XML file, create a file named <code>lint.xml</code> and place it at the root directory of the module in which it applies.<br/>
+<br/>
+The format of the <code>lint.xml</code> file is something like the following:<br/>
+<br/>
+&lt;?xml version="1.0" encoding="UTF-8"?><br/>
+&lt;lint><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Ignore everything in the test source set --><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;issue id="all"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ignore path="*/test/*" /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/issue><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Disable this given check in this project --><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;issue id="IconMissingDensityFolder" severity="ignore" /><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Ignore the ObsoleteLayoutParam issue in the given files --><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;issue id="ObsoleteLayoutParam"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ignore path="res/layout/activation.xml" /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ignore path="res/layout-xlarge/activation.xml" /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ignore regexp="(foo|bar).java" /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/issue><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Ignore the UselessLeaf issue in the given file --><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;issue id="UselessLeaf"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ignore path="res/layout/main.xml" /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/issue><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Change the severity of hardcoded strings to "error" --><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;issue id="HardcodedText" severity="error" /><br/>
+&lt;/lint><br/>
+<br/>
+To suppress lint checks from the command line, pass the --ignore flag with a comma separated list of ids to be suppressed, such as:<br/>
+<code>$ lint --ignore UnusedResources,UselessLeaf /my/project/path</code><br/>
+<br/>
+For more information, see <a href="http://g.co/androidstudio/suppressing-lint-warnings">http://g.co/androidstudio/suppressing-lint-warnings</a><br/>
+
+            </div>
+            </div>
+          </section>    </div>
+  </main>
+</div>
+</body>
+</html>

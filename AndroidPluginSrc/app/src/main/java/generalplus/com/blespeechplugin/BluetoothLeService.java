@@ -371,7 +371,8 @@ public class BluetoothLeService extends Service {
 
                 try
                 {
-                    Thread.sleep(500);
+                    //Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -426,8 +427,8 @@ public class BluetoothLeService extends Service {
                                           BluetoothGattCharacteristic characteristic,
                                           int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                if(!LogFile.GetInstance().bStopSave)
-                    Log.e(TAG, "InWrite");
+                //if(!LogFile.GetInstance().bStopSave)
+                Log.e(TAG, "onCharacteristicWrite ... ok");
 
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
@@ -436,14 +437,14 @@ public class BluetoothLeService extends Service {
                 //OnWritePacket
             } else {
                 HandShake.Instance().OnWritePacket(false);
-                Log.e(TAG, "InWrite fail");
+                Log.e(TAG, "onCharacteristicWrite ... fail");
             }
 
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-
+            Log.e(TAG, "onDescriptorWrite ... ");
 //            if (status == BluetoothGatt.GATT_SUCCESS) {
 //            	Log.e("minwen",  "Callback: Wrote GATT Descriptor successfully.");           
 //            }           
@@ -461,6 +462,7 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
+            Log.e(TAG, "onCharacteristicChanged ... ");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
 
@@ -595,8 +597,9 @@ public class BluetoothLeService extends Service {
 
     public boolean setMTU(int len)
     {
-        if(len > 200 )
-            len =200;
+        if(len > 244 )
+            len = 244;
+        Log.d("BLE" ,  "設定 BLE-MTU = " + len);
         return this.mBluetoothGatt.requestMtu(len);
     }
 
@@ -731,13 +734,13 @@ public class BluetoothLeService extends Service {
 
              */
             // [kevin.hsu/2020/08/04] 全部強制使用 Write_No_Response
-            characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+            //characteristic1.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
             Write_Characteristic_Status = mBluetoothGatt.writeCharacteristic(characteristic1);
 
 
             //Log.e("minwen", "Write_Characteristic_Status " + Write_Characteristic_Status);
-
+ /*
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {
@@ -746,15 +749,19 @@ public class BluetoothLeService extends Service {
             }
 
 
-            // === 2. Get Return data after Write data ===        
-            /*BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
+            // 送出後,要通知 BLE 己送達
+            // === 2. Get Return data after Write data ===
+
+            BluetoothGattCharacteristic Response_characteristic1 = Service.getCharacteristic(UUID_FFF1_CHARACTERISTIC);
             if (Response_characteristic1 == null) {
                 Log.e(TAG, "char not found!");
                 return null;
             }            
             
-            setCharacteristicNotification(Response_characteristic1, true);  */
+            setCharacteristicNotification(mBluetoothGatt,Response_characteristic1, true);
 
+            //setCharacteristicNotification(Response_characteristic1, true);
+            */
             return characteristic1;
         }
         return null;
@@ -838,7 +845,7 @@ public class BluetoothLeService extends Service {
         if (getUuid_ReadCharacteristic().equals(characteristic.getUuid())) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                     UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
-            descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+           // descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             isNotifySuccess = bluetoothGatt.writeDescriptor(descriptor); //  設定 "BLE - 通知 " 成功 ?
         }
@@ -969,7 +976,9 @@ public class BluetoothLeService extends Service {
                     }
 
                  */
-            setCharacteristicNotification(bluetoothGatt, characteristic, true);
+
+            // 當讀取服務的時候,不馬上去變更 讀取的通知 , 而改為延遲 2 秒再通知
+            //setCharacteristicNotification(bluetoothGatt, characteristic, true);
         }
         return true;
     }
@@ -1125,6 +1134,8 @@ public class BluetoothLeService extends Service {
     
     public boolean connectDevice(BluetoothDevice device) {
     	Log.e(TAG, "Before connecting device");
+
+
     	close();
     	try {
             Thread.sleep(1000); // [2017/10/18]. Kevin.Hsu , ajd 由 100 ms 調成 1000 ms
@@ -1132,7 +1143,9 @@ public class BluetoothLeService extends Service {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    	mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+
+    	//mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        mBluetoothGatt = device.connectGatt(this, false, mGattCallback , BluetoothDevice.TRANSPORT_LE );
         if (mBluetoothGatt == null) {
             Log.e(TAG, "BluetoothGatt not found!");
             return false;

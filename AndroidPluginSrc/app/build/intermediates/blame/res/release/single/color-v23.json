@@ -1,26 +1,38 @@
 [
     {
-        "merged": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "E:\\Work\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_switch_track.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_switch_track.xml"
     },
     {
-        "merged": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "E:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_default.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_default.xml"
     },
     {
-        "merged": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "E:\\Work\\BLEAndroidPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_seek_thumb.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_seek_thumb.xml"
     },
     {
-        "merged": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "E:\\Work\\Unity BLE Plugin SDK V1.0.1\\Src\\UnityBleSpeechDemo\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_color_highlight_material.xml"
     },
     {
-        "merged": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "D:\\Work2\\BLE_Plugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_btn_colored_borderless_text_material.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_btn_colored_borderless_text_material.xml"
     },
     {
-        "merged": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_color_highlight_material.xml",
-        "source": "D:\\Work\\BLEPlugin\\AndroidPluginSrc\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_spinner.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_spinner.xml"
+    },
+    {
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_edittext.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_edittext.xml"
+    },
+    {
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_tint_btn_checkable.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "D:\\Work\\BlePlugin2\\AndroidPluginSrc\\app\\build\\intermediates\\res\\merged\\release\\color-v23\\abc_btn_colored_text_material.xml",
+        "source": "C:\\Users\\User\\.gradle\\caches\\transforms-2\\files-2.1\\939c52a7adaa3ea093c08da727b55420\\res\\color-v23\\abc_btn_colored_text_material.xml"
     }
 ]

@@ -116,7 +116,10 @@ public class LogFile
     public synchronized  void AddLogAndSave(Boolean bLogTime,String msg)
     {
         if(bStopSave)
+        {
+            Log.d("BLE-LOG", msg);
             return ;
+        }
 
         AddLog(bLogTime, msg);
         Save(true);
@@ -195,6 +198,7 @@ public class LogFile
         {
             if (bToWrite)
                 return true;
+
             if (checkDelayWriteTimeOut())
                 return true;
         }
@@ -203,8 +207,17 @@ public class LogFile
 
     public void Log2File(String msg)
     {
-        Log.d(HandShake.Instance().Tag,msg);
-        AddLogAndSave(true,msg);
+        //Log.d(HandShake.Instance().Tag,msg);
+        //AddLogAndSave(true,msg);
+
+        if(bStopSave)
+        {
+            Log.d("BLE-LOG", msg);
+            return ;
+        }
+
+        AddLog(true, msg);
+        Save(true);
     }
 
     Thread tf = new Thread(new Runnable() {

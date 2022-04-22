@@ -34,6 +34,9 @@ public class HandShake
 
     boolean isConnected = false;
 
+    // 發現設備服務後經過的時間
+    long timeTicks_OnServicesDiscovered = 0;
+
     public synchronized void SetConnected(boolean flag)
     {
 
@@ -41,8 +44,15 @@ public class HandShake
 
         if(isConnected)
         {
+            timeTicks_OnServicesDiscovered = System.currentTimeMillis();
             isDelayPoolingOnConnected = true;
             Log2File("isDelayPoolingOnConnected = true" );
+        }
+        else
+        {
+            //timeTicks_OnServicesDiscovered = 0;
+            //isEnableReadNotify = false;
+            //isSetMTU = false;
         }
 
         resetReSendPacket_count();
@@ -163,6 +173,13 @@ public class HandShake
 
     }
 
+    public void OnStartScan()
+    {
+        timeTicks_OnServicesDiscovered = 0;
+        isEnableReadNotify = false;
+        isSetMTU = false;
+    }
+
     public static String bytesToHexString(byte [] src)
     {
         if (src == null || src.length <= 0) {
@@ -273,9 +290,10 @@ public class HandShake
     }
 
     public boolean AllowPolling = true;
-
+    public  boolean isEnableReadNotify = false;
+    public  boolean isSetMTU = false;
     public  int threed_sleep_interval = 20; // 20ms
-
+    public  long thread_pass_time = 0;
     public  int iThreadLoopIndex = 0;
 
     Thread t = new Thread(new Runnable() {
@@ -284,6 +302,7 @@ public class HandShake
             while (isRunning) {
                 try {
                     Thread.sleep(threed_sleep_interval);
+                    thread_pass_time += threed_sleep_interval;
                     iThreadLoopIndex++;
 
 
@@ -291,8 +310,30 @@ public class HandShake
                         continue;;
 
 
-                    if(iThreadLoopIndex % 50 == 0 )
-                        BleFramework.getInstance().EnableCharReadNotify(true);
+                    if(isSetMTU == false && timeTicks_OnServicesDiscovered > 0 )
+                    {
+                        long passTimeAfter_OnServicesDiscovered = System.currentTimeMillis() - timeTicks_OnServicesDiscovered;
+                        if(passTimeAfter_OnServicesDiscovered > ( 1 * 1000) )
+                        {
+                            Log2File("----------->  to setMTU ... 244");
+                            isSetMTU = true;
+                            BleFramework.getInstance().setMTU(244);
+                        }
+                    }
+
+                    //if(iThreadLoopIndex % 50 == 0 )
+                    // BleFramework.getInstance().EnableCharReadNotify(true);
+                    // 發現藍牙服務後, 約 二秒後再啟用讀取的通知
+                    if(isEnableReadNotify == false && timeTicks_OnServicesDiscovered > 0 )
+                    {
+                        long passTimeAfter_OnServicesDiscovered = System.currentTimeMillis() - timeTicks_OnServicesDiscovered;
+                        if(passTimeAfter_OnServicesDiscovered > ( 2 * 1000) )
+                        {
+                            Log2File("----------->  EnableCharReadNotify ... true");
+                            isEnableReadNotify = true;
+                            BleFramework.getInstance().EnableCharReadNotify(true);
+                        }
+                    }
 
                     // 檢查是否連線取得 service -  time out
                     /*
@@ -425,6 +466,7 @@ public class HandShake
     {
         //if(BuildConfig.DEBUG)
         //    Log.d(Tag, msg);
+
         LogFile.GetInstance().AddLogAndSave(true,msg);
     }
 
@@ -480,6 +522,12 @@ public class HandShake
             return;
         }
 
+        // nrf 晶片的話,要記錄 由AndroidSystem回應己送出的 packed_index
+        if(isNRF52832)
+        {
+            nrf52832_app2ble_packet_index_OnWritedBySystem = nrf52832_app2ble_packet_index;
+        }
+
         // 以下為 Response Mode , 發送成功是在 OnWritePacket 判斷 回傳成功即表示成功.
         // 當收到系統通知成功寫入 , 將 flag 改為 沒有在發送封包中
 
@@ -517,6 +565,14 @@ public class HandShake
 
         //Log.d(Tag, "OnRecvPacket ( ) .. ");
         //Log.d(Tag, "Recv Data = " + StringTools.bytesToHex(data));
+        if(data == null || data.length <4) // 一開始取得服務時,會收到長度為 0 的封包
+        {
+            Log.d(Tag, "OnRecvPacket ( ) ... data == null || data.length <4");
+            return;
+        }
+
+        String xData = StringTools.bytesToHex(data);
+        String xKeyData = xData.substring(4);
         HandShake.Instance().Log2File("Recv Data = " +  StringTools.bytesToHex(data));
 
 
@@ -577,12 +633,22 @@ public class HandShake
                     // 切換到 發送回應封包給BLE ,只回應一次
                     SendResponsePacket(data);
 
+
                     // 將 Key 值送給 unity
-                    byte [] recvBS = new byte [data.length-2] ;
-                    System.arraycopy(data,2,recvBS,0,recvBS.length);
-                    String sData = StringTools.byteToHexString(recvBS," ");
-                    // 轉傳給 Unity
-                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", sData);
+                    if(true) // not renew new bytes and copy and byteToHexString  ...
+                    {
+                        // 轉傳給 Unity
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", xData);
+                    }
+                    else
+                    {
+                        byte [] recvBS = new byte [data.length-2] ;
+                        System.arraycopy(data,2,recvBS,0,recvBS.length);
+                        String sData = StringTools.byteToHexString(recvBS," ");
+                        // 轉傳給 Unity
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", sData);
+                    }
+
                 }
 
             }
@@ -666,6 +732,9 @@ public class HandShake
     // 記錄最近一次 app 2 ble 的 packet index
     int nrf52832_app2ble_packet_index = 0;
 
+    // 記錄最近一次 app 2 ble 的 packet index 已收到系統回應送出
+    int nrf52832_app2ble_packet_index_OnWritedBySystem = 0;
+
     public synchronized void OnGetServiceFinished(boolean isSuccess) {
         isGetServiceing = false;
     }
@@ -697,6 +766,15 @@ public class HandShake
         if(isNRF52832)
         {
             // 檢查是否重覆發送
+            // 如果前一個封包送出後 , 需滿足下面二個條件之一才能,再次發送封包
+            // 1.送出回應事件(OnWritePacket) 逾時
+            // 2.已收到送出回應事件(OnWritePacket)
+            long deltaMs = System.currentTimeMillis() - preTime;
+            if( isSendPacketing && deltaMs < 1000)
+            {
+                LogFile.GetInstance().Log2File("等待前一個封包送出或逾時 " + deltaMs);
+                return false;
+            }
 
             isSendPacketing = true;
             preTime = System.currentTimeMillis();
@@ -705,14 +783,15 @@ public class HandShake
             int packetIndex = (int)data[0];
             if(packetIndex == nrf52832_app2ble_packet_index ) //  不重覆發送同 packet index 的 封包
             {
-                 return false;
+                 //return false; // kevin.hsu 卡封包了... 先暫時拿掉
             }
             nrf52832_app2ble_packet_index = packetIndex;
 
             BleFramework.mBluetoothLeService.WriteData(data);
             String hex = StringTools.bytesToHex(data);
-            Log.d(Tag, "Command , WriteData = " + hex);
-            LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
+            //Log.d(Tag, "Command , WriteData = " + hex);
+            LogFile.GetInstance().Log2File("Command  , WriteData =  " + hex);
+            //LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
         }
         else
         {
@@ -724,8 +803,9 @@ public class HandShake
             BleFramework.mBluetoothLeService.WriteData(data);
 
             String hex = StringTools.bytesToHex(data);
-            Log.d(Tag, "Command , WriteData = " + hex);
-            LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
+            //Log.d(Tag, "Command , WriteData = " + hex);
+            LogFile.GetInstance().Log2File("Command  , WriteData =  " + hex);
+            //LogFile.GetInstance().AddLogAndSave(true,"Command  , WriteData =  " + hex);
         }
 
 
