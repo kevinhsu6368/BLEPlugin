@@ -571,8 +571,8 @@ public class HandShake
             return;
         }
 
-        String xData = StringTools.bytesToHex(data);
-        String xKeyData = xData.substring(4);
+        String xData = StringTools.byteToHexString(data," ");//bytesToHex(data); // full-data
+        String xBle4Data = xData.substring(6);        // BLE-4.0 資料(最大長度 20 bytes - 2 bytes) ex: "01 34 67 90 23 .... "  <----  位元組字串之間需要一個空白符,不然 unity 會解析失敗
         HandShake.Instance().Log2File("Recv Data = " +  StringTools.bytesToHex(data));
 
 
@@ -631,23 +631,9 @@ public class HandShake
                 if( data[2] != 0x00 && data[2] != 0xFF) //== 0x50)  // 0x50 是 GBX 有接時的第一鍵值
                 {
                     // 切換到 發送回應封包給BLE ,只回應一次
-                    SendResponsePacket(data);
+                    SendResponsePacket(data,xData);
 
-
-                    // 將 Key 值送給 unity
-                    if(true) // not renew new bytes and copy and byteToHexString  ...
-                    {
-                        // 轉傳給 Unity
-                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", xData);
-                    }
-                    else
-                    {
-                        byte [] recvBS = new byte [data.length-2] ;
-                        System.arraycopy(data,2,recvBS,0,recvBS.length);
-                        String sData = StringTools.byteToHexString(recvBS," ");
-                        // 轉傳給 Unity
-                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", sData);
-                    }
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReceiveData", xBle4Data); // NoResponseMode : 只傳後面 18 bytes 給 unity
 
                 }
 
@@ -837,7 +823,7 @@ public class HandShake
         return true;
     }
 
-    public synchronized boolean SendResponsePacket(byte [] data)
+    public synchronized boolean SendResponsePacket(byte [] data,String hex)
     {
         if (BleFramework.mBluetoothLeService == null)
             return false;
@@ -848,8 +834,8 @@ public class HandShake
         isResponsePacketing = true;
         preTime = System.currentTimeMillis();
         BleFramework.mBluetoothLeService.WriteData(data);
-        String hex = StringTools.byteToHexString(data);
-        Log.d(Tag, "Pooling Resp, WriteData =  " + hex);
+        //String hex = StringTools.byteToHexString(data);
+        //Log.d(Tag, "Pooling Resp, WriteData =  " + hex);
         LogFile.GetInstance().AddLogAndSave(true,"Pooling Resp, WriteData =  " + hex);
         return true;
     }
