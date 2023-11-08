@@ -73,12 +73,12 @@
         priority="9"
         summary="Missing Permissions"
         explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
-        errorLine1="            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="526"
-            column="13"/>
+            line="530"
+            column="17"/>
     </issue>
 
     <issue
@@ -89,27 +89,11 @@
         priority="9"
         summary="Missing Permissions"
         explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
-        errorLine1="                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="                    this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="533"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="MissingPermission"
-        severity="Error"
-        message="Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN"
-        category="Correctness"
-        priority="9"
-        summary="Missing Permissions"
-        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
-        errorLine1="                    this.mScanner.stopScan(this.mScannerCallback);"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="535"
+            line="538"
             column="21"/>
     </issue>
 
@@ -125,24 +109,8 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="549"
+            line="542"
             column="21"/>
-    </issue>
-
-    <issue
-        id="MissingPermission"
-        severity="Error"
-        message="Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN"
-        category="Correctness"
-        priority="9"
-        summary="Missing Permissions"
-        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
-        errorLine1="                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="553"
-            column="17"/>
     </issue>
 
     <issue
@@ -157,7 +125,39 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="558"
+            line="556"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        severity="Error"
+        message="Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN"
+        category="Correctness"
+        priority="9"
+        summary="Missing Permissions"
+        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
+        errorLine1="                    this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="561"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        severity="Error"
+        message="Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN"
+        category="Correctness"
+        priority="9"
+        summary="Missing Permissions"
+        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
+        errorLine1="                    this.mScanner.stopScan(this.mScannerCallback);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="566"
             column="21"/>
     </issue>
 
@@ -173,7 +173,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="564"
+            line="572"
             column="17"/>
     </issue>
 
@@ -189,7 +189,23 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="569"
+            line="577"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        severity="Error"
+        message="Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN"
+        category="Correctness"
+        priority="9"
+        summary="Missing Permissions"
+        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
+        errorLine1="                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
+            line="582"
             column="17"/>
     </issue>
 
@@ -205,23 +221,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="573"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="MissingPermission"
-        severity="Error"
-        message="Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN"
-        category="Correctness"
-        priority="9"
-        summary="Missing Permissions"
-        explanation="This check scans through your code and libraries and looks at the APIs being used, and checks this against the set of permissions required to access those APIs. If the code using those APIs is called at runtime, then the program will crash.&#xA;&#xA;Furthermore, for permissions that are revocable (with targetSdkVersion 23), client code must also be prepared to handle the calls throwing an exception if the user rejects the request for permission at runtime."
-        errorLine1="            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="645"
+            line="661"
             column="13"/>
     </issue>
 
@@ -237,7 +237,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="670"
+            line="692"
             column="17"/>
     </issue>
 
@@ -253,7 +253,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="675"
+            line="697"
             column="17"/>
     </issue>
 
@@ -269,7 +269,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="680"
+            line="702"
             column="17"/>
     </issue>
 
@@ -285,7 +285,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="686"
+            line="708"
             column="13"/>
     </issue>
 
@@ -301,7 +301,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="691"
+            line="713"
             column="13"/>
     </issue>
 
@@ -317,7 +317,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="696"
+            line="718"
             column="13"/>
     </issue>
 
@@ -333,7 +333,7 @@
         errorLine2="                                             ~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="791"
+            line="813"
             column="46"/>
     </issue>
 
@@ -349,7 +349,7 @@
         errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="795"
+            line="817"
             column="53"/>
     </issue>
 
@@ -365,7 +365,7 @@
         errorLine2="                        ~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="877"
+            line="899"
             column="25"/>
     </issue>
 
@@ -381,7 +381,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="886"
+            line="908"
             column="42"/>
     </issue>
 
@@ -397,7 +397,7 @@
         errorLine2="                             ~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="895"
+            line="917"
             column="30"/>
     </issue>
 
@@ -413,7 +413,7 @@
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="902"
+            line="924"
             column="37"/>
     </issue>
 
@@ -429,7 +429,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="1032"
+            line="1054"
             column="9"/>
     </issue>
 
@@ -445,7 +445,7 @@
         errorLine2="                             ~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="1261"
+            line="1295"
             column="30"/>
     </issue>
 
@@ -461,7 +461,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="1312"
+            line="1346"
             column="20"/>
     </issue>
 
@@ -785,7 +785,7 @@
         errorLine2="                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="794"
+            line="816"
             column="60"/>
     </issue>
 
@@ -1113,7 +1113,7 @@
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="524"
+            line="527"
             column="12"/>
     </issue>
 
@@ -1129,7 +1129,7 @@
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="643"
+            line="656"
             column="12"/>
     </issue>
 
@@ -1145,7 +1145,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\src\main\java\generalplus\com\blespeechplugin\BleFramework.java"
-            line="984"
+            line="1006"
             column="13"/>
     </issue>
 

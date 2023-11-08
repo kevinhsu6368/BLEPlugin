@@ -519,19 +519,26 @@ public class BleFramework{
 
     public void DoStopScan()
     {
+        boolean isOpenBLE = false;
+        if(this.mBluetoothAdapter !=null)
+            isOpenBLE = this.mBluetoothAdapter.isEnabled();
 
         // android sdk 版本小等於 21 時, 只能使用舊式掃描API
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
         {
-            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            if(this.mBluetoothAdapter != null && isOpenBLE)
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
             return;
         }
         else
         {
             if ( true )
             {
-                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
-                if( this.mScanner != null)
+                if(this.mBluetoothAdapter != null && isOpenBLE)
+                    this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+
+
+                if( this.mScanner != null && isOpenBLE)
                     this.mScanner.stopScan(this.mScannerCallback);
 
                 return;
@@ -545,32 +552,34 @@ public class BleFramework{
             int iflag = (int)this.iScanForPeripherals_Count%9;
             if (iflag>=0 && iflag <=2) //  0,1,2   跑 mode-b
             {
-                if( this.mScanner != null)
+                if( this.mScanner != null && isOpenBLE)
                     this.mScanner.stopScan(this.mScannerCallback);
             }
             else if (iflag>=3 && iflag <=5) // 3,4,5   跑 mode-d ( old api )
             {
-                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+                if(this.mBluetoothAdapter != null && isOpenBLE)
+                    this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
             }
             else // 6,7,8   跑 mode-c
             {
-                if( this.mScanner != null)
+                if( this.mScanner != null && isOpenBLE)
                     this.mScanner.stopScan(this.mScannerCallback);
             }
         }
         else if(this.scanMode == ScanMode.mode_b) // new api
         {
-            if( this.mScanner != null)
+            if( this.mScanner != null && isOpenBLE)
                 this.mScanner.stopScan(this.mScannerCallback);
         }
         else if(this.scanMode == ScanMode.mode_c)  // new api
         {
-            if( this.mScanner != null)
+            if( this.mScanner != null && isOpenBLE)
                 this.mScanner.stopScan(this.mScannerCallback);
         }
         else if(this.scanMode == ScanMode.mode_d)  // old api
         {
-            this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
+            if(this.mBluetoothAdapter != null && isOpenBLE)
+                this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
         }
 
         /*
@@ -637,14 +646,27 @@ public class BleFramework{
     public void DoStartScan()
     {
         // kevin.hsu . 調整如下
-
+        boolean isOpenBLE = false;
+        if(this.mBluetoothAdapter != null)
+        {
+            isOpenBLE = this.mBluetoothAdapter.isEnabled();
+        }
 
         // android sdk 版本小等於 21 時, 只能使用舊式掃描API
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
         {
+            if(this.mBluetoothAdapter == null)
+                return;
+
             this.mBluetoothAdapter.stopLeScan(this.mLeScanCallback);
             return;
         }
+
+        if(null == this.mScanner)
+            return;
+
+        if(isOpenBLE == false)
+            return;
 
         HandShake.Instance().OnStartScan();
 
@@ -1032,6 +1054,12 @@ public class BleFramework{
         this.mBluetoothAdapter.enable();
     }
 
+    public void _InitBLEFramework(String mode,String devices)
+    {
+        HandShake.Instance().SetDevices(devices);
+        _InitBLEFramework(mode);
+    }
+
 
     // 初始化 - 帶掃描資料 (for android )
     public void _InitBLEFramework(String mode) {
@@ -1099,6 +1127,12 @@ public class BleFramework{
             return;
         }
         BluetoothManager mBluetoothManager = (BluetoothManager)this._unityActivity.getSystemService(BLUETOOTH_SERVICE);
+
+        if(mBluetoothManager == null)
+        {
+            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: mBluetoothManager == null");
+            return;
+        }
 
         this.mBluetoothAdapter = mBluetoothManager.getAdapter();
 

@@ -176,7 +176,7 @@ document.getElementById(id).style.display = 'none';
       <span class="mdl-layout-title">Lint Report: 50 errors and 25 warnings</span>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation mdl-layout--large-screen-only">
-Check performed at Mon Apr 25 17:27:57 CST 2022      </nav>
+Check performed at Wed Nov 08 17:13:11 CST 2023      </nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -310,246 +310,248 @@ Dismiss</button>            </div>
 <span class="lineno">  317 </span>      HandShake.Instance().Log2File(<span class="string">"mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)"</span>);
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:526</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  523 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
-<span class="lineno">  524 </span>        <span class="keyword">if</span>(Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP)
-<span class="lineno">  525 </span>        {
-<span class="caretline"><span class="lineno">  526 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  527 </span>            <span class="keyword">return</span>;
-<span class="lineno">  528 </span>        }
-<span class="lineno">  529 </span>        <span class="keyword">else</span></pre>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:530</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  527 </span>        <span class="keyword">if</span>(Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP)
+<span class="lineno">  528 </span>        {
+<span class="lineno">  529 </span>            <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  530 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  531 </span>            <span class="keyword">return</span>;
+<span class="lineno">  532 </span>        }
+<span class="lineno">  533 </span>        <span class="keyword">else</span></pre>
 
 <button class="mdl-button mdl-js-button mdl-button--primary" id="MissingPermissionDivLink" onclick="reveal('MissingPermissionDiv');" />+ 41 More Occurrences...</button>
 <div id="MissingPermissionDiv" style="display: none">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:533</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  530 </span>        {
-<span class="lineno">  531 </span>            <span class="keyword">if</span> ( <span class="keyword">true</span> )
-<span class="lineno">  532 </span>            {
-<span class="caretline"><span class="lineno">  533 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  534 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="lineno">  535 </span>                    <span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback);
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:538</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  535 </span>            <span class="keyword">if</span> ( <span class="keyword">true</span> )
+<span class="lineno">  536 </span>            {
+<span class="lineno">  537 </span>                <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  538 </span>                    <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  539 </span>
+<span class="lineno">  540 </span>
+<span class="lineno">  541 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:535</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  532 </span>            {
-<span class="lineno">  533 </span>                <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
-<span class="lineno">  534 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="caretline"><span class="lineno">  535 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  536 </span>
-<span class="lineno">  537 </span>                <span class="keyword">return</span>;
-<span class="lineno">  538 </span>            }
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:542</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  539 </span>
+<span class="lineno">  540 </span>
+<span class="lineno">  541 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  542 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  543 </span>
+<span class="lineno">  544 </span>                <span class="keyword">return</span>;
+<span class="lineno">  545 </span>            }
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:549</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  546 </span>            <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2   跑 mode-b</span>
-<span class="lineno">  547 </span>            {
-<span class="lineno">  548 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="caretline"><span class="lineno">  549 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  550 </span>            }
-<span class="lineno">  551 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
-<span class="lineno">  552 </span>            {
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:556</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  553 </span>            <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2   跑 mode-b</span>
+<span class="lineno">  554 </span>            {
+<span class="lineno">  555 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  556 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  557 </span>            }
+<span class="lineno">  558 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
+<span class="lineno">  559 </span>            {
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:553</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  550 </span>            }
-<span class="lineno">  551 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
-<span class="lineno">  552 </span>            {
-<span class="caretline"><span class="lineno">  553 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  554 </span>            }
-<span class="lineno">  555 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
-<span class="lineno">  556 </span>            {
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:561</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  558 </span>            <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5   跑 mode-d ( old api )</span>
+<span class="lineno">  559 </span>            {
+<span class="lineno">  560 </span>                <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  561 </span>                    <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  562 </span>            }
+<span class="lineno">  563 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
+<span class="lineno">  564 </span>            {
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:558</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  555 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
-<span class="lineno">  556 </span>            {
-<span class="lineno">  557 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="caretline"><span class="lineno">  558 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  559 </span>            }
-<span class="lineno">  560 </span>        }
-<span class="lineno">  561 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span></pre>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:566</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  563 </span>            <span class="keyword">else</span> <span class="comment">// 6,7,8   跑 mode-c</span>
+<span class="lineno">  564 </span>            {
+<span class="lineno">  565 </span>                <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  566 </span>                    <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  567 </span>            }
+<span class="lineno">  568 </span>        }
+<span class="lineno">  569 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span></pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:564</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  561 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span>
-<span class="lineno">  562 </span>        {
-<span class="lineno">  563 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="caretline"><span class="lineno">  564 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  565 </span>        }
-<span class="lineno">  566 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
-<span class="lineno">  567 </span>        {
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:572</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  569 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b) <span class="comment">// new api</span>
+<span class="lineno">  570 </span>        {
+<span class="lineno">  571 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  572 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  573 </span>        }
+<span class="lineno">  574 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
+<span class="lineno">  575 </span>        {
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:569</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  566 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
-<span class="lineno">  567 </span>        {
-<span class="lineno">  568 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span>)
-<span class="caretline"><span class="lineno">  569 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  570 </span>        }
-<span class="lineno">  571 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
-<span class="lineno">  572 </span>        {
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:577</span>: <span class="message">Missing permissions required by BluetoothLeScanner.stopScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  574 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)  <span class="comment">// new api</span>
+<span class="lineno">  575 </span>        {
+<span class="lineno">  576 </span>            <span class="keyword">if</span>( <span class="keyword">this</span>.mScanner != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  577 </span>                <span class="error"><span class="keyword">this</span>.mScanner.stopScan(<span class="keyword">this</span>.mScannerCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  578 </span>        }
+<span class="lineno">  579 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
+<span class="lineno">  580 </span>        {
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:573</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  570 </span>        }
-<span class="lineno">  571 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
-<span class="lineno">  572 </span>        {
-<span class="caretline"><span class="lineno">  573 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  574 </span>        }
-<span class="lineno">  575 </span>
-<span class="lineno">  576 </span>        <span class="comment">/*
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:582</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  579 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)  <span class="comment">// old api</span>
+<span class="lineno">  580 </span>        {
+<span class="lineno">  581 </span>            <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="caretline"><span class="lineno">  582 </span>                <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  583 </span>        }
+<span class="lineno">  584 </span>
+<span class="lineno">  585 </span>        <span class="comment">/*
 </span></pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:645</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  642 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
-<span class="lineno">  643 </span>        <span class="keyword">if</span>(Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP)
-<span class="lineno">  644 </span>        {
-<span class="caretline"><span class="lineno">  645 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  646 </span>            <span class="keyword">return</span>;
-<span class="lineno">  647 </span>        }
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:661</span>: <span class="message">Missing permissions required by BluetoothAdapter.stopLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  658 </span>            <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter == <span class="keyword">null</span>)
+<span class="lineno">  659 </span>                <span class="keyword">return</span>;
+<span class="lineno">  660 </span>
+<span class="caretline"><span class="lineno">  661 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  662 </span>            <span class="keyword">return</span>;
+<span class="lineno">  663 </span>        }
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:670</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  667 </span>
-<span class="lineno">  668 </span>  <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2             ----> mode - b.</span>
-<span class="lineno">  669 </span>  {
-<span class="caretline"><span class="lineno">  670 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
-<span class="lineno">  671 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
-<span class="lineno">  672 </span>  }
-<span class="lineno">  673 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span></pre>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:692</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  689 </span>
+<span class="lineno">  690 </span>  <span class="keyword">if</span> (iflag>=<span class="number">0</span> &amp;&amp; iflag &lt;=<span class="number">2</span>) <span class="comment">//  0,1,2             ----> mode - b.</span>
+<span class="lineno">  691 </span>  {
+<span class="caretline"><span class="lineno">  692 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  693 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
+<span class="lineno">  694 </span>  }
+<span class="lineno">  695 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span></pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:675</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  672 </span>  }
-<span class="lineno">  673 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span>
-<span class="lineno">  674 </span>  {
-<span class="caretline"><span class="lineno">  675 </span>      <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  676 </span>      curScanMode = <span class="string">"scan_mode_d"</span>;
-<span class="lineno">  677 </span>  }
-<span class="lineno">  678 </span>  <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span></pre>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:697</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  694 </span>  }
+<span class="lineno">  695 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (iflag>=<span class="number">3</span> &amp;&amp; iflag &lt;=<span class="number">5</span>) <span class="comment">// 3,4,5     ----> mode - d</span>
+<span class="lineno">  696 </span>  {
+<span class="caretline"><span class="lineno">  697 </span>      <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  698 </span>      curScanMode = <span class="string">"scan_mode_d"</span>;
+<span class="lineno">  699 </span>  }
+<span class="lineno">  700 </span>  <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span></pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:680</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  677 </span>      }
-<span class="lineno">  678 </span>      <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span>
-<span class="lineno">  679 </span>      {
-<span class="caretline"><span class="lineno">  680 </span>          <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
-<span class="lineno">  681 </span>          curScanMode = <span class="string">"scan_mode_c"</span>;
-<span class="lineno">  682 </span>      }
-<span class="lineno">  683 </span>  }
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:702</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  699 </span>      }
+<span class="lineno">  700 </span>      <span class="keyword">else</span> <span class="comment">// 6,7,8                                                          ----> mode - c</span>
+<span class="lineno">  701 </span>      {
+<span class="caretline"><span class="lineno">  702 </span>          <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  703 </span>          curScanMode = <span class="string">"scan_mode_c"</span>;
+<span class="lineno">  704 </span>      }
+<span class="lineno">  705 </span>  }
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:686</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  683 </span>  }
-<span class="lineno">  684 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b)
-<span class="lineno">  685 </span>  {
-<span class="caretline"><span class="lineno">  686 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
-<span class="lineno">  687 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
-<span class="lineno">  688 </span>  }
-<span class="lineno">  689 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:708</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  705 </span>  }
+<span class="lineno">  706 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_b)
+<span class="lineno">  707 </span>  {
+<span class="caretline"><span class="lineno">  708 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_b, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  709 </span>      curScanMode = <span class="string">"scan_mode_b"</span>;
+<span class="lineno">  710 </span>  }
+<span class="lineno">  711 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:691</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  688 </span>  }
-<span class="lineno">  689 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
-<span class="lineno">  690 </span>  {
-<span class="caretline"><span class="lineno">  691 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
-<span class="lineno">  692 </span>      curScanMode = <span class="string">"scan_mode_c"</span>;
-<span class="lineno">  693 </span>  }
-<span class="lineno">  694 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:713</span>: <span class="message">Missing permissions required by BluetoothLeScanner.startScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  710 </span>  }
+<span class="lineno">  711 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_c)
+<span class="lineno">  712 </span>  {
+<span class="caretline"><span class="lineno">  713 </span>      <span class="error"><span class="keyword">this</span>.mScanner.startScan(<span class="keyword">this</span>.mScannerFilters_mode_c, <span class="keyword">this</span>.mScannerSetting, <span class="keyword">this</span>.mScannerCallback)</span>;</span>
+<span class="lineno">  714 </span>      curScanMode = <span class="string">"scan_mode_c"</span>;
+<span class="lineno">  715 </span>  }
+<span class="lineno">  716 </span>  <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:696</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
-<span class="lineno">  693 </span>        }
-<span class="lineno">  694 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
-<span class="lineno">  695 </span>        {
-<span class="caretline"><span class="lineno">  696 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  697 </span>            curScanMode = <span class="string">"scan_mode_d"</span>;
-<span class="lineno">  698 </span>        }
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:718</span>: <span class="message">Missing permissions required by BluetoothAdapter.startLeScan: android.permission.BLUETOOTH_SCAN</span><br /><pre class="errorlines">
+<span class="lineno">  715 </span>        }
+<span class="lineno">  716 </span>        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>.scanMode == ScanMode.mode_d)
+<span class="lineno">  717 </span>        {
+<span class="caretline"><span class="lineno">  718 </span>            <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.startLeScan(<span class="keyword">this</span>.mLeScanCallback)</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  719 </span>            curScanMode = <span class="string">"scan_mode_d"</span>;
+<span class="lineno">  720 </span>        }
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:791</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  788 </span>  <span class="keyword">boolean</span> isFindBLE = <span class="keyword">false</span>;
-<span class="lineno">  789 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
-<span class="lineno">  790 </span>      BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
-<span class="caretline"><span class="lineno">  791 </span>      String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  792 </span>      <span class="keyword">byte</span> [] bs = devName.getBytes();
-<span class="lineno">  793 </span>      String hexDevName = HandShake.bytesToHexString(bs);
-<span class="lineno">  794 </span>      HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:813</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  810 </span>  <span class="keyword">boolean</span> isFindBLE = <span class="keyword">false</span>;
+<span class="lineno">  811 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
+<span class="lineno">  812 </span>      BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+<span class="caretline"><span class="lineno">  813 </span>      String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  814 </span>      <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  815 </span>      String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  816 </span>      HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:795</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  792 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
-<span class="lineno">  793 </span>  String hexDevName = HandShake.bytesToHexString(bs);
-<span class="lineno">  794 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
-<span class="caretline"><span class="lineno">  795 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
-<span class="lineno">  796 </span>  {
-<span class="lineno">  797 </span>      isFindBLE = <span class="keyword">true</span>;
-<span class="lineno">  798 </span>      <span class="keyword">break</span>;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:817</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  814 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  815 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  816 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName));
+<span class="caretline"><span class="lineno">  817 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
+<span class="lineno">  818 </span>  {
+<span class="lineno">  819 </span>      isFindBLE = <span class="keyword">true</span>;
+<span class="lineno">  820 </span>      <span class="keyword">break</span>;
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:877</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  874 </span>
-<span class="lineno">  875 </span>  HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... start"</span>);
-<span class="lineno">  876 </span>  BluetoothDevice device = result.getDevice();
-<span class="caretline"><span class="lineno">  877 </span>  <span class="keyword">if</span> (<span class="keyword">null</span> == <span class="error">device.getName()</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  878 </span>
-<span class="lineno">  879 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return"</span>);
-<span class="lineno">  880 </span>      <span class="keyword">return</span>;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:899</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  896 </span>
+<span class="lineno">  897 </span>  HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... start"</span>);
+<span class="lineno">  898 </span>  BluetoothDevice device = result.getDevice();
+<span class="caretline"><span class="lineno">  899 </span>  <span class="keyword">if</span> (<span class="keyword">null</span> == <span class="error">device.getName()</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  900 </span>
+<span class="lineno">  901 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return"</span>);
+<span class="lineno">  902 </span>      <span class="keyword">return</span>;
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:886</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  883 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); i++) {
-<span class="lineno">  884 </span>      <span class="keyword">if</span> (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
-<span class="lineno">  885 </span>      {
-<span class="caretline"><span class="lineno">  886 </span>          HandShake.Instance().<span class="error">Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  repeat device ( "</span> + device.getName()</span> + <span class="string">" ) ...  so ... return"</span>);</span>
-<span class="lineno">  887 </span>          <span class="keyword">return</span>;
-<span class="lineno">  888 </span>      }
-<span class="lineno">  889 </span>  }
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:908</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  905 </span>  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); i++) {
+<span class="lineno">  906 </span>      <span class="keyword">if</span> (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
+<span class="lineno">  907 </span>      {
+<span class="caretline"><span class="lineno">  908 </span>          HandShake.Instance().<span class="error">Log2File(<span class="string">"mScanCallback.onScanResult( ) ...  repeat device ( "</span> + device.getName()</span> + <span class="string">" ) ...  so ... return"</span>);</span>
+<span class="lineno">  909 </span>          <span class="keyword">return</span>;
+<span class="lineno">  910 </span>      }
+<span class="lineno">  911 </span>  }
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:895</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  892 </span>  obj.m_BluetoothDevice = device;
-<span class="lineno">  893 </span>  mBluetoothLeService.listBTDevice.add(obj);
-<span class="lineno">  894 </span>
-<span class="caretline"><span class="lineno">  895 </span>  String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  896 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
-<span class="lineno">  897 </span>  String hexDevName = HandShake.bytesToHexString(bs);
-<span class="lineno">  898 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"find dev = %s , Hex = %s"</span>,devName,hexDevName));
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:917</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  914 </span>  obj.m_BluetoothDevice = device;
+<span class="lineno">  915 </span>  mBluetoothLeService.listBTDevice.add(obj);
+<span class="lineno">  916 </span>
+<span class="caretline"><span class="lineno">  917 </span>  String devName = <span class="error">device.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  918 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  919 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="lineno">  920 </span>  HandShake.Instance().Log2File( String.format(<span class="string">"find dev = %s , Hex = %s"</span>,devName,hexDevName));
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:902</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno">  899 </span><span class="lineno">  900 </span>
-<span class="lineno">  901 </span>  <span class="comment">// 如果找到 C1 就結束掃描</span>
-<span class="caretline"><span class="lineno">  902 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>)) <span class="comment">// device.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
-<span class="lineno">  903 </span>  {
-<span class="lineno">  904 </span>      <span class="comment">//Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);</span>
-<span class="lineno">  905 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)"</span>);
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:924</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno">  921 </span><span class="lineno">  922 </span>
+<span class="lineno">  923 </span>  <span class="comment">// 如果找到 C1 就結束掃描</span>
+<span class="caretline"><span class="lineno">  924 </span>  <span class="keyword">if</span>(HandShake.Instance().<span class="error">CheckSDBBleDevice(device.getName()</span>)) <span class="comment">// device.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span></span>
+<span class="lineno">  925 </span>  {
+<span class="lineno">  926 </span>      <span class="comment">//Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);</span>
+<span class="lineno">  927 </span>      HandShake.Instance().Log2File(<span class="string">"mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)"</span>);
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1032</span>: <span class="message">Missing permissions required by BluetoothAdapter.enable: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno"> 1029 </span>            <span class="keyword">return</span>;
-<span class="lineno"> 1030 </span>
-<span class="lineno"> 1031 </span>        <span class="comment">// 未開啟 --> 自動開啟</span>
-<span class="caretline"><span class="lineno"> 1032 </span>        <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.enable()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 1033 </span>    }
-<span class="lineno"> 1034 </span>
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1054</span>: <span class="message">Missing permissions required by BluetoothAdapter.enable: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1051 </span>            <span class="keyword">return</span>;
+<span class="lineno"> 1052 </span>
+<span class="lineno"> 1053 </span>        <span class="comment">// 未開啟 --> 自動開啟</span>
+<span class="caretline"><span class="lineno"> 1054 </span>        <span class="error"><span class="keyword">this</span>.mBluetoothAdapter.enable()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1055 </span>    }
+<span class="lineno"> 1056 </span>
+<span class="lineno"> 1057 </span>    <span class="keyword">public</span> <span class="keyword">void</span> _InitBLEFramework(String mode,String devices)
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1261</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno"> 1258 </span>   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
-<span class="lineno"> 1259 </span>       BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
-<span class="lineno"> 1260 </span>       <span class="comment">//uuidsArray[i] = bd.getAddress();</span>
-<span class="caretline"><span class="lineno"> 1261 </span>       uuidsArray[i] = <span class="error">bd.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 1262 </span>   }
-<span class="lineno"> 1263 </span>   Log.d(TAG, <span class="string">"_GetListOfDevices: Building JSONArray"</span>);
-<span class="lineno"> 1264 </span>   JSONArray uuidsJSON = <span class="keyword">new</span> JSONArray(Arrays.asList(uuidsArray));
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1295</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1292 </span>   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mBluetoothLeService.listBTDevice.size(); ++i) {
+<span class="lineno"> 1293 </span>       BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+<span class="lineno"> 1294 </span>       <span class="comment">//uuidsArray[i] = bd.getAddress();</span>
+<span class="caretline"><span class="lineno"> 1295 </span>       uuidsArray[i] = <span class="error">bd.getName()</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1296 </span>   }
+<span class="lineno"> 1297 </span>   Log.d(TAG, <span class="string">"_GetListOfDevices: Building JSONArray"</span>);
+<span class="lineno"> 1298 </span>   JSONArray uuidsJSON = <span class="keyword">new</span> JSONArray(Arrays.asList(uuidsArray));
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1312</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
-<span class="lineno"> 1309 </span>    e.printStackTrace();
-<span class="lineno"> 1310 </span>  }
-<span class="lineno"> 1311 </span><span class="caretline"><span class="lineno"> 1312 </span>  mDeviceName = <span class="error">mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName()</span>;</span>
-<span class="lineno"> 1313 </span>  mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
-<span class="lineno"> 1314 </span>
-<span class="lineno"> 1315 </span>  curPeripheralIndex = peripheralIndex;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1346</span>: <span class="message">Missing permissions required by BluetoothDevice.getName: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
+<span class="lineno"> 1343 </span>    e.printStackTrace();
+<span class="lineno"> 1344 </span>  }
+<span class="lineno"> 1345 </span><span class="caretline"><span class="lineno"> 1346 </span>  mDeviceName = <span class="error">mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName()</span>;</span>
+<span class="lineno"> 1347 </span>  mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
+<span class="lineno"> 1348 </span>
+<span class="lineno"> 1349 </span>  curPeripheralIndex = peripheralIndex;
 </pre>
 
 <span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java">../../src/main/java/generalplus/com/blespeechplugin/BluetoothLeService.java</a>:194</span>: <span class="message">Missing permissions required by BluetoothGatt.discoverServices: android.permission.BLUETOOTH_CONNECT</span><br /><pre class="errorlines">
@@ -811,14 +813,14 @@ Dismiss</button>            </div>
 <span class="lineno">  389 </span>  <span class="keyword">else</span> <span class="keyword">if</span> (ACTION_GATT_SERVICES_DISCOVERED.equals(action))
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:794</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
-<span class="lineno">  791 </span>  String devName = device.getName();
-<span class="lineno">  792 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
-<span class="lineno">  793 </span>  String hexDevName = HandShake.bytesToHexString(bs);
-<span class="caretline"><span class="lineno">  794 </span>  HandShake.Instance().Log2File( <span class="warning">String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName)</span>);</span>
-<span class="lineno">  795 </span>  <span class="keyword">if</span>(HandShake.Instance().CheckSDBBleDevice(device.getName()))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span>
-<span class="lineno">  796 </span>  {
-<span class="lineno">  797 </span>      isFindBLE = <span class="keyword">true</span>;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:816</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
+<span class="lineno">  813 </span>  String devName = device.getName();
+<span class="lineno">  814 </span>  <span class="keyword">byte</span> [] bs = devName.getBytes();
+<span class="lineno">  815 </span>  String hexDevName = HandShake.bytesToHexString(bs);
+<span class="caretline"><span class="lineno">  816 </span>  HandShake.Instance().Log2File( <span class="warning">String.format(<span class="string">"dev - %d = %s , Hex = %s"</span>,(i+<span class="number">1</span>),devName,hexDevName)</span>);</span>
+<span class="lineno">  817 </span>  <span class="keyword">if</span>(HandShake.Instance().CheckSDBBleDevice(device.getName()))  <span class="comment">//bd.getName().startsWith(HandShake.Instance().BLE_Device_Name))</span>
+<span class="lineno">  818 </span>  {
+<span class="lineno">  819 </span>      isFindBLE = <span class="keyword">true</span>;
 </pre>
 
 <span class="location"><a href="../../src/main/java/com/kevin/Tool/NetTools.java">../../src/main/java/com/kevin/Tool/NetTools.java</a>:99</span>: <span class="message">Implicitly using the default locale is a common source of bugs: Use <code>String.format(Locale, ...)</code> instead</span><br /><pre class="errorlines">
@@ -1338,33 +1340,33 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:524</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
-<span class="lineno">  521 </span>    {
-<span class="lineno">  522 </span>
-<span class="lineno">  523 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
-<span class="caretline"><span class="lineno">  524 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  525 </span>        {
-<span class="lineno">  526 </span>            <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
-<span class="lineno">  527 </span>            <span class="keyword">return</span>;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:527</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
+<span class="lineno">  524 </span>            isOpenBLE = <span class="keyword">this</span>.mBluetoothAdapter.isEnabled();
+<span class="lineno">  525 </span>
+<span class="lineno">  526 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="caretline"><span class="lineno">  527 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  528 </span>        {
+<span class="lineno">  529 </span>            <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter != <span class="keyword">null</span> &amp;&amp; isOpenBLE)
+<span class="lineno">  530 </span>                <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:643</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
-<span class="lineno">  640 </span>
-<span class="lineno">  641 </span>
-<span class="lineno">  642 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
-<span class="caretline"><span class="lineno">  643 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  644 </span>        {
-<span class="lineno">  645 </span>            <span class="keyword">this</span>.mBluetoothAdapter.stopLeScan(<span class="keyword">this</span>.mLeScanCallback);
-<span class="lineno">  646 </span>            <span class="keyword">return</span>;
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:656</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
+<span class="lineno">  653 </span>        }
+<span class="lineno">  654 </span>
+<span class="lineno">  655 </span>        <span class="comment">// android sdk 版本小等於 21 時, 只能使用舊式掃描API</span>
+<span class="caretline"><span class="lineno">  656 </span>        <span class="keyword">if</span>(<span class="warning">Build.VERSION.SDK_INT &lt;= Build.VERSION_CODES.LOLLIPOP</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  657 </span>        {
+<span class="lineno">  658 </span>            <span class="keyword">if</span>(<span class="keyword">this</span>.mBluetoothAdapter == <span class="keyword">null</span>)
+<span class="lineno">  659 </span>                <span class="keyword">return</span>;
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:984</span>: <span class="message">Unnecessary; SDK_INT is always >= 23</span><br /><pre class="errorlines">
-<span class="lineno">  981 </span>  <span class="keyword">int</span> locationMode = <span class="number">0</span>;
-<span class="lineno">  982 </span>  String locationProviders;
-<span class="lineno">  983 </span>
-<span class="caretline"><span class="lineno">  984 </span>  <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  985 </span>      <span class="keyword">try</span> {
-<span class="lineno">  986 </span>          locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1006</span>: <span class="message">Unnecessary; SDK_INT is always >= 23</span><br /><pre class="errorlines">
+<span class="lineno"> 1003 </span>  <span class="keyword">int</span> locationMode = <span class="number">0</span>;
+<span class="lineno"> 1004 </span>  String locationProviders;
+<span class="lineno"> 1005 </span>
+<span class="caretline"><span class="lineno"> 1006 </span>  <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1007 </span>      <span class="keyword">try</span> {
+<span class="lineno"> 1008 </span>          locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
 </pre>
 
 <span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:41</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">

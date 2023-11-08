@@ -18,31 +18,48 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLECmdPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLECmdPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPoollingPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPoollingPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEResponsePacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEResponsePacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLE_NRF52832_Packet.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake$BLE_NRF52832_Packet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/kevin/Tool/HandShake.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$ScanMode.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$ScanMode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLECmdPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLECmdPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPoollingPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEPoollingPacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEResponsePacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLEResponsePacket.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLE_NRF52832_Packet.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake$BLE_NRF52832_Packet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/kevin/Tool/HandShake.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$ScanMode.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework$ScanMode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/generalplus/com/blespeechplugin/BleFramework.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged-classes/debug/classes.jar" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged-classes/debug/classes.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged-classes/release/classes.jar" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged-classes/release/classes.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/outputs/aar/app-debug.aar" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/outputs/aar/app-debug.aar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/outputs/aar/app-release - 複製.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build/reports/lint-results.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/reports/lint-results.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/reports/lint-results.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/reports/lint-results.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/intermediates/lint-cache/maven.google/master-index.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/maven.google/master-index.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/intermediates/lint-cache/sdk-registry.xml/sdk-registry.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/sdk-registry.xml/sdk-registry.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="RFCT31RYETR" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -72,6 +89,23 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="AndroidPluginSrc" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AndroidPluginSrc" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AndroidPluginSrc" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AndroidPluginSrc" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="other" type="c8890929:TasksNode$1" />
               </path>
@@ -110,15 +144,16 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
-    <property name="project.structure.last.edited" value="Suggestions" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="PsdUISettings">
-    <option name="LAST_EDITED_BUILD_TYPE" value="release" />
+    <option name="BUILD_VARIANTS_TAB" value="Build Types" />
+    <option name="LAST_EDITED_BUILD_TYPE" value="debug" />
   </component>
-  <component name="RunManager" selected="Gradle.AndroidPluginSrc [exportJar]">
+  <component name="RunManager" selected="Gradle.AndroidPluginSrc:app [exportJar]">
     <configuration default="true" type="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -185,6 +220,25 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="AndroidPluginSrc:app [exportJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="exportJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="TestNG">
       <option name="TEST_OBJECT" value="CLASS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -196,6 +250,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.AndroidPluginSrc:app [exportJar]" />
         <item itemvalue="Gradle.AndroidPluginSrc [clean]" />
         <item itemvalue="Gradle.AndroidPluginSrc [exportJar]" />
       </list>
@@ -217,56 +272,35 @@
     </task>
     <servers />
   </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
   <component name="WindowStateProjectService">
-    <state x="815" y="284" key="AndroidProcessChooserDialog" timestamp="1650599752710">
+    <state x="725" y="38" width="966" height="986" key="#PSD" timestamp="1699350827017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="815" y="284" key="AndroidProcessChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1650599752710" />
-    <state width="1122" height="200" key="GridCell.Tab.0.bottom" timestamp="1650878873129">
+    <state x="725" y="38" width="966" height="986" key="#PSD/0.0.1920.1040@0.0.1920.1040" timestamp="1699350827017" />
+    <state width="999" height="264" key="GridCell.Tab.0.bottom" timestamp="1699434786638">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1122" height="200" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1650878873129" />
-    <state width="1122" height="200" key="GridCell.Tab.0.center" timestamp="1650878873129">
+    <state width="999" height="264" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1699434786638" />
+    <state width="999" height="264" key="GridCell.Tab.0.center" timestamp="1699434786638">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1122" height="200" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1650878873129" />
-    <state width="1122" height="200" key="GridCell.Tab.0.left" timestamp="1650878873129">
+    <state width="999" height="264" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1699434786638" />
+    <state width="999" height="264" key="GridCell.Tab.0.left" timestamp="1699434786638">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1122" height="200" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1650878873129" />
-    <state width="1122" height="200" key="GridCell.Tab.0.right" timestamp="1650878873129">
+    <state width="999" height="264" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1699434786638" />
+    <state width="999" height="264" key="GridCell.Tab.0.right" timestamp="1699434786638">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1122" height="200" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1650878873129" />
-    <state width="938" height="225" key="GridCell.Tab.1.bottom" timestamp="1650600061605">
+    <state width="999" height="264" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1699434786638" />
+    <state x="682" y="373" key="com.intellij.ide.util.TipDialog" timestamp="1697520481345">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="225" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1650600061605" />
-    <state width="938" height="225" key="GridCell.Tab.1.center" timestamp="1650600061605">
+    <state x="682" y="373" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1697520481344" />
+    <state x="609" y="259" width="1151" height="532" key="find.popup" timestamp="1699431253692">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="225" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1650600061605" />
-    <state width="938" height="225" key="GridCell.Tab.1.left" timestamp="1650600061605">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="938" height="225" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1650600061605" />
-    <state width="938" height="225" key="GridCell.Tab.1.right" timestamp="1650600061605">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="938" height="225" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1650600061605" />
-    <state x="661" y="66" width="1078" height="902" key="find.popup" timestamp="1650876361617">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="661" y="66" width="1078" height="902" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1650876361617" />
+    <state x="609" y="259" width="1151" height="532" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1699431253692" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -283,12 +317,12 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1489</line>
+          <line>1523</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1070</line>
+          <line>1098</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -298,12 +332,12 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>727</line>
+          <line>749</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>590</line>
+          <line>599</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -313,7 +347,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>595</line>
+          <line>604</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -333,37 +367,37 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1136</line>
+          <line>1170</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1038</line>
+          <line>1066</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1296</line>
+          <line>1330</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>694</line>
+          <line>716</line>
           <option name="timeStamp" value="63" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>673</line>
+          <line>695</line>
           <option name="timeStamp" value="64" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>437</line>
+          <line>444</line>
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>369</line>
+          <line>376</line>
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -413,7 +447,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>1610</line>
+          <line>1644</line>
           <option name="timeStamp" value="94" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -433,18 +467,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>771</line>
+          <line>778</line>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
           <line>267</line>
           <option name="timeStamp" value="100" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/generalplus/com/blespeechplugin/BleFramework.java</url>
-          <line>641</line>
-          <option name="timeStamp" value="102" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-23/android/bluetooth/le/BluetoothLeScanner.java</url>
@@ -463,17 +492,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>724</line>
+          <line>731</line>
           <option name="timeStamp" value="108" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>729</line>
+          <line>736</line>
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/kevin/Tool/HandShake.java</url>
-          <line>854</line>
+          <line>861</line>
           <option name="timeStamp" value="113" />
         </line-breakpoint>
       </breakpoints>

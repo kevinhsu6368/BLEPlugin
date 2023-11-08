@@ -170,7 +170,13 @@ public class HandShake
 
 
     private HandShake() {
-
+        //String [] lsSDB_Ble_DeviceName = new String[] {"C1       ","C2       ","SDB-BT","DB-2-Pro","DB-2","sdb Bt dongle"};
+        lsSDB_Ble_DeviceName.add("C1       ");
+        lsSDB_Ble_DeviceName.add("C2       ");
+        lsSDB_Ble_DeviceName.add("SDB-BT");
+        lsSDB_Ble_DeviceName.add("DB-2-Pro");
+        lsSDB_Ble_DeviceName.add("DB-2");
+        lsSDB_Ble_DeviceName.add("sdb Bt dongle");
     }
 
     public void OnStartScan()
@@ -207,14 +213,15 @@ public class HandShake
 
     //  SDB BLE 設備
     //public List<String> lsSDB_Ble_DeviceName = new ArrayList<String>();
-    public  String [] lsSDB_Ble_DeviceName = new String[] {"C1","C2","SDB-BT","DB-2-Pro","DB-2","sdb Bt dongle"};
+    //public  String [] lsSDB_Ble_DeviceName = new String[] {"C1       ","C2       ","SDB-BT","DB-2-Pro","DB-2","sdb Bt dongle"};
+    public List<String> lsSDB_Ble_DeviceName = new ArrayList<String>();// {"C1       ","C2       ","SDB-BT","DB-2-Pro","DB-2","sdb Bt dongle"};
 
     // 是否有可用的 SDB BLE 設備
     public boolean CheckSDBBleDevice(String deviceName)
     {
         for(String s : lsSDB_Ble_DeviceName)
         {
-            if(deviceName.startsWith(s))
+            if(deviceName.equals(s))
             {
                 return true;
             }
@@ -931,6 +938,17 @@ public class HandShake
             return true;
         }
         return false;
+    }
+
+    public void SetDevices(String devices)
+    {
+        // devices = "C1       ,C2       ,SDB-BT"
+        this.lsSDB_Ble_DeviceName.clear();
+        String [] ss = devices.split(",");
+        for(String s : ss)
+        {
+            this.lsSDB_Ble_DeviceName.add(s);
+        }
     }
 
 
