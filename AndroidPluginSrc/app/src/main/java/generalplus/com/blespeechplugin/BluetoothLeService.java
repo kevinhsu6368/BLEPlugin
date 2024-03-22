@@ -105,6 +105,8 @@ public class BluetoothLeService extends Service {
     public void EnableCharReadNotify(boolean bEnable)
     {
         //setCharacteristicNotification(mBluetoothGatt,char,);
+        if(mBluetoothGatt == null)
+            return;
         BluetoothGattService Service = mBluetoothGatt.getService(UUID_FFF0_CHARACTERISTIC);
         if (Service == null) {
             return ;

@@ -1,5 +1,6 @@
 package generalplus.com.blespeechplugin;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -26,6 +27,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.provider.Settings;
+//import android.support.v4.content.ContextCompat;
+//import androidx.core.content.ContextCompat;
+//import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -286,6 +290,13 @@ public class BleFramework{
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord)
             {
                 HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... start");
+
+                // 檢查有沒有 獲取藍牙設備名稱的權限
+                if(CheckDevieNamePermission() == false)
+                {
+                    return;
+                }
+
 	            if (null == device.getName()) {
 
                     HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return");
@@ -645,6 +656,29 @@ public class BleFramework{
     public boolean bNewScanMode = true;
     public void DoStartScan()
     {
+        PackageManager pm = this._unityActivity.getPackageManager();
+        // 檢查是否開啟位置檢限
+        if(Build.VERSION.SDK_INT > 30) // 31.32: Android 12 ; 33: Android 13 ; 34:Android 14
+        {
+
+
+            //if(ContextCompat.checkSelfPermission(this._unityActivity, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.BLUETOOTH_SCAN,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return;
+            }
+        }
+        else
+        {
+            //if(ContextCompat.checkSelfPermission(this._unityActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return;
+            }
+        }
+
+
+
         // kevin.hsu . 調整如下
         boolean isOpenBLE = false;
         if(this.mBluetoothAdapter != null)
@@ -662,8 +696,14 @@ public class BleFramework{
             return;
         }
 
+        // 若沒有 mScanner 再獲取一次
         if(null == this.mScanner)
-            return;
+        {
+            this.mScanner = mBluetoothAdapter.getBluetoothLeScanner(); // 可能沒有開啟藍牙服務
+
+            if(null == this.mScanner)
+                return;
+        }
 
         if(isOpenBLE == false)
             return;
@@ -789,6 +829,56 @@ public class BleFramework{
         return mBluetoothLeService.GetSCAN_PERIOD();
     }
 */
+
+    public boolean CheckBluetoothEnablePermission()
+    {
+        PackageManager pm = this._unityActivity.getPackageManager();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) // API=33 以後, 不允許對藍牙 開關
+        {
+            return false;
+        }
+        else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R /* = 30*/ ) // 31,32 : android 12 需要 Manifest.permission#BLUETOOTH_CONNECT
+        {
+            //if(ContextCompat.checkSelfPermission(_unityActivity, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.BLUETOOTH_CONNECT,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            //if(ContextCompat.checkSelfPermission(_unityActivity, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.BLUETOOTH_ADMIN,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 檢查是否有取得設備名稱的權限
+    public boolean CheckDevieNamePermission()
+    {
+        PackageManager pm = this._unityActivity.getPackageManager();
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R /* = 30*/ ) // 31,32 : android 12 需要 Manifest.permission#BLUETOOTH_CONNECT
+        {
+            //if(ContextCompat.checkSelfPermission(_unityActivity, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.BLUETOOTH_CONNECT,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            //if(ContextCompat.checkSelfPermission(_unityActivity, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED )
+            if(pm.checkPermission(Manifest.permission.BLUETOOTH,this._unityActivity.getPackageName()) == PackageManager.PERMISSION_DENIED)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 	public synchronized void scanLeDevice(final boolean enable)
 	{
 
@@ -810,7 +900,19 @@ public class BleFramework{
                         boolean isFindBLE = false;
                         for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
                             BluetoothDevice device = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
+                            if(device == null)
+                                continue;
+
+                            // 檢查有沒有 獲取藍牙設備名稱的權限
+                            if(CheckDevieNamePermission() == false)
+                            {
+                                continue;
+                            }
+
                             String devName = device.getName();
+
+                            if(devName == null || devName.isEmpty())
+                                continue;
                             byte [] bs = devName.getBytes();
                             String hexDevName = HandShake.bytesToHexString(bs);
                             HandShake.Instance().Log2File( String.format("dev - %d = %s , Hex = %s",(i+1),devName,hexDevName));
@@ -896,8 +998,23 @@ public class BleFramework{
 
             HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... start");
             BluetoothDevice device = result.getDevice();
-            if (null == device.getName()) {
 
+            if(device == null)
+            {
+                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  device == null ... so ... return");
+                return;
+            }
+
+            // 檢查有沒有 獲取藍牙設備名稱的權限
+            if(CheckDevieNamePermission() == false)
+            {
+                return;
+            }
+
+            String devName = device.getName();
+
+            if (null == devName || devName.isEmpty())
+            {
                 HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return");
                 return;
             }
@@ -914,7 +1031,6 @@ public class BleFramework{
             obj.m_BluetoothDevice = device;
             mBluetoothLeService.listBTDevice.add(obj);
 
-            String devName = device.getName();
             byte [] bs = devName.getBytes();
             String hexDevName = HandShake.bytesToHexString(bs);
             HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
@@ -1051,7 +1167,8 @@ public class BleFramework{
             return;
 
         // 未開啟 --> 自動開啟
-        this.mBluetoothAdapter.enable();
+        if(this.CheckBluetoothEnablePermission())
+            this.mBluetoothAdapter.enable();
     }
 
     public void _InitBLEFramework(String mode,String devices)
@@ -1119,7 +1236,8 @@ public class BleFramework{
         }
 
 
-        System.out.println("Android Executing: _InitBLEFramework");
+        //System.out.println("Android Executing: _InitBLEFramework");
+        // 檢查手機是支援 BLE
         if (!this._unityActivity.getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
            // Log.d(TAG, "onCreate: fail: missing FEATURE_BLUETOOTH_LE");
             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Fail: missing FEATURE_BLUETOOTH_LE");
@@ -1148,7 +1266,7 @@ public class BleFramework{
         //this.mOldScanMode_SpecialMobilePhones.add("Redmi Note 8");
         //this.mOldScanMode_SpecialMobilePhones.add("Redmi Note 8T");
 
-        this.mScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
 
         mScannerSetting = new ScanSettings.Builder()
                 //退到后台时设置扫描模式为低功耗
@@ -1159,6 +1277,17 @@ public class BleFramework{
 
         mScannerFilters = new ArrayList<ScanFilter>();
 
+        // for mode-b : 有 filter - name/uuid
+        mScannerFilters_mode_b = new ArrayList<ScanFilter>();
+
+        for(String s : HandShake.Instance().lsSDB_Ble_DeviceName)
+        {
+            ScanFilter filter = new ScanFilter.Builder().setDeviceName(s).build();
+            mScannerFilters.add(filter);
+            mScannerFilters_mode_b.add(filter);
+        }
+
+        /*
         ScanFilter filter1 = new ScanFilter.Builder().setDeviceName("C1       ").build();
         ScanFilter filter0 = new ScanFilter.Builder().setDeviceName("C2       ").build();
         ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("SDB-BT").build();
@@ -1173,13 +1302,12 @@ public class BleFramework{
         mScannerFilters.add(filter3);
         mScannerFilters.add(filter4);
 
-        // for mode-b : 有 filter - name/uuid
-        mScannerFilters_mode_b = new ArrayList<ScanFilter>();
         mScannerFilters_mode_b.add(filter0);
         mScannerFilters_mode_b.add(filter1);
         mScannerFilters_mode_b.add(filter2);
         mScannerFilters_mode_b.add(filter3);
         mScannerFilters_mode_b.add(filter4);
+*/
 
         // for mode-c : 空的 filter
         mScannerFilters_mode_c = new ArrayList<ScanFilter>();
@@ -1187,23 +1315,25 @@ public class BleFramework{
         // 開啟 GPS 功能
         //this.CheckOpenGPS((Context)this._unityActivity);
 
-        // 確保開啟藍芽功能
+        // 確保開啟藍芽功能 , 若沒有開啟的話 , Android 11 以下版本將可以自動開啟藍牙服務 ; Android 12 以上版本不允許制啟用服務 , 這時應該跳出提示請求開啟藍牙服務
         CheckOpenBluetooth();
+
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... Check Open Bluetooth ");
+
+        // 如果沒有開啟藍牙服務 , mScanner 會等於 null
+        this.mScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
 		this.registerBleUpdatesReceiver();
 		this.registerBleStateReceiver();
 		Intent gattServiceIntent = new Intent((Context)this._unityActivity, (Class)BluetoothLeService.class);
 		this._unityActivity.bindService(gattServiceIntent, this.mServiceConnection, Context.BIND_AUTO_CREATE);
 
-        Log.d(TAG, "onCreate: _mBluetoothAdapter correctly initialized");
+        //Log.d(TAG, "onCreate: _mBluetoothAdapter correctly initialized");
 
         // [2017/10/18]. adj , Init Success 應該要放在 拿到 BluetoothLeService 後才算 ok
         // UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidInitialize", "Success");
 
         HandShake.Instance().Log2File("_InitBLEFramework ( ) ... end");
-
-
 
     }
 
@@ -1343,6 +1473,12 @@ public class BleFramework{
 		    e.printStackTrace();
 	    }
 
+        // 檢查有沒有 獲取藍牙設備名稱的權限
+        if(CheckDevieNamePermission() == false)
+        {
+            return false;
+        }
+
 	    mDeviceName = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName();
 	    mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
 
@@ -1414,7 +1550,7 @@ public class BleFramework{
         HandShake.Instance().Log2File("unity  call  :   _SendData (   ) .. start");
 	    //mBluetoothLeService.WriteData(data);
 
-        HandShake.Instance().PostPacket(data);
+        HandShake.Instance().PostPacket(data,size);
 
         HandShake.Instance().Log2File("unity  call  :   _SendData (  ) .. end");
     }
@@ -1424,7 +1560,7 @@ public class BleFramework{
     {
         HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
         //mBluetoothLeService.WriteData(data);
-        HandShake.Instance().PostPacket(data);
+        HandShake.Instance().PostPacket(data,size);
         HandShake.Instance().Log2File("unity  call  :   _PostData (   ) .. start");
 
     }

@@ -6,6 +6,9 @@
         android:minSdkVersion="23"
         android:targetSdkVersion="29" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />

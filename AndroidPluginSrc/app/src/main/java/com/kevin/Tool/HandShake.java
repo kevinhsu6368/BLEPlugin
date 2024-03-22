@@ -492,6 +492,21 @@ public class HandShake
         }
     }
 
+    public synchronized void PostPacket(byte[] data,int len) {
+
+        if(isNRF52832)
+        {
+            BLE_NRF52832_Packet p = new BLE_NRF52832_Packet(data,len);
+            lsPacket.add(p);
+            return;
+        }
+        else
+        {
+            BLEPacket p = new BLECmdPacket(data);
+            lsPacket.add(p);
+        }
+    }
+
     public synchronized byte MakeNewPacketIndex() {
         packetIndex++;
         if (packetIndex > 0xff)
@@ -1038,6 +1053,12 @@ public class HandShake
             int cnt = data.length;
             bs_data = new byte[cnt];
             System.arraycopy(data, 0, bs_data, 0, cnt);
+        }
+        public BLE_NRF52832_Packet(byte [] data,int len)
+        {
+            //int cnt = data.length;
+            bs_data = new byte[len];
+            System.arraycopy(data, 0, bs_data, 0, len);
         }
     }
 

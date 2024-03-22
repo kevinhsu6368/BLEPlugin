@@ -34,6 +34,7 @@
   <androidx.compose.foundation/>
   <androidx.compose.material/>
   <androidx.compose.material3/>
+  <androidx.compose.material3.adaptive/>
   <androidx.compose.runtime/>
   <androidx.compose.ui/>
   <androidx.concurrent/>
@@ -71,6 +72,7 @@
   <androidx.leanback/>
   <androidx.legacy/>
   <androidx.lifecycle/>
+  <androidx.lint/>
   <androidx.loader/>
   <androidx.localbroadcastmanager/>
   <androidx.media/>
@@ -87,6 +89,7 @@
   <androidx.percentlayout/>
   <androidx.preference/>
   <androidx.print/>
+  <androidx.privacysandbox.activity/>
   <androidx.privacysandbox.ads/>
   <androidx.privacysandbox.library/>
   <androidx.privacysandbox.plugins/>
@@ -135,6 +138,7 @@
   <androidx.work/>
   <com.android/>
   <com.android.application/>
+  <com.android.art/>
   <com.android.asset-pack/>
   <com.android.asset-pack-bundle/>
   <com.android.billingclient/>
@@ -187,6 +191,7 @@
   <com.google.ads.afsn/>
   <com.google.ads.interactivemedia.v3/>
   <com.google.ads.mediation/>
+  <com.google.ai.client.generativeai/>
   <com.google.ambient.crossdevice/>
   <com.google.android.ads/>
   <com.google.android.ads.consent/>
@@ -203,6 +208,7 @@
   <com.google.android.gms.strict-version-matcher-plugin/>
   <com.google.android.instantapps/>
   <com.google.android.instantapps.thirdpartycompat/>
+  <com.google.android.libraries.ads.mobile.sdk/>
   <com.google.android.libraries.car/>
   <com.google.android.libraries.cloud.telco.subgraph/>
   <com.google.android.libraries.enterprise.amapi/>
