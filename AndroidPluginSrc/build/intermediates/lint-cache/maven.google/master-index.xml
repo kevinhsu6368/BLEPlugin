@@ -60,6 +60,7 @@
   <androidx.games/>
   <androidx.gaming/>
   <androidx.glance/>
+  <androidx.gradle/>
   <androidx.graphics/>
   <androidx.gridlayout/>
   <androidx.health/>
@@ -144,6 +145,7 @@
   <com.android.billingclient/>
   <com.android.car.setupwizardlib/>
   <com.android.car.ui/>
+  <com.android.compose.screenshot/>
   <com.android.databinding/>
   <com.android.designcompose/>
   <com.android.dynamic-feature/>
@@ -174,6 +176,7 @@
   <com.android.tools.build/>
   <com.android.tools.build.jetifier/>
   <com.android.tools.chunkio/>
+  <com.android.tools.compose/>
   <com.android.tools.ddms/>
   <com.android.tools.emulator/>
   <com.android.tools.external.com-intellij/>
@@ -184,6 +187,7 @@
   <com.android.tools.lint/>
   <com.android.tools.metalava/>
   <com.android.tools.pixelprobe/>
+  <com.android.tools.screenshot/>
   <com.android.tools.smali/>
   <com.android.tools.utp/>
   <com.android.volley/>

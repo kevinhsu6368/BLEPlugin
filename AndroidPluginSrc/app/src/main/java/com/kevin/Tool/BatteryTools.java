@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -34,7 +35,14 @@ public class BatteryTools
             return;
 
         this.con = con;
-        Intent intent = con.registerReceiver(batteryReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            intent = con.registerReceiver(batteryReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED), Context.RECEIVER_EXPORTED);
+        }
+        else
+        {
+            intent = con.registerReceiver(batteryReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        }
         if(null == intent)
         {
             HandShake.Instance().Log2File("registerReceiver(batteryReceiver) ... fail");

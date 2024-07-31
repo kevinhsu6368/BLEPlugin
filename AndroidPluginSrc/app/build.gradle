@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-	compileSdkVersion 33
+	compileSdkVersion 34
 	buildToolsVersion '30.0.2'
 	sourceSets {
 		main {
@@ -12,7 +12,8 @@ android {
 	}
 	defaultConfig {
 		minSdkVersion 23
-		targetSdkVersion 29
+		targetSdkVersion 34
+		versionName "4.0712.0"
 	}
 	buildTypes {
 		release {
@@ -44,5 +45,90 @@ task exportJar(type: Copy) {
 	// rename jar
 	rename('classes.jar', 'BleSpeechPlugin.jar')
 }
-
 exportJar.dependsOn(deleteOldJar, build)
+
+/*
+// 任务完成后重命名 AAR 文件
+tasks.whenTaskAdded { task ->
+	if (task.name == 'assembleRelease') {
+		task.doLast {
+			def versionCode = android.defaultConfig.versionCode
+			def versionName = android.defaultConfig.versionName
+			def aarFile = file("$buildDir/outputs/aar/${project.name}-release.aar")
+			def newAarFile = file("$buildDir/outputs/aar/BleSpeechPlugin-${versionName}.aar")
+			copy {
+				from aarFile
+				into newAarFile.parent
+				rename { String fileName ->
+					newAarFile.name
+				}
+			}
+			aarFile.delete()
+		}
+	}
+}
+ */
+
+// 任务完成后重命名 AAR 文件
+tasks.whenTaskAdded { task ->
+	if (task.name == 'assembleDebug') {
+		task.doLast {
+			def versionCode = android.defaultConfig.versionCode
+			def versionName = android.defaultConfig.versionName
+			def aarFile = file("$buildDir/outputs/aar/${project.name}-debug.aar")
+			def newAarFile = file("$buildDir/outputs/aar/BleSpeechPlugin-${versionName}-debug.aar")
+			copy {
+				from aarFile
+				into newAarFile.parent
+				rename { String fileName ->
+					newAarFile.name
+				}
+			}
+			aarFile.delete()
+		}
+	}
+}
+
+// 任务完成后重命名 AAR 文件并处理 classes.jar
+tasks.whenTaskAdded { task ->
+	if (task.name == 'assembleRelease') {
+		task.doLast {
+			def versionCode = android.defaultConfig.versionCode
+			def versionName = android.defaultConfig.versionName
+			def aarFile = file("$buildDir/outputs/aar/${project.name}-release.aar")
+			def newAarFile = file("$buildDir/outputs/aar/${project.name}-${versionName}-${versionCode}.aar")
+
+			copy {
+				from aarFile
+				into newAarFile.parent
+				rename { String fileName ->
+					newAarFile.name
+				}
+			}
+			aarFile.delete()
+
+			// 解压 AAR 文件以访问 classes.jar
+			def aarUnzipDir = file("$buildDir/outputs/aar/unzipped")
+			copy {
+				from zipTree(newAarFile)
+				into aarUnzipDir
+			}
+
+			// 定义目标目录和新文件名
+			def targetDir = file("$buildDir/outputs/aar")
+			def newJarFile = file("$targetDir/BleSpeechPlugin-${versionName}.jar")
+
+			// 复制并重命名 classes.jar
+			copy {
+				from file("$aarUnzipDir/classes.jar")
+				into targetDir
+				rename { String fileName ->
+					newJarFile.name
+				}
+			}
+
+			// 清理解压目录
+			delete aarUnzipDir
+		}
+	}
+}

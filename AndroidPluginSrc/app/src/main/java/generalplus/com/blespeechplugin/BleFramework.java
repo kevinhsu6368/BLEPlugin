@@ -991,6 +991,8 @@ public class BleFramework{
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... end");
 	}
 
+	int iCountOfNullName = 0;
+
     ScanCallback mScannerCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -1012,10 +1014,12 @@ public class BleFramework{
             }
 
             String devName = device.getName();
-
+            int rssi = result.getRssi();
             if (null == devName || devName.isEmpty())
             {
-                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return");
+                iCountOfNullName++;
+                if(iCountOfNullName <20 || iCountOfNullName%10 == 0)
+                    HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  null == device.getName() ... so ... return , count = " + iCountOfNullName);
                 return;
             }
 
@@ -1029,6 +1033,7 @@ public class BleFramework{
 
             BLEObj obj = new BLEObj();
             obj.m_BluetoothDevice = device;
+
             mBluetoothLeService.listBTDevice.add(obj);
 
             byte [] bs = devName.getBytes();
@@ -1077,7 +1082,13 @@ public class BleFramework{
             Log.d(TAG, "registerBleUpdatesReceiver: WARNING: _mBluetoothAdapter is not enabled!");
         }
         Log.d(TAG, "registerBleUpdatesReceiver: registerReceiver");
-        this._unityActivity.registerReceiver(this.mGattUpdateReceiver, BleFramework.makeGattUpdateIntentFilter());
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            this._unityActivity.registerReceiver(this.mGattUpdateReceiver, BleFramework.makeGattUpdateIntentFilter(),Context.RECEIVER_EXPORTED);
+        }
+        else
+        {
+            this._unityActivity.registerReceiver(this.mGattUpdateReceiver, BleFramework.makeGattUpdateIntentFilter());
+        }
     }
 
     private void registerBleStateReceiver()
@@ -1089,7 +1100,13 @@ public class BleFramework{
         Log.d(TAG, "registerBleStateReceiver: registerReceiver");
 
         // BluetoothAdapter.ACTION_STATE_CHANGED
-        this._unityActivity.registerReceiver(this.mBleStateReceiver, BleFramework.makeBleStateIntentFilter());
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            this._unityActivity.registerReceiver(this.mBleStateReceiver, BleFramework.makeBleStateIntentFilter(),Context.RECEIVER_EXPORTED);
+        }
+        else
+        {
+            this._unityActivity.registerReceiver(this.mBleStateReceiver, BleFramework.makeBleStateIntentFilter());
+        }
     }
 
     private void unregisterBleStateReceiver() {
@@ -1154,6 +1171,13 @@ public class BleFramework{
         }
 
 
+    }
+
+    // 設定封包速度 : 0=預設(慢 100-200ms) , 1=一般(30-60ms) , 2=最快(5-7ms)
+    public void SetPacketSpeed(int speed)
+    {
+        mBluetoothLeService.SetPacketSpeed(speed);
+        Log.d(HandShake.Instance().Tag,"SetPacketSpeed() ... speed = " + speed);
     }
 
     public boolean setMTU(int len)
@@ -1664,6 +1688,15 @@ public class BleFramework{
                 //activity.finish();
                 android.os.Process.killProcess(android.os.Process.myPid());
                 System.exit(0);
+                break;
+            case "blePacketSpeed_0":
+                SetPacketSpeed(0);
+                break;
+            case "blePacketSpeed_1":
+                SetPacketSpeed(1);
+                break;
+            case "blePacketSpeed_2":
+                SetPacketSpeed(2);
                 break;
             case "00_00":
                 Log.d(HandShake.Instance().Tag,"HandShake.Instance().SetSimulate(false)");

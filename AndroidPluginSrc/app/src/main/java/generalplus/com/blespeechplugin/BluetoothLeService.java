@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -172,12 +173,14 @@ public class BluetoothLeService extends Service {
     private String m_strAckType = "";
     private boolean m_bActiveDiscoonnect = false;
     private int m_iIntervalTime = -1;
+    private int iCountOfConnectStateChange = 0;
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
         {
+            iCountOfConnectStateChange++;
             HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  start");
             String intentAction;
             Log.e(TAG, "onConnectionStateChange received: " + status + " newState = " + newState);
@@ -195,6 +198,11 @@ public class BluetoothLeService extends Service {
 
                         boolean bGetService = gatt.discoverServices();
                         HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  discoverServices( )  : " + bGetService + "   .... end");
+                        return;
+                        // 設置中等連接速率 30 - 60ms)
+                        // gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
+                    } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                        // 处理断开连接
 
                         return;
                     }
@@ -268,18 +276,27 @@ public class BluetoothLeService extends Service {
                     break;
             }
 
-            intentAction = ACTION_GATT_DISCONNECTED;
-            mConnectionState = STATE_DISCONNECTED;
-            Log.e(TAG, "Disconnected from GATT server.");
-            broadcastUpdate(intentAction);
-            HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_DISCONNECTED");
-            try
+            if(status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED)
             {
-                Thread.sleep(100);
+                return;
             }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+            else
+            {
+                intentAction = ACTION_GATT_DISCONNECTED;
+                mConnectionState = STATE_DISCONNECTED;
+                Log.e(TAG, "Disconnected from GATT server.");
+                broadcastUpdate(intentAction);
+                HandShake.Instance().Log2File("BluetoothLeService.BluetoothGattCallback.onConnectionStateChange( ) ...  broadcastUpdate  ....  ACTION_GATT_DISCONNECTED");
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
+
 
             // [2017/10/18] . Kevin.Hsu ... adj . disable NEXT_CONNECT
             /*
@@ -326,14 +343,14 @@ public class BluetoothLeService extends Service {
             {
                 Log.e("Minwen", "Service discovered " + status);
                 BluetoothGattService Service = gatt.getService(UUID_FFF0_CHARACTERISTIC);
-                if (Service == null) {
+                if (null == Service) {
                     Log.e(TAG, "service not found!");
                     HandShake.Instance().OnGetServiceFinished(false);
                     HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... service not found!  ...  end ");
                     return;
                 }
                 BluetoothGattCharacteristic characteristic = Service.getCharacteristic(getUuid_WriteCharacteristic());
-                if (characteristic == null)
+                if (null == characteristic)
                 {
                     Log.e(TAG, "char not found!");
                     HandShake.Instance().OnGetServiceFinished(false);
@@ -342,8 +359,6 @@ public class BluetoothLeService extends Service {
                 }
                 else
                 {
-
-
                     int iType = characteristic.getProperties();
 
                     String intentAction = GET_ACK;
@@ -371,6 +386,7 @@ public class BluetoothLeService extends Service {
 
                 }
 
+
                 try
                 {
                     //Thread.sleep(500);
@@ -379,8 +395,12 @@ public class BluetoothLeService extends Service {
                 {
                     e.printStackTrace();
                 }
+
+
+
                 if (ReadData(gatt))
                 {
+                    boolean isOK = false;
                     for (int i = 0; i < listBTDevice.size(); i++) {
                         if (gatt.getDevice() == listBTDevice.get(i).m_BluetoothDevice) {
                             BLEObj obj = listBTDevice.get(i);
@@ -393,15 +413,32 @@ public class BluetoothLeService extends Service {
                             HandShake.Instance().SetConnected(true);
                             HandShake.Instance().OnGetServiceFinished(true);
                             HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ... end ");
-                            return;
+                            isOK = true;
+                            break;
+                            //return;
                         }
                     }
+
+ //                   if(isOK)
+ //                   {
+                        // 設定 封包傳送速度 - 1
+//                        gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED); // CONNECTION_PRIORITY_HIGH
+
+//                        // 設定 封包傳送速度 - 2
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                            gatt.setPreferredPhy(BluetoothDevice.PHY_LE_2M,BluetoothDevice.PHY_LE_2M,BluetoothDevice.PHY_OPTION_NO_PREFERRED);
+//                        }
+
+   //                     return;
+   //                 }
                 }
                 else
                 {
                     HandShake.Instance().OnGetServiceFinished(false);
                     Log.e(TAG, "ReadData failed.");
                 }
+
+
             }
             else
             {
@@ -483,6 +520,20 @@ public class BluetoothLeService extends Service {
             Log.d(TAG,String.format("onMtuChanged --> mtu = %d , status = %d",mtu,status));
             super.onMtuChanged(gatt, mtu, status);
         }
+
+        @Override
+        public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                // PHY更新成功
+                Log.d("BLE", "PHY updated: TX = " + txPhy + ", RX = " + rxPhy);
+                HandShake.Instance().Log2File("BLE PHY updated: Success , TX = " + txPhy + ", RX = " + rxPhy);
+            } else {
+                // PHY更新失败
+                Log.e("BLE", "PHY update failed with status: " + status);
+                HandShake.Instance().Log2File("BLE PHY updated: Fail , TX = " + txPhy + ", RX = " + rxPhy);
+            }
+        }
+
     };
 
     private void broadcastUpdate(final String action) {
@@ -596,6 +647,23 @@ public class BluetoothLeService extends Service {
         return true;
     }
 
+    // 設定封包速度 : 0=預設(慢 100-200ms) , 1=一般(30-60ms) , 2=最快(5-7ms)
+    public void SetPacketSpeed(int speed)
+    {
+        if(speed == 1) //  1=一般(30-60ms)
+        {
+            this.mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
+        }
+        else if(speed == 2) // 2=最快(5-7ms)
+        {
+            this.mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+        }
+        else // 0=預設(慢 100-200ms)
+        {
+            this.mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER);
+        }
+
+    }
 
     public boolean setMTU(int len)
     {

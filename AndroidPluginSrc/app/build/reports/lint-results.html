@@ -173,10 +173,10 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 4 errors and 25 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 4 errors and 24 warnings</span>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation mdl-layout--large-screen-only">
-Check performed at Fri Mar 22 10:35:58 CST 2024      </nav>
+Check performed at Fri Jul 12 14:09:12 CST 2024      </nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -185,7 +185,6 @@ Check performed at Fri Mar 22 10:35:58 CST 2024      </nav>
       <a class="mdl-navigation__link" href="#overview"><i class="material-icons">dashboard</i>Overview</a>
       <a class="mdl-navigation__link" href="#GradleCompatible"><i class="material-icons error-icon">error</i>Incompatible Gradle Versions (1)</a>
       <a class="mdl-navigation__link" href="#DefaultLocale"><i class="material-icons warning-icon">warning</i>Implied default locale in case conversion (4)</a>
-      <a class="mdl-navigation__link" href="#OldTargetApi"><i class="material-icons warning-icon">warning</i>Target SDK attribute is not targeting latest version (1)</a>
       <a class="mdl-navigation__link" href="#SimpleDateFormat"><i class="material-icons warning-icon">warning</i>Implied locale in date format (8)</a>
       <a class="mdl-navigation__link" href="#ValidFragment"><i class="material-icons error-icon">error</i>Fragment not instantiatable (1)</a>
       <a class="mdl-navigation__link" href="#WifiManagerPotentialLeak"><i class="material-icons warning-icon">warning</i>WifiManager Potential Leak (1)</a>
@@ -215,9 +214,6 @@ Check performed at Fri Mar 22 10:35:58 CST 2024      </nav>
 <tr>
 <td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#DefaultLocale">DefaultLocale</a>: Implied default locale in case conversion</td></tr>
-<tr>
-<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
-<a href="#OldTargetApi">OldTargetApi</a>: Target SDK attribute is not targeting latest version</td></tr>
 <tr>
 <td class="countColumn">8</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#SimpleDateFormat">SimpleDateFormat</a>: Implied locale in date format</td></tr>
@@ -267,14 +263,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:31</span>: <span class="message">Version 28 (intended for Android Pie and below) is the last version of the legacy support library, so we recommend that you migrate to AndroidX libraries when using Android Q and moving forward. The IDE can help with this: Refactor > Migrate to AndroidX...</span><br /><pre class="errorlines">
-<span class="lineno"> 28 </span>dependencies {
-<span class="lineno"> 29 </span>    api fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
-<span class="lineno"> 30 </span>    testImplementation <span class="string">'junit:junit:4.13.2'</span>
-<span class="caretline"><span class="lineno"> 31 </span>    <span class="error">api <span class="string">'com.android.support:appcompat-v7:28.0.0'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 32 </span>    api files(<span class="string">'libs/classes.jar'</span>)
-<span class="lineno"> 33 </span>    <span class="comment">//api files('libs/commons-net-3.6.jar')</span>
-<span class="lineno"> 34 </span>}
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:33</span>: <span class="message">Version 28 (intended for Android Pie and below) is the last version of the legacy support library, so we recommend that you migrate to AndroidX libraries when using Android Q and moving forward. The IDE can help with this: Refactor > Migrate to AndroidX...</span><br /><pre class="errorlines">
+<span class="lineno"> 30 </span>dependencies {
+<span class="lineno"> 31 </span>    api fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
+<span class="lineno"> 32 </span>    testImplementation <span class="string">'junit:junit:4.13.2'</span>
+<span class="caretline"><span class="lineno"> 33 </span>    <span class="error">api <span class="string">'com.android.support:appcompat-v7:28.0.0'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 34 </span>    api files(<span class="string">'libs/classes.jar'</span>)
+<span class="lineno"> 35 </span>    <span class="comment">//api files('libs/commons-net-3.6.jar')</span>
+<span class="lineno"> 36 </span>}
 </pre>
 
 </div>
@@ -380,57 +376,6 @@ If you want the methods to just perform ASCII replacement, for example to conver
               <div class="mdl-card__actions mdl-card--border">
 <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationDefaultLocaleLink" onclick="reveal('explanationDefaultLocale');">
 Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="DefaultLocaleCardLink" onclick="hideid('DefaultLocaleCard');">
-Dismiss</button>            </div>
-            </div>
-          </section><a name="OldTargetApi"></a>
-<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="OldTargetApiCard" style="display: block;">
-            <div class="mdl-card mdl-cell mdl-cell--12-col">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Target SDK attribute is not targeting latest version</h2>
-  </div>
-              <div class="mdl-card__supporting-text">
-<div class="issue">
-<div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:15</span>: <span class="message">Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.</span><br /><pre class="errorlines">
-<span class="lineno"> 12 </span>    }
-<span class="lineno"> 13 </span>    defaultConfig {
-<span class="lineno"> 14 </span>        minSdkVersion <span class="number">23</span>
-<span class="caretline"><span class="lineno"> 15 </span>        <span class="warning">targetSdkVersion <span class="number">29</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 16 </span>    }
-<span class="lineno"> 17 </span>    buildTypes {
-<span class="lineno"> 18 </span>        release {
-</pre>
-
-</div>
-<div class="metadata"><div class="explanation" id="explanationOldTargetApi" style="display: none;">
-When your application runs on a version of Android that is more recent than your <code>targetSdkVersion</code> specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the <code>targetSdkVersion</code> is less than 14, your app may get an option button in the UI.<br/>
-<br/>
-To fix this issue, set the <code>targetSdkVersion</code> to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: <a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a> as well as follow this guide:<br/>
-<a href="https://developer.android.com/distribute/best-practices/develop/target-sdk.html">https://developer.android.com/distribute/best-practices/develop/target-sdk.html</a><br/><div class="moreinfo">More info: <ul><li><a href="https://developer.android.com/distribute/best-practices/develop/target-sdk.html">https://developer.android.com/distribute/best-practices/develop/target-sdk.html</a>
-<li><a href="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html">http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</a>
-</ul></div>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
-To suppress this error, use the issue id "OldTargetApi" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
-<br/></div>
-</div>
-</div>
-<div class="chips">
-<span class="mdl-chip">
-    <span class="mdl-chip__text">OldTargetApi</span>
-</span>
-<span class="mdl-chip">
-    <span class="mdl-chip__text">Correctness</span>
-</span>
-<span class="mdl-chip">
-    <span class="mdl-chip__text">Warning</span>
-</span>
-<span class="mdl-chip">
-    <span class="mdl-chip__text">Priority 6/10</span>
-</span>
-</div>
-              </div>
-              <div class="mdl-card__actions mdl-card--border">
-<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationOldTargetApiLink" onclick="reveal('explanationOldTargetApi');">
-Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="OldTargetApiCardLink" onclick="hideid('OldTargetApiCard');">
 Dismiss</button>            </div>
             </div>
           </section><a name="SimpleDateFormat"></a>
@@ -870,13 +815,13 @@ Dismiss</button>            </div>
 <span class="lineno">  693 </span>                <span class="keyword">return</span>;
 </pre>
 
-<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1122</span>: <span class="message">Unnecessary; SDK_INT is always >= 23</span><br /><pre class="errorlines">
-<span class="lineno"> 1119 </span>  <span class="keyword">int</span> locationMode = <span class="number">0</span>;
-<span class="lineno"> 1120 </span>  String locationProviders;
-<span class="lineno"> 1121 </span>
-<span class="caretline"><span class="lineno"> 1122 </span>  <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 1123 </span>      <span class="keyword">try</span> {
-<span class="lineno"> 1124 </span>          locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+<span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:1139</span>: <span class="message">Unnecessary; SDK_INT is always >= 23</span><br /><pre class="errorlines">
+<span class="lineno"> 1136 </span>  <span class="keyword">int</span> locationMode = <span class="number">0</span>;
+<span class="lineno"> 1137 </span>  String locationProviders;
+<span class="lineno"> 1138 </span>
+<span class="caretline"><span class="lineno"> 1139 </span>  <span class="keyword">if</span> (<span class="warning">Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 1140 </span>      <span class="keyword">try</span> {
+<span class="lineno"> 1141 </span>          locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
 </pre>
 
 <span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java">../../src/main/java/generalplus/com/blespeechplugin/PermissionGranter.java</a>:41</span>: <span class="message">Unnecessary; SDK_INT is never &lt; 23</span><br /><pre class="errorlines">
@@ -927,14 +872,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/com/kevin/Tool/BatteryTools.java">../../src/main/java/com/kevin/Tool/BatteryTools.java</a>:23</span>: <span class="message">Do not place Android context classes in static fields (static reference to <code>BatteryTools</code> which has field <code>con</code> pointing to <code>Context</code>); this is a memory leak</span><br /><pre class="errorlines">
-<span class="lineno"> 20 </span>
-<span class="lineno"> 21 </span>    }
-<span class="lineno"> 22 </span>
-<span class="caretline"><span class="lineno"> 23 </span>    <span class="warning"><span class="keyword">static</span></span> BatteryTools mgr = <span class="keyword">new</span> BatteryTools();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 24 </span>    <span class="keyword">public</span> <span class="keyword">static</span> BatteryTools Instance()
-<span class="lineno"> 25 </span>    {
-<span class="lineno"> 26 </span>        <span class="keyword">return</span> mgr;
+<span class="location"><a href="../../src/main/java/com/kevin/Tool/BatteryTools.java">../../src/main/java/com/kevin/Tool/BatteryTools.java</a>:24</span>: <span class="message">Do not place Android context classes in static fields (static reference to <code>BatteryTools</code> which has field <code>con</code> pointing to <code>Context</code>); this is a memory leak</span><br /><pre class="errorlines">
+<span class="lineno"> 21 </span>
+<span class="lineno"> 22 </span>    }
+<span class="lineno"> 23 </span>
+<span class="caretline"><span class="lineno"> 24 </span>    <span class="warning"><span class="keyword">static</span></span> BatteryTools mgr = <span class="keyword">new</span> BatteryTools();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 25 </span>    <span class="keyword">public</span> <span class="keyword">static</span> BatteryTools Instance()
+<span class="lineno"> 26 </span>    {
+<span class="lineno"> 27 </span>        <span class="keyword">return</span> mgr;
 </pre>
 
 <span class="location"><a href="../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java">../../src/main/java/generalplus/com/blespeechplugin/BleFramework.java</a>:73</span>: <span class="message">Do not place Android context classes in static fields (static reference to <code>BleFramework</code> which has field <code>_unityActivity</code> pointing to <code>Activity</code>); this is a memory leak</span><br /><pre class="errorlines">
