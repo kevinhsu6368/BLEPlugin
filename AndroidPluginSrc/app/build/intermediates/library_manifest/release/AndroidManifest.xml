@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="generalplus.com.blespeechplugin"
-    android:versionName="4.0712.0" >
+    android:versionName="4.0913.1" >
 
     <uses-sdk
         android:minSdkVersion="23"

@@ -13,7 +13,7 @@
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="D:\Work\BlePlugin2\AndroidPluginSrc\app\build.gradle"
-            line="33"
+            line="32"
             column="2"/>
     </issue>
 

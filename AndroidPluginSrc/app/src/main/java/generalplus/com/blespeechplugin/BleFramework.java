@@ -1503,7 +1503,7 @@ public class BleFramework{
             return false;
         }
 
-	    mDeviceName = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName();
+	    mDeviceName = mBluetoothLeService.deviceName = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getName();
 	    mDeviceAddress = mBluetoothLeService.listBTDevice.get(peripheralIndex).m_BluetoothDevice.getAddress();
 
         curPeripheralIndex = peripheralIndex;

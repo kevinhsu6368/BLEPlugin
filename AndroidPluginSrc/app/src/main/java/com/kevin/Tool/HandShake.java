@@ -90,7 +90,7 @@ public class HandShake
     boolean isResponsePacketing = false;
 
     // 是否為使用 nRF52832 晶片
-    boolean isNRF52832 = false;
+    boolean isNRF52832 = true;
 
     // 設定是否為 NRF52832 晶片
     public void SetNRF52832(boolean _isNRF52832)
@@ -494,7 +494,8 @@ public class HandShake
 
     public synchronized void PostPacket(byte[] data,int len) {
 
-        if(isNRF52832)
+        //if(isNRF52832)
+        if(len != 20)
         {
             BLE_NRF52832_Packet p = new BLE_NRF52832_Packet(data,len);
             lsPacket.add(p);

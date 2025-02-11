@@ -170,6 +170,7 @@ public class BluetoothLeService extends Service {
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     public ArrayList<BLEObj> listBTDevice = new ArrayList<BLEObj>();
+    public String deviceName = "";
     private String m_strAckType = "";
     private boolean m_bActiveDiscoonnect = false;
     private int m_iIntervalTime = -1;
@@ -359,6 +360,20 @@ public class BluetoothLeService extends Service {
                 }
                 else
                 {
+                    // 2024/08/15.調整
+                    // 強制 : 設備名稱 等於 : "C1       " 的話 , 則  SetResponseMode(true);
+                    // 強制 : 設備名稱 不是 : "C1       " 的話 , 則  SetResponseMode(false);
+                    if(deviceName.startsWith("C1   "))
+                    {
+                        HandShake.Instance().SetResponseMode(false);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  is C1 ... No Response Mode ");
+                    }
+                    else
+                    {
+                        HandShake.Instance().SetResponseMode(true);
+                        HandShake.Instance().Log2File("BluetoothLeService.onServicesDiscovered( ) ...  is SDB-BT ... Response Mode ");
+                    }
+                    /*
                     int iType = characteristic.getProperties();
 
                     String intentAction = GET_ACK;
@@ -383,7 +398,7 @@ public class BluetoothLeService extends Service {
                     }
                     //broadcastUpdate(intentAction);
 
-
+*/
                 }
 
 
@@ -660,6 +675,8 @@ public class BluetoothLeService extends Service {
         }
         else // 0=預設(慢 100-200ms)
         {
+            if(this.deviceName.contains("C1 ")) // A1 藍牙靶收到的話,藍牙晶片會斷線,故不處理
+                return;
             this.mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER);
         }
 
