@@ -38,6 +38,7 @@ import android.util.Log;
 
 import com.kevin.Tool.HandShake;
 import com.kevin.Tool.LogFile;
+import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +125,7 @@ public class BluetoothLeService extends Service {
 
     }
 
-    enum SDB_BLE_TYPE
+    public enum SDB_BLE_TYPE
     {
         C1 ,
         USB_DONGLE,
@@ -716,9 +717,12 @@ public class BluetoothLeService extends Service {
 
         StopReadData();
         mBluetoothGatt.disconnect();
+
         HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... mBluetoothGatt.disconnect()");
         mNotifyCharacteristic = null;
         HandShake.Instance().Log2File("BluetoothLeService.disconnect( ) ... end");
+        //通知 unity 已經段線
+
     }
 
     public synchronized void ActiveDisconnect() {
@@ -1173,26 +1177,51 @@ public class BluetoothLeService extends Service {
 						byte[] scanRecord) {
 					// TODO Auto-generated method stub	
 					// Add Device
-					if (null == device.getName()) {
+                    String devName = device.getName();
+					if (null == devName) {
 						return;
 					}
-					
+
+					// 如果 address 存在則不用往下處理
 					for (int i = 0; i < listBTDevice.size(); i++) {
 						if (listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress())) {
+                            //listBTDevice.get(i).rssi = rssi; // 更新 rssi
+
+                            // 如果 rssi 變更 , 通知 unity 設備
+                            BLEObj obj = listBTDevice.get(i);
+                            int delta = Math.abs(obj.rssi - rssi);
+                            if(delta > 10) // 當前設備的 rssi 變更時,再通知 unity
+                            {
+                                obj.rssi = rssi;
+                                String msg = String.format("%s@%s@%d",obj.m_BluetoothDevice.getName(),obj.m_BluetoothDevice.getAddress(),obj.rssi);
+                                HandShake.Instance().Log2File("BluetoothLeService.mLeScanCallback.onLeScan( ) ... update device : " + msg);
+                                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadDevice", msg);
+                            }
+
 							return;
 						}
 					}
-					
-					BLEObj obj = new BLEObj();
-					obj.m_BluetoothDevice = device;
-					listBTDevice.add(obj);
-					
-                    // Send Message for updating UI List
-                    Bundle mUpdateDeviceBundle = new Bundle();
-                    mUpdateDeviceBundle.putInt("count", rssi);
-                    
-                    Message msg = new Message();
-                    msg.setData(mUpdateDeviceBundle);
+
+                    // 符合 C1 或 SDB-BT 晶片再加入清單裡
+                    if(HandShake.Instance().CheckSDBBleDevice(device.getName()))
+                    {
+                        BLEObj obj = new BLEObj();
+                        obj.m_BluetoothDevice = device;
+                        obj.rssi = rssi;
+                        listBTDevice.add(obj);
+
+                        byte [] bs = devName.getBytes();
+                        String hexDevName = HandShake.bytesToHexString(bs);
+                        HandShake.Instance().Log2File( String.format("find device = %s , mac = %s , rssi = %d .... and add to list",devName,hexDevName,rssi));
+
+                        // Send Message for updating UI List
+                        Bundle mUpdateDeviceBundle = new Bundle();
+                        mUpdateDeviceBundle.putInt("count", rssi);
+
+                        Message msg = new Message();
+                        msg.setData(mUpdateDeviceBundle);
+                    }
+
                     //ConnectActivity.mUpdateDeviceHandler.sendMessage(msg);
 
                     // [2017/10/03]. Kevin ... Willson 說去掉下面這段,看能不能改善連線問題.

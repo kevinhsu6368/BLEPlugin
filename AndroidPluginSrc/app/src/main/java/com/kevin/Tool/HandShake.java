@@ -917,10 +917,10 @@ public class HandShake
         return false;
     }
 
-    private void DisConnect()
+    public void DisConnect()
     {
         SetConnected(false);
-        BleFramework.mBluetoothLeService.disconnect();;
+        BleFramework.mBluetoothLeService.close();//.disconnect();;
         //BleFramework.mBluetoothLeService.connectDevice();
         UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidDisconnect", "Success");
     }

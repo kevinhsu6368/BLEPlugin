@@ -41,6 +41,7 @@ import com.kevin.Tool.NetTools;
 import com.kevin.Tool.StringTools;
 import com.kevin.Tool.SystemInfo;
 import com.unity3d.player.UnityPlayer;
+import com.unity3d.player.UnityPlayerActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -289,7 +290,7 @@ public class BleFramework{
 		{
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord)
             {
-                HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... start");
+                //HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... start");
 
                 // 檢查有沒有 獲取藍牙設備名稱的權限
                 if(CheckDevieNamePermission() == false)
@@ -299,41 +300,63 @@ public class BleFramework{
 
 	            if (null == device.getName()) {
 
-                    HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return");
+                    //HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  null == device.getName() ... so ... return");
 		            return;
 	            }
 
 	            for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); i++) {
 		            if (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
 		            {
-                        HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+		                // 如果 rssi 變更 , 通知 unity 設備
+                        BLEObj obj = mBluetoothLeService.listBTDevice.get(i);
+                        int delta = Math.abs(obj.rssi - rssi);
+                        if(delta > 10) // 當前設備的 rssi 變更時,再通知 unity
+                        {
+                            obj.rssi = rssi;
+                            String msg = String.format("%s@%s@%d",obj.m_BluetoothDevice.getName(),obj.m_BluetoothDevice.getAddress(),obj.rssi);
+                            HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... update device : " + msg);
+                            UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadDevice", msg);
+                        }
+                        //HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
 			            return;
 		            }
 	            }
 
-	            BLEObj obj = new BLEObj();
-	            obj.m_BluetoothDevice = device;
-	            mBluetoothLeService.listBTDevice.add(obj);
-
-                String devName = device.getName();
-                byte [] bs = devName.getBytes();
-                String hexDevName = HandShake.bytesToHexString(bs);
-                HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
 
 
-                // 如果找到 C1 就結束掃描
+
+                // 如果找到 C1 或 SDB-BT ,
+                // ---> 增加設備到清單
+                // ---> 若需要自動停止掃描 --> 就結束掃描 --> 通知 unity 掃描完成
+                // ---> 若不要自動停止掃描 --> 沒事
                 if(HandShake.Instance().CheckSDBBleDevice(device.getName())) // device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
                 {
                     //Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
                     HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
 
+                    BLEObj obj = new BLEObj();
+                    obj.m_BluetoothDevice = device;
+                    obj.rssi = rssi;
+                    mBluetoothLeService.listBTDevice.add(obj);
+
+                    String devName = device.getName();
+                    byte [] bs = devName.getBytes();
+                    String hexDevName = HandShake.bytesToHexString(bs);
+                    HandShake.Instance().Log2File( String.format("find device = %s , mac = %s , rssi = %d .... and add to list",devName,hexDevName,rssi));
+
                     //mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     //searchingDevice = false;
                     //SetSearchingDevice(false);
-                    scanLeDevice(false);
-                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                    if(isAutoStopScan) {
+                        scanLeDevice(false);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                    }
+                    else { // 藍牙測試工具 --> 馬上通知 unity 找到設備
+                        String msg = String.format("%s@%s@%d",obj.m_BluetoothDevice.getName(),obj.m_BluetoothDevice.getAddress(),obj.rssi);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadDevice", msg);
+                    }
                 }
-                HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... end");
+                //HandShake.Instance().Log2File("mLeScanCallback.onLeScan( ) ... end");
             }
         };
 
@@ -526,6 +549,13 @@ public class BleFramework{
     public long Get_pre_ScanForPeripherals()
     {
         return pre_ScanForPeripherals;
+    }
+
+    public void Disconnect()
+    {
+        //mBluetoothLeService.disconnect();
+        HandShake.Instance().DisConnect();
+        SetConnectState(false);
     }
 
     public void DoStopScan()
@@ -879,23 +909,39 @@ public class BleFramework{
         return true;
     }
 
+    /**
+     * 設定掃描或停止掃描
+     * 1.掃描 : enable = true -->
+     *   (1)沒有開啟藍牙功能 --> 自動開啟
+     *   (2) 10 秒後 -->
+     *       [1] 停止掃描
+     *       [2] 檢查 有沒有找到 C1 , SDB-BT 藍牙設備 : isFindBLE
+     *         --> 有找到 : 掃描狀態為否  , 重置掃描次數
+     *                      通知 Unity 掃描成功 OnBleDidCompletePeripheralScan
+     *         --> 沒找到 : 2秒後 , 再發起 掃描 scanLeDevice(true)
+     *   (3) 開始掃描 DoStartScan()
+     * 2.停止掃描 : enable = false
+     * @param enable
+     */
 	public synchronized void scanLeDevice(final boolean enable)
 	{
 
         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... start");
 		if (enable)
 		{
-            CheckOpenBluetooth(); // 檢查沒開藍芽的話,幫它開啟來
+            CheckOpenBluetooth(); // 1.(1)檢查沒開藍芽的話,幫它開啟來
 			// Stops scanning after a pre-defined scan period.
+            // 在 SCAN_PERIOD = 10 秒後, 停止掃描
 			mHandler.postDelayed(new Runnable() {
 				@Override
 				public void run()
                 {
-                    if(GetSearchingDevice()) //;searchingDevice)
+                    if(GetSearchingDevice()) // 如果在掃描中
                     {
 
                         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - start ");
 
+                        // 檢查是否有找到要找的 藍牙設備 ( C1 , SDB-BT )
                         //  没有掃到指定機,就再重掃
                         boolean isFindBLE = false;
                         for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
@@ -924,6 +970,8 @@ public class BleFramework{
                         }
                         HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - mBluetoothAdapter.stopLeScan(mLeScanCallback)  ");
                         //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+
+                        // 停止掃描
                         DoStopScan();
 
                         if (isFindBLE) {
@@ -936,7 +984,7 @@ public class BleFramework{
                             HandShake.Instance().Log2File("scanLeDevice ( " + Boolean.toString(enable) + " ) ... time out - is scan find C1 , and notify unity ");
                             UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
                         }
-                        else
+                        else // 没有掃到指定機,就再重掃
                         {
 
                             //scanLeDevice(true);
@@ -967,6 +1015,7 @@ public class BleFramework{
             SetSearchingDevice(true);
             AddScanForPeripheralsCount();
 
+            // 1.(3) 開始掃描
             this.DoStartScan();
 
 
@@ -993,17 +1042,20 @@ public class BleFramework{
 
 	int iCountOfNullName = 0;
 
-    ScanCallback mScannerCallback = new ScanCallback() {
+    /**
+     * 掃描回調事件
+     */
+    public ScanCallback mScannerCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-            HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... start");
+            //HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... start");
             BluetoothDevice device = result.getDevice();
 
             if(device == null)
             {
-                HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  device == null ... so ... return");
+                //HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  device == null ... so ... return");
                 return;
             }
 
@@ -1026,34 +1078,57 @@ public class BleFramework{
             for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); i++) {
                 if (mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice.getAddress().equalsIgnoreCase(device.getAddress()))
                 {
-                    HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+                    //mBluetoothLeService.listBTDevice.get(i).rssi = rssi;
+                    //HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ...  repeat device ( " + device.getName() + " ) ...  so ... return");
+                    // 如果 rssi 變更 , 通知 unity 設備
+                    BLEObj obj = mBluetoothLeService.listBTDevice.get(i);
+                    int delta = Math.abs(obj.rssi - rssi);
+                    if(delta > 10) // 當前設備的 rssi 變更時,再通知 unity
+                    {
+                        obj.rssi = rssi;
+                        String msg = String.format("%s@%s@%d",obj.m_BluetoothDevice.getName(),obj.m_BluetoothDevice.getAddress(),obj.rssi);
+                        HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... update device : " + msg);
+                        UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadDevice", msg);
+
+                    }
                     return;
                 }
             }
 
-            BLEObj obj = new BLEObj();
-            obj.m_BluetoothDevice = device;
-
-            mBluetoothLeService.listBTDevice.add(obj);
-
-            byte [] bs = devName.getBytes();
-            String hexDevName = HandShake.bytesToHexString(bs);
-            HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
 
 
-            // 如果找到 C1 就結束掃描
+
+            // 如果找到 C1 或 SDB-BT 就結束掃描
             if(HandShake.Instance().CheckSDBBleDevice(device.getName())) // device.getName().startsWith(HandShake.Instance().BLE_Device_Name))
             {
                 //Log.d(TAG, "scanLeDevice find : " + HandShake.Instance().BLE_Device_Name);
                 HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... find c1 and notify unity(OnBleDidCompletePeripheralScan:Success)");
 
+                BLEObj obj = new BLEObj();
+                obj.m_BluetoothDevice = device;
+                obj.rssi = rssi;
+                mBluetoothLeService.listBTDevice.add(obj);
+
+                //String devName = device.getName();
+                byte [] bs = devName.getBytes();
+                String hexDevName = HandShake.bytesToHexString(bs);
+                //HandShake.Instance().Log2File( String.format("find dev = %s , Hex = %s",devName,hexDevName));
+                HandShake.Instance().Log2File( String.format("find device = %s , mac = %s , rssi = %d .... and add to list",devName,hexDevName,rssi));
+
                 //mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 //searchingDevice = false;
                 //SetSearchingDevice(false);
-                scanLeDevice(false);
-                UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+
+                if(isAutoStopScan) {
+                    scanLeDevice(false);
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidCompletePeripheralScan", "Success");
+                }
+                else { // 藍牙測試工具 --> 馬上通知 unity 找到設備
+                    String msg = String.format("%s@%s@%d",obj.m_BluetoothDevice.getName(),obj.m_BluetoothDevice.getAddress(),obj.rssi);
+                    UnityPlayer.UnitySendMessage("BLEControllerEventHandler", "OnBleDidReadDevice", msg);
+                }
             }
-            HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... end");
+            //HandShake.Instance().Log2File("mScanCallback.onScanResult( ) ... end");
 
         }
 
@@ -1069,6 +1144,11 @@ public class BleFramework{
             HandShake.Instance().Log2File("mScanCallback.onScanFailed( ) ... err = " + errorCode);
         }
     };
+
+    /**
+     * 當掃描到 C1 或 SDB-BT 晶片時是否自動停止掃描
+     */
+    public boolean isAutoStopScan = true;
 
 	private void unregisterBleUpdatesReceiver() {
         Log.d(TAG, "unregisterBleUpdatesReceiver:");
@@ -1197,7 +1277,27 @@ public class BleFramework{
 
     public void _InitBLEFramework(String mode,String devices)
     {
+        checkSDBBleDevices = devices;
         HandShake.Instance().SetDevices(devices);
+        _InitBLEFramework(mode);
+    }
+
+    public String checkSDBBleDevices = "";
+
+    /**
+     * 初始化藍牙BLE框架
+     * @param mode = "scan_mode_a" , "scan_mode_b" , "scan_mode_c"
+     * @param devices  = "C1       " , "SDB-BT"
+     * @param isAutoStopScan = true:sdbplay2 or dkl , false:dartTest
+     */
+    public void _InitBLEFramework(String mode,String devices,boolean isAutoStopScan)
+    {
+        HandShake.Instance().Log2File("_InitBLEFramework(" + mode + "," + devices + "," + (isAutoStopScan?"true":"false"));
+        checkSDBBleDevices = devices;
+        this.isAutoStopScan = isAutoStopScan;
+        HandShake.Instance().Log2File("HandShake.Instance().SetDevices()");
+        HandShake.Instance().SetDevices(devices);
+        HandShake.Instance().Log2File("_InitBLEFramework(mode)");
         _InitBLEFramework(mode);
     }
 
@@ -1205,7 +1305,10 @@ public class BleFramework{
     // 初始化 - 帶掃描資料 (for android )
     public void _InitBLEFramework(String mode) {
 
-        Log.d(TAG, "_InitBLEFramework( "+ mode + " ) ... ");
+        //Log.d(TAG, "_InitBLEFramework( ) ... ");
+        //Log.d(TAG, "scan devices = " + checkSDBBleDevices);
+        //Log.d(TAG, "scan mode = " + mode);
+        //Log.d(TAG, "is Auto Stop Scan = " + isAutoStopScan);
 
         SetScanMode(mode);
 
@@ -1392,6 +1495,11 @@ public class BleFramework{
 
         //mBluetoothLeService.disconnect();    [2017/10/18]. Kevin.Hsu , adj , 不要執行 , 不然進去會 收到廣播 DISCONNEECT 然後又跑 ReConnect  , 會把 scan , connect 打在一起
 
+        if(mBluetoothLeService == null)
+            HandShake.Instance().Log2File("mBluetoothLeService == null");
+        else if(mBluetoothLeService.listBTDevice == null)
+            HandShake.Instance().Log2File("mBluetoothLeService.listBTDevice == null");
+
         mBluetoothLeService.listBTDevice.clear();
 
 
@@ -1437,40 +1545,87 @@ public class BleFramework{
         return NetTools.GetWifiIP();
     }
 
+    /**
+     * 取得設備清單
+     * @return
+     */
     public String _GetListOfDevices()
     {
+        HandShake.Instance().Log2File("_GetListOfDevices ... start");
         String jsonListString;
         if (mBluetoothLeService.listBTDevice.size() > 0) {
-	        Log.d(TAG, "_GetListOfDevices");
             String[] uuidsArray = new String[mBluetoothLeService.listBTDevice.size()];
             for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
                 BluetoothDevice bd = mBluetoothLeService.listBTDevice.get(i).m_BluetoothDevice;
                 //uuidsArray[i] = bd.getAddress();
 	            uuidsArray[i] = bd.getName();
             }
-            Log.d(TAG, "_GetListOfDevices: Building JSONArray");
+            //HandShake.Instance().Log2File( "_GetListOfDevices: Building JSONArray");
             JSONArray uuidsJSON = new JSONArray(Arrays.asList(uuidsArray));
-            Log.d(TAG, "_GetListOfDevices: Building JSONObject");
+            //HandShake.Instance().Log2File( "_GetListOfDevices: Building JSONObject");
             JSONObject dataUuidsJSON = new JSONObject();
             try {
-                Log.d(TAG, "_GetListOfDevices: Try inserting uuuidsJSON array in the JSONObject");
+                //HandShake.Instance().Log2File("_GetListOfDevices: Try inserting uuuidsJSON array in the JSONObject");
                 dataUuidsJSON.put("data", (Object)uuidsJSON);
             }
             catch (JSONException e) {
-                Log.e(TAG, "_GetListOfDevices: JSONException");
-                LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: JSONException");
+                HandShake.Instance().Log2File("_GetListOfDevices: JSONException : " + e.getMessage());
+//                LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: JSONException");
                 e.printStackTrace();
             }
             jsonListString = dataUuidsJSON.toString();
-            Log.d(TAG, ("_GetListOfDevices: sending found devices in JSON: " + jsonListString));
-            LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: sending found devices in JSON: " + jsonListString);
+            HandShake.Instance().Log2File(("_GetListOfDevices: sending found devices in JSON: " + jsonListString));
+            //LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: sending found devices in JSON: " + jsonListString);
         } else {
             jsonListString = "NO DEVICE FOUND";
-            Log.d(TAG, "_GetListOfDevices: no device was found");
-            LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: no device was found");
+            HandShake.Instance().Log2File("_GetListOfDevices: no device was found");
+            //LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: no device was found");
         }
 
+        HandShake.Instance().Log2File("_GetListOfDevices ... end");
+        return jsonListString;
+    }
 
+    /*
+        獲取設備清單 - 名稱 @ MAC @ 訊號
+    **/
+
+    public String _GetListOfDevicesEx()
+    {
+        HandShake.Instance().Log2File("_GetListOfDevicesEx ... start");
+        String jsonListString;
+        if (mBluetoothLeService.listBTDevice.size() > 0) {
+            //Log.d(TAG, "_GetListOfDevicesEx");
+            String[] uuidsArray = new String[mBluetoothLeService.listBTDevice.size()];
+            for (int i = 0; i < mBluetoothLeService.listBTDevice.size(); ++i) {
+                BLEObj obj = mBluetoothLeService.listBTDevice.get(i);
+                BluetoothDevice bd = obj.m_BluetoothDevice;
+                //uuidsArray[i] = bd.getAddress();
+                uuidsArray[i] = bd.getName() + "@" + bd.getAddress() + "@" + obj.rssi;
+            }
+            //HandShake.Instance().Log2File("_GetListOfDevicesEx: Building JSONArray");
+            JSONArray uuidsJSON = new JSONArray(Arrays.asList(uuidsArray));
+            //HandShake.Instance().Log2File("_GetListOfDevices: Building JSONObject");
+            JSONObject dataUuidsJSON = new JSONObject();
+            try {
+                //Log.d(TAG, "_GetListOfDevicesEx: Try inserting uuuidsJSON array in the JSONObject");
+                dataUuidsJSON.put("data", (Object)uuidsJSON);
+            }
+            catch (JSONException e) {
+                HandShake.Instance().Log2File("_GetListOfDevicesEx: JSONException : " + e.getMessage());
+                //LogFile.GetInstance().AddLogAndSave(true, "_GetListOfDevices: JSONException");
+                e.printStackTrace();
+            }
+            jsonListString = dataUuidsJSON.toString();
+            HandShake.Instance().Log2File(("_GetListOfDevicesEx: sending found devices in JSON: " + jsonListString));
+            //LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: sending found devices in JSON: " + jsonListString);
+        } else {
+            jsonListString = "NO DEVICE FOUND";
+            HandShake.Instance().Log2File("_GetListOfDevicesEx: no device was found");
+            //LogFile.GetInstance().AddLogAndSave(true,"_GetListOfDevices: no device was found");
+        }
+
+        HandShake.Instance().Log2File("_GetListOfDevicesEx ... end");
         return jsonListString;
     }
 
@@ -1489,6 +1644,13 @@ public class BleFramework{
 
 	    //mBluetoothLeService.disconnect();
 	    //mBluetoothLeService.cleanAddress();
+
+        // 如果還在掃描的話,那就先停止掃描
+        if(GetSearchingDevice())
+        {
+            this.DoStopScan();
+            SetSearchingDevice(false);
+        }
 
 	    try {
 		    Thread.sleep(30);

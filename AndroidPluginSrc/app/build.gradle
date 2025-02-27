@@ -13,7 +13,7 @@ android {
 	defaultConfig {
 		minSdkVersion 23
 		targetSdkVersion 34
-		versionName "4.0913.1"
+		versionName "5.0226.4"  // 每次建置,改這個地方的版號
 	}
 	buildTypes {
 		release {

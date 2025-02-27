@@ -11,6 +11,7 @@ public class BLEObj {
     public BluetoothDevice m_BluetoothDevice = null;
     public BluetoothGatt m_BluetoothGatt = null;
     public BluetoothGattCharacteristic m_WriteCharacteristic = null;
+    public int rssi = 0;
 
     public BLEObj()
     {
